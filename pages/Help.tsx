@@ -79,7 +79,7 @@ const Help: React.FC = () => {
       <SectionDivider />
 
       <FAQSection title="Searching & Viewing Data">
-        <QABlock num={6} q="How do I search for data?" a="Use the Search bar, type a keyword (e.g., \"education\", \"transport\", \"employment\"), and open a result to view details." />
+        <QABlock num={6} q="How do I search for data?" a="Use the Search bar, type a keyword (e.g., 'education', 'transport', 'employment'), and open a result to view details." />
         <QABlock num={7} q="Can I download the data?" a="Yes. Public users can download anonymized and aggregated datasets and reports." />
       </FAQSection>
       <SectionDivider />
@@ -184,14 +184,13 @@ const Help: React.FC = () => {
           </div>
         } />
         <SectionDivider />
-        <QABlock num={6} q="How do I find information in GRIDS?" a="You can use the Search bar and type a topic (like \"education\" or \"violence\") and then open the results. Some pages also show ready-made charts and dashboards." />
+        <QABlock num={6} q="How do I find information in GRIDS?" a="You can use the Search bar and type a topic (like 'education' or 'violence') and then open the results. Some pages also show ready-made charts and dashboards." />
         <SectionDivider />
         <QABlock num={7} q="Can I download the data?" a="Yes. You may download public reports and aggregated datasets that are safe to share." />
         <SectionDivider />
         <QABlock num={8} q="How does GRIDS help improve life in Baguio?" a="GRIDS helps city officials clearly see where issues exist—for example, if women feel less safe in public transport, or if certain groups are left out of services. This helps them design better policies, budgets, and programs." />
         <SectionDivider />
         <QABlock num={9} q="Is GRIDS required by law?" a="Yes. GRIDS supports requirements under the Magna Carta of Women and follows the Data Privacy Act of 2012 to protect people's rights and privacy." />
-        {/* Fix: Corrected typo from <Section Divider /> to <SectionDivider /> */}
         <SectionDivider />
         <QABlock num={10} q="Who manages GRIDS?" a="GRIDS is managed by the City Government of Baguio through the City Planning and Development Office (CPDSO) and its Data Division Unit." />
       </div>
