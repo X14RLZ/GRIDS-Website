@@ -15,6 +15,7 @@ import DataRetrieval from './pages/DataRetrieval';
 import UserManagement from './pages/UserManagement';
 import About from './pages/About';
 import Policy from './pages/Policy';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import Profile from './pages/Profile';
 import Members from './pages/Members';
 import Programs from './pages/Programs';
@@ -145,7 +146,7 @@ const AppContent: React.FC<{
                  <Route path="/user-management" element={isAdmin ? <UserManagement isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
                  <Route path="/about" element={<About isDarkMode={isDarkMode} />} />
                  <Route path="/policy" element={<Policy isDarkMode={isDarkMode} />} />
-                 <Route path="/privacy-policy" element={<Policy isDarkMode={isDarkMode} />} />
+                 <Route path="/privacy-policy" element={<PrivacyPolicy isDarkMode={isDarkMode} />} />
                  <Route path="/profile" element={user ? <Profile user={user} onUpdateUser={onUpdateUser} isDarkMode={isDarkMode} /> : <Navigate to="/login" />} />
                  <Route path="/members" element={<Members isDarkMode={isDarkMode} />} />
                  <Route path="/programs" element={<Programs isDarkMode={isDarkMode} />} />

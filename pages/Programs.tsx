@@ -59,9 +59,14 @@ const Programs: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) =>
 
   return (
     <div className="p-4 lg:p-12 animate-in fade-in duration-700 relative min-h-full">
-      <header className="mb-16">
-        <h1 className={`text-5xl lg:text-7xl font-black uppercase tracking-tighter mb-4 ${textClass}`}>Programs & Services</h1>
-        <p className={`text-sm md:text-lg font-medium max-w-3xl leading-relaxed ${subTextClass}`}>
+      {/* Standardized Header */}
+      <header className="mb-16 text-center lg:text-left">
+        <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>
+          Programs, Projects, Activities
+        </h1>
+        <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Citywide GAD Initiatives Registry</p>
+        <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto lg:mx-0"></div>
+        <p className={`text-sm md:text-lg font-medium max-w-3xl leading-relaxed ${subTextClass} mt-8 mx-auto lg:mx-0`}>
           A comprehensive directory of GAD programs, projects, and services categorized by their primary implementing city offices.
         </p>
       </header>
@@ -115,7 +120,7 @@ const Programs: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) =>
       </div>
 
       <footer className="mt-auto py-10 flex flex-col items-center">
-        <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em] text-center leading-loose">
+        <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em] text-center leading-loose">
           Copyright © City Government of Baguio<br />
           City Planning Development Service Office – CBMS Division
         </p>

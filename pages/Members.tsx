@@ -22,13 +22,10 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
   useEffect(() => {
     const loadSystemUsers = () => {
       const storedUsers = JSON.parse(localStorage.getItem('grids_users') || '[]');
-      
-      // FILTER RULE: Only show your admin account and APPROVED registered users
       const allMembers: Member[] = storedUsers
         .filter((u: any) => u.email === 'cbmscharles@gmail.com' || u.status === 'Active')
         .map((u: any) => {
           const isSeeded = u.email === 'cbmscharles@gmail.com';
-          
           return {
             id: u.userId || `sys-${u.email}`,
             name: `${u.firstName} ${u.lastName}`,
@@ -41,7 +38,6 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
             isSeeded: isSeeded
           };
         });
-      
       setDynamicMembers(allMembers);
     };
 
@@ -65,17 +61,20 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
   const departments = Object.keys(groupedMembers).sort();
 
   const textClass = isDarkMode ? 'text-white' : 'text-gray-900';
-  const labelClass = isDarkMode ? 'text-purple-400' : 'text-gray-400';
 
   return (
-    <div className="max-w-screen-2xl mx-auto p-8 lg:p-12 animate-in fade-in duration-700 relative min-h-full">
-      <div className="mb-16 flex flex-col xl:flex-row xl:items-end justify-between gap-8">
-        <div>
-          <h1 className={`text-6xl font-black mb-2 uppercase tracking-tighter ${textClass}`}>People</h1>
-          <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em]">Official Database Registry Directory</p>
+    <div className="max-w-7xl mx-auto p-4 md:p-12 animate-in fade-in duration-700 relative min-h-full">
+      {/* Standardized Consistent Header */}
+      <header className={`mb-12 md:mb-20 flex flex-col lg:flex-row lg:items-end justify-between gap-8 border-b pb-12 ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
+        <div className="space-y-2 max-w-2xl text-center lg:text-left">
+          <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>
+            People
+          </h1>
+          <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Verified Database Personnel Registry</p>
+          <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto lg:mx-0"></div>
         </div>
 
-        <div className="w-full max-w-xl relative group">
+        <div className="w-full max-w-xl relative group mx-auto lg:mx-0 lg:mb-1">
           <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors">
             <Search size={22} strokeWidth={3} />
           </div>
@@ -85,10 +84,10 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className={`w-full pl-16 pr-8 py-5 rounded-[28px] border shadow-[0_10px_40px_rgba(0,0,0,0.03)] focus:outline-none focus:ring-8 focus:ring-purple-600/5 transition-all text-sm font-bold
-              ${isDarkMode ? 'bg-[#2A2438] border-white/10 text-white placeholder:text-gray-600 focus:border-purple-600/40' : 'bg-white border-purple-50 text-gray-900 placeholder:text-gray-300 focus:border-purple-600/20'}`}
+              ${isDarkMode ? 'bg-[#2A2438] border-white/10 text-white placeholder:text-gray-600' : 'bg-white border-purple-50 text-gray-900 placeholder:text-gray-300'}`}
           />
         </div>
-      </div>
+      </header>
 
       <div className="space-y-20 mb-32">
         {departments.length > 0 ? departments.map((dept) => (
@@ -96,7 +95,7 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
             <div className="flex items-center gap-6 mb-10">
               <h2 className={`text-4xl font-black uppercase tracking-tighter ${textClass}`}>{dept}</h2>
               <div className={`h-px flex-1 ${isDarkMode ? 'bg-white/5' : 'bg-gray-100'}`}></div>
-              <span className={`text-[10px] font-black uppercase tracking-widest ${labelClass}`}>{groupedMembers[dept].length} Verified Personnel</span>
+              <span className={`text-[10px] font-black uppercase tracking-widest text-purple-600`}>{groupedMembers[dept].length} Verified Personnel</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -104,7 +103,6 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
                 <div key={m.id} className={`rounded-[48px] p-10 shadow-sm card-hover transition-all duration-500 relative overflow-hidden group border
                   ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-purple-950/20' : 'bg-white border-purple-50 shadow-purple-900/5'}`}>
                   
-                  {/* Registry Source Indicator */}
                   <div className={`absolute top-6 right-6 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-sm
                     ${m.isSeeded ? 'bg-purple-600 text-white' : 'bg-green-50 text-green-600 border border-green-100'}`}>
                     {m.isSeeded ? <ShieldCheck size={10} /> : <UserCheck size={10} />}

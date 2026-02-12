@@ -13,16 +13,17 @@ const About: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
 
   return (
     <div className="max-w-screen-2xl mx-auto p-4 lg:p-8 animate-in fade-in duration-700 relative min-h-screen">
-      {/* Header Title */}
-      <div className="mb-12">
-        <h1 className={`text-4xl md:text-5xl font-black mb-6 uppercase tracking-tight ${headingClass}`}>About GRIDS</h1>
-        <div className={`w-full h-[2px] ${isDarkMode ? 'bg-white/5' : 'bg-gray-900/10'}`}></div>
+      {/* Consistent Standard Header Block */}
+      <div className="mb-16 text-center lg:text-left">
+        <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${headingClass}`}>About GRIDS</h1>
+        <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">The GAD Database Foundation</p>
+        <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto lg:mx-0"></div>
       </div>
 
       <div className={`rounded-[48px] p-10 md:p-20 shadow-2xl border mb-20 transition-colors duration-500
         ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-purple-950/20' : 'bg-[#F8F5FF] border-white shadow-purple-900/5'}`}>
         
-        {/* Main Description from Image */}
+        {/* Main Description */}
         <div className={`max-w-5xl mx-auto space-y-8 text-lg md:text-xl font-medium leading-relaxed ${textClass}`}>
           <p>
             The <span className={`font-black ${headingClass}`}>Gender-Responsive Integrated Database System (GRIDS)</span> is Baguio City's flagship digital transformation project mandated by the Magna Carta of Women. It aims to build a centralized, secure, and accessible database for Gender and Development (GAD) data — enabling evidence-based policymaking and gender-sensitive planning across all sectors of the city.

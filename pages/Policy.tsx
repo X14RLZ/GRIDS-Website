@@ -29,15 +29,16 @@ const Policy: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
 
   return (
     <div className="max-w-screen-2xl mx-auto p-4 lg:p-12 animate-in fade-in duration-700 relative min-h-screen">
-      <div className="mb-12">
-        <h1 className={`text-5xl lg:text-6xl font-black mb-2 uppercase tracking-tighter ${headingClass}`}>Policy Framework</h1>
-        <div className="h-2 w-48 bg-purple-600 rounded-full"></div>
+      {/* Standardized Header */}
+      <div className="mb-16 text-center lg:text-left">
+        <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${headingClass}`}>Legal Policies</h1>
+        <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Legal and Regulatory Mandates</p>
+        <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto lg:mx-0"></div>
       </div>
 
       <div className={`rounded-[48px] p-8 md:p-16 lg:p-20 shadow-2xl border mb-20 transition-colors duration-500
         ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-purple-950/20' : 'bg-white border-purple-50 shadow-purple-900/5'}`}>
         
-        {/* A. International Conventions */}
         <section id="international">
           <div className="flex items-center gap-4 mb-10">
             <Globe className="text-purple-600" size={32} />
@@ -59,7 +60,6 @@ const Policy: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
 
         <SectionDivider />
 
-        {/* B. National Laws */}
         <section id="national">
           <div className="flex items-center gap-4 mb-10">
             <Landmark className="text-purple-600" size={32} />
@@ -84,7 +84,6 @@ const Policy: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
 
         <SectionDivider />
 
-        {/* C. Joint Memorandum Circulars */}
         <section id="jmc">
           <div className="flex items-center gap-4 mb-10">
             <FileText className="text-purple-600" size={32} />
@@ -113,7 +112,6 @@ const Policy: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
 
         <SectionDivider />
 
-        {/* D. Baguio City */}
         <section id="local" className="pb-10">
           <div className="flex items-center gap-4 mb-10">
             <Gavel className="text-purple-600" size={32} />

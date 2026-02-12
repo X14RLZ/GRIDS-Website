@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { CloudDownload, Eye, Search, Filter, Database, FileSpreadsheet, Building2, User as UserIcon, Clock } from 'lucide-react';
 import { Submission } from '../types';
@@ -10,7 +11,6 @@ const DataRetrieval: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false 
 
   const loadData = () => {
     const stored: Submission[] = JSON.parse(localStorage.getItem('grids_submissions') || '[]');
-    // Filter only Approved data as requested
     setApprovedData(stored.filter((s: Submission) => s.response === 'Approved'));
   };
 
@@ -30,7 +30,6 @@ const DataRetrieval: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false 
   });
 
   const handleDownload = (formName: string) => {
-    // Simulated download trigger
     const link = document.createElement('a');
     link.href = '#';
     link.download = formName;
@@ -45,13 +44,14 @@ const DataRetrieval: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false 
 
   return (
     <div className="p-8 lg:p-12 animate-in fade-in duration-700 relative min-h-full">
-      <div className="mb-10 flex flex-col xl:flex-row xl:items-end justify-between gap-8">
-        <div>
-          <h1 className={`text-5xl font-black mb-2 uppercase tracking-tighter ${textClass}`}>Data Retrieval</h1>
-          <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em]">Authorized Access: Approved Datasets</p>
-        </div>
+      {/* Standardized Header */}
+      <div className="mb-16 text-center lg:text-left">
+        <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>Data Retrieval</h1>
+        <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Registry Vault Access</p>
+        <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto lg:mx-0"></div>
+      </div>
 
-        <div className="flex flex-col md:flex-row gap-4 w-full max-w-2xl">
+      <div className="mb-10 flex flex-col md:flex-row gap-4 w-full max-w-2xl mx-auto lg:mx-0">
            <div className="flex-1 relative group">
               <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors">
                 <Search size={20} strokeWidth={3} />
@@ -79,7 +79,6 @@ const DataRetrieval: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false 
                 {offices.map(o => <option key={o} value={o}>{o}</option>)}
               </select>
            </div>
-        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 mb-20">

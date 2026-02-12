@@ -22,10 +22,7 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
 
   const handleSave = () => {
     if (user) {
-      onUpdateUser({
-        ...user,
-        ...formData
-      });
+      onUpdateUser({ ...user, ...formData });
       setIsEditing(false);
     }
   };
@@ -37,10 +34,12 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
 
   return (
     <div className="max-w-4xl mx-auto p-8 lg:p-12 animate-in fade-in duration-700 relative min-h-full">
-      <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <h1 className={`text-5xl font-black mb-2 uppercase tracking-tighter ${textClass}`}>User Profile</h1>
-          <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em]">Personal System Registry</p>
+      {/* Standardized Header */}
+      <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div className="text-center md:text-left">
+          <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>Profile</h1>
+          <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Individual System Registry Record</p>
+          <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto md:mx-0"></div>
         </div>
         
         {!isEditing ? (
@@ -93,7 +92,6 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
                   <div className={`px-6 py-4 rounded-2xl text-sm font-bold ${isDarkMode ? 'bg-white/5' : 'bg-gray-50'}`}>{user?.firstName}</div>
                 )}
               </div>
-              
               <div className="space-y-2">
                 <label className={`text-[9px] font-black uppercase tracking-widest ml-4 ${subTextClass}`}>Last Name</label>
                 {isEditing ? (
@@ -107,7 +105,6 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
                   <div className={`px-6 py-4 rounded-2xl text-sm font-bold ${isDarkMode ? 'bg-white/5' : 'bg-gray-50'}`}>{user?.lastName}</div>
                 )}
               </div>
-
               <div className="space-y-2">
                 <label className={`text-[9px] font-black uppercase tracking-widest ml-4 ${subTextClass}`}>Email Address</label>
                 <div className={`px-6 py-4 rounded-2xl text-sm font-bold flex items-center gap-3 ${isDarkMode ? 'bg-white/5 text-gray-500' : 'bg-gray-50 text-gray-400'}`}>
@@ -116,7 +113,6 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
                 </div>
               </div>
             </div>
-
             <div className="space-y-6">
               <div className="space-y-2">
                 <label className={`text-[9px] font-black uppercase tracking-widest ml-4 ${subTextClass}`}>Office / Department</label>
@@ -125,7 +121,6 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
                   {user?.office}
                 </div>
               </div>
-
               <div className="space-y-2">
                 <label className={`text-[9px] font-black uppercase tracking-widest ml-4 ${subTextClass}`}>Phone Number</label>
                 {isEditing ? (
@@ -142,7 +137,6 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
                   </div>
                 )}
               </div>
-
               <div className="space-y-2">
                 <label className={`text-[9px] font-black uppercase tracking-widest ml-4 ${subTextClass}`}>Birthdate</label>
                 {isEditing ? (
@@ -162,32 +156,8 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
               </div>
             </div>
           </div>
-
-          <div className={`mt-16 pt-10 border-t flex flex-col md:flex-row items-center justify-between gap-6 ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center">
-                <ShieldCheck size={24} />
-              </div>
-              <div>
-                <p className={`text-[10px] font-black uppercase tracking-widest ${subTextClass}`}>Account Status</p>
-                <p className="text-sm font-black text-green-600 uppercase">Verified Personnel</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className={`text-[10px] font-black uppercase tracking-widest ${subTextClass}`}>Member Since</p>
-              <p className={`text-sm font-black uppercase ${textClass}`}>January 2025</p>
-            </div>
-          </div>
         </div>
       </div>
-
-      <footer className="mt-auto py-10 flex flex-col items-center">
-        <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] text-center leading-relaxed">
-          Copyright © City Government of Baguio<br />
-          City Planning, Development, and Sustainability Office – CBMS<br />
-          Developed by: Charles S. Chantioco
-        </p>
-      </footer>
     </div>
   );
 };

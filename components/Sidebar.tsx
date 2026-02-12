@@ -22,11 +22,10 @@ const Sidebar: React.FC<SidebarProps> = ({ role, onLogout, isCollapsed = false, 
   const isAdmin = role === 'Administrator';
   const isProvider = role === 'Data Provider' || isAdmin;
   const isReviewer = role === 'Data Reviewer' || isAdmin;
-  // FIX: Corrected typo 'Data Analyzer' to 'Data Analyst' to match UserRole union type
   const isAnalyzer = role === 'Data Analyst' || isAdmin;
   const isLoggedIn = role !== 'Guest';
 
-  const sectionLabelClass = `text-[11px] font-black uppercase tracking-[0.1em] px-5 mb-3 transition-colors duration-500 ${
+  const sectionLabelClass = `text-[10px] font-black uppercase tracking-[0.4em] px-5 mb-4 transition-colors duration-500 ${
     isDarkMode ? 'text-purple-400' : 'text-[#8B44AF]'
   }`;
 
@@ -63,7 +62,6 @@ const Sidebar: React.FC<SidebarProps> = ({ role, onLogout, isCollapsed = false, 
       ${isCollapsed ? 'w-24' : 'w-72'}
     `}>
       
-      {/* Edge Toggle */}
       <button 
         onClick={onToggle}
         className={`absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 border rounded-full shadow-lg items-center justify-center transition-all duration-300 z-50 group active:scale-90 hidden lg:flex
@@ -77,7 +75,6 @@ const Sidebar: React.FC<SidebarProps> = ({ role, onLogout, isCollapsed = false, 
       </div>
 
       <div className="flex-1 overflow-y-auto no-scrollbar px-4">
-        {/* DATABASE SECTION */}
         <div className="mb-8">
           {!isCollapsed ? (
             <h3 className={sectionLabelClass}>Database</h3>
@@ -95,7 +92,6 @@ const Sidebar: React.FC<SidebarProps> = ({ role, onLogout, isCollapsed = false, 
           </div>
         </div>
 
-        {/* GAD ENTRY POINTS SECTION */}
         <div className="mb-8">
           {!isCollapsed ? (
             <h3 className={sectionLabelClass}>GAD Entry Points</h3>
@@ -103,14 +99,13 @@ const Sidebar: React.FC<SidebarProps> = ({ role, onLogout, isCollapsed = false, 
             <div className="h-px bg-gray-100 dark:bg-white/5 mx-4 mb-6"></div>
           )}
           <div className="space-y-0.5">
-            <NavItem to="/policy" icon={FileText}>Policy</NavItem>
+            <NavItem to="/policy" icon={FileText}>Legal Policies</NavItem>
             <NavItem to="/members" icon={Users}>People</NavItem>
             <NavItem to="/gad-data/institutional" icon={Cog}>Enabling Mechanism</NavItem>
             <NavItem to="/programs" icon={Package}>Program, Projects, Activities</NavItem>
           </div>
         </div>
 
-        {/* MENU SECTION */}
         <div className="mb-8">
           {!isCollapsed ? (
             <h3 className={sectionLabelClass}>Menu</h3>

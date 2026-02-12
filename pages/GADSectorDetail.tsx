@@ -180,7 +180,7 @@ const SECTOR_DATA: Record<string, SectorData> = {
     indicators: [
       { id: "39", slug: "intimate-violence", title: "Physical and/or Sexual Violence by an Intimate Partner", office: "CSWDO", definition: "Percentage of women who experienced physical or sexual violence by a partner in the last 12 months." },
       { id: "40", slug: "non-intimate-violence", title: "Sexual Violence by Persons Other Than An Intimate Partner", office: "CSWDO", definition: "Percentage of women subjected to sexual violence by someone other than a partner since age 15." },
-      { id: "41", slug: "abuse-cases", title: "Number of Reported Abuse Cases for Women and Children", office: "CSWDO", definition: "Gender-based violence results recorded in the Crime Incident Reporting and Analysis System." },
+      { id: "41", slug: "abuse-cases", title: "Number of Reported Abuse Cases for Women and Children", office: "BCPO", definition: "Gender-based violence results recorded in the Crime Incident Reporting and Analysis System." },
       { id: "42", slug: "dswd-cases", title: "Cases Served by DSWD on Violence Against Women and Child Abuse", office: "CSWDO", definition: "Number of abuse cases (abandoned, neglected, exploited) served by social welfare departments." }
     ]
   }
@@ -189,7 +189,6 @@ const SECTOR_DATA: Record<string, SectorData> = {
 const GADSectorDetail: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
   const { sectorId } = useParams();
   const navigate = useNavigate();
-
   const currentSector = sectorId ? SECTOR_DATA[sectorId] : null;
 
   if (!currentSector) {
@@ -203,7 +202,6 @@ const GADSectorDetail: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = fals
 
   const SectorIcon = currentSector.icon;
   const textClass = isDarkMode ? 'text-white' : 'text-gray-900';
-  const subTextClass = isDarkMode ? 'text-gray-400' : 'text-gray-500';
 
   const renderItem = (indicator: Indicator) => (
     <div key={indicator.id} className={`group border-b pb-10 last:border-0 ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
@@ -220,22 +218,19 @@ const GADSectorDetail: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = fals
               </span>
             </div>
           </div>
-
           <h3 className={`text-3xl font-black leading-tight tracking-tight group-hover:text-purple-600 transition-colors ${textClass}`}>
             {indicator.title}
           </h3>
-          
           <div className={`p-6 rounded-[24px] border ${isDarkMode ? 'bg-purple-900/10 border-purple-500/20' : 'bg-purple-50/30 border-purple-100/50'}`}>
             <div className="flex items-start gap-3">
               <BookOpen size={16} className="text-purple-400 mt-1 flex-shrink-0" />
-              <p className={`text-sm font-medium leading-relaxed italic ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              <div className={`text-sm font-medium leading-relaxed italic ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                 <span className="text-[10px] font-black uppercase tracking-widest text-purple-600 block mb-1 not-italic">Definition / Scope</span>
                 {indicator.definition}
-              </p>
+              </div>
             </div>
           </div>
         </div>
-        
         <div className="lg:pt-2">
           <button 
             onClick={() => navigate(`/analysis/${indicator.slug}`)}
@@ -251,11 +246,13 @@ const GADSectorDetail: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = fals
 
   return (
     <div className="max-w-screen-2xl mx-auto p-4 animate-in fade-in duration-500 relative">
-      <div className="mb-12 flex items-start justify-between">
-        <div>
-          <h1 className={`text-4xl font-black mb-2 uppercase tracking-tight ${textClass}`}>{currentSector.title} Hub</h1>
-          <div className="h-1.5 w-32 bg-purple-600 rounded-full"></div>
-        </div>
+      {/* Standardized Header */}
+      <div className="mb-16 text-center lg:text-left">
+        <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>
+          {currentSector.title}
+        </h1>
+        <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Sectoral Record Registry</p>
+        <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto lg:mx-0"></div>
       </div>
 
       <div className={`rounded-[48px] p-8 lg:p-16 shadow-2xl shadow-purple-950/5 border transition-colors duration-500
@@ -274,14 +271,13 @@ const GADSectorDetail: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = fals
               <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-[24px] border border-white/20 flex items-center justify-center">
                 <SectorIcon size={48} className="text-white" strokeWidth={1.5} />
               </div>
-              <h2 className="text-white text-4xl lg:text-7xl font-black uppercase tracking-tighter leading-none">
+              <h2 className="text-white text-4xl lg:text-7xl font-black uppercase tracking-tighter leading-none italic">
                 {currentSector.title}
               </h2>
             </div>
           </div>
         </div>
 
-        {/* Indicators or Sections */}
         <div className="space-y-20 max-w-6xl mx-auto">
           {currentSector.sections ? currentSector.sections.map(section => (
             <div key={section.id} className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-500">

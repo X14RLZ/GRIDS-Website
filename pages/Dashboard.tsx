@@ -57,7 +57,6 @@ const Dashboard: React.FC<DashboardProps> = ({ user, isDarkMode = false }) => {
   
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // ENHANCED INTELLIGENT SEARCH INDEX
   const searchableItems: SearchResult[] = [
     { id: 'p1', title: 'GAD Data and Analysis', type: 'Page', path: '/gad-data', description: 'Access 51 core Gender and Development indicators for Baguio City.' },
     { id: 'p2', title: 'CBMS Table Hub', type: 'Page', path: '/cbms', description: 'Official 2021 Community-Based Monitoring System data reports and records.', keywords: ['survey', 'census', 'economic'] },
@@ -71,9 +70,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, isDarkMode = false }) => {
     { id: 'mech-code', title: '2020 Amended GAD Code', type: 'Policy', path: '/gad-data/institutional', description: 'The local legislative framework governing gender rights in Baguio.' },
     { id: 'i1', title: 'Basic and Functional Literacy Rate', type: 'Indicator', path: '/analysis/literacy-rate', description: 'Statistics on literacy by sex and demographic association.' },
     { id: 'i2', title: 'School Completion Rate', type: 'Indicator', path: '/analysis/completion-rate', description: 'Elementary and secondary education completion metrics.' },
-    { id: 'i45', title: 'GAD Budget Allocation', type: 'Indicator', path: '/analysis/gad-allocation', description: 'Monitoring city budget utilization for gender-responsive programs.' },
-    { id: 'prog-cswdo', title: 'CSWDO Services', type: 'Page', path: '/programs', description: 'Social welfare, child protection, and family development services.' },
-    { id: 'prog-hso', title: 'Health Services Office', type: 'Page', path: '/programs', description: 'Public health implementation and maternal care services.' }
+    { id: 'prog-cswdo', title: 'CSWDO Services', type: 'Page', path: '/programs', description: 'Social welfare, child protection, and family development services.' }
   ];
 
   const keywords = ['Literacy', 'Education', 'CBMS', 'Budget', 'Survey', 'Statistics', 'Baguio', 'Gender', 'VAW', 'Health', 'Economy', 'Policy', 'Awards', 'SIGED', 'Magna Carta', 'JMC'];
@@ -124,23 +121,21 @@ const Dashboard: React.FC<DashboardProps> = ({ user, isDarkMode = false }) => {
   };
 
   const textClass = isDarkMode ? 'text-white' : 'text-gray-900';
-  const subTextClass = isDarkMode ? 'text-purple-300' : 'text-gray-500';
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-6 flex flex-col items-center animate-in fade-in duration-1000 scroll-smooth relative">
       
       {!isSearching && (
-        <div className="w-full flex flex-col md:flex-row items-center md:items-end justify-between mb-8 text-center md:text-left animate-in slide-in-from-top-2 duration-1000">
-           <div className="mb-4 md:mb-0">
-             <h1 className={`text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter leading-[0.95] ${textClass}`}>
+        <div className="w-full flex flex-col md:flex-row items-center md:items-end justify-between mb-16 text-center md:text-left">
+           <div>
+             <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>
                GRIDS Baguio
              </h1>
-             <p className={`text-[9px] md:text-[11px] font-bold uppercase tracking-[0.3em] ${subTextClass}`}>
-               Gender-Responsive Integrated Database System
-             </p>
+             <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Gender-Responsive Integrated Database System</p>
+             <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto md:mx-0"></div>
            </div>
            
-           <div className={`flex items-center gap-4 text-[10px] md:text-xs font-black uppercase tracking-widest ${textClass} opacity-60`}>
+           <div className={`flex items-center gap-4 text-[10px] md:text-xs font-black uppercase tracking-widest ${textClass} opacity-60 mt-8 md:mt-0`}>
               <div className="flex items-center gap-2">
                 <CalendarIcon size={14} className="text-purple-500" />
                 <span>{formattedDate}</span>
@@ -172,7 +167,6 @@ const Dashboard: React.FC<DashboardProps> = ({ user, isDarkMode = false }) => {
         </div>
       )}
 
-      {/* SEARCH BAR: Intelligent suggest and Category mapping */}
       <div className={`w-full max-w-6xl transition-all duration-500 ease-out z-10 px-0 md:px-4 ${isSearching ? 'mb-8 mt-0' : 'mb-12 md:mb-20'}`}>
         <div className="relative group">
           <div className="absolute inset-y-0 left-6 md:left-14 flex items-center pointer-events-none z-30">
@@ -224,7 +218,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, isDarkMode = false }) => {
                   <div className="flex-1 min-w-0">
                     <span className="text-[8px] md:text-[9px] font-black uppercase text-gray-400 block mb-0.5">{result.type}</span>
                     <h4 className={`text-sm md:text-xl font-black uppercase truncate ${textClass}`}>{result.title}</h4>
-                    <p className={`text-[10px] md:text-xs font-medium truncate opacity-60 ${subTextClass}`}>{result.description}</p>
+                    <p className={`text-[10px] md:text-xs font-medium truncate opacity-60 text-gray-500`}>{result.description}</p>
                   </div>
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all
                     ${isDarkMode ? 'bg-white/5 text-gray-500 group-hover:text-purple-400' : 'bg-gray-50 text-gray-300 md:group-hover:bg-purple-100 md:group-hover:text-purple-600'}`}>
@@ -243,14 +237,14 @@ const Dashboard: React.FC<DashboardProps> = ({ user, isDarkMode = false }) => {
           <div className="space-y-16 md:space-y-24 pb-20">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
               <div className={`p-8 md:p-12 rounded-[40px] md:rounded-[56px] border-2 flex flex-col items-start gap-6 group shadow-sm transition-all hover:shadow-2xl
-                ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-purple-900/10' : 'bg-[#f8f5ff] border-purple-50'}`}>
+                ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-purple-950/10' : 'bg-[#f8f5ff] border-purple-50'}`}>
                 <div className={`w-14 h-14 md:w-20 md:h-20 rounded-[20px] md:rounded-[28px] flex items-center justify-center shadow-md
                   ${isDarkMode ? 'bg-[#2A2438] text-purple-400' : 'bg-white text-purple-600'}`}>
                   <BookOpen className="w-8 h-8 md:w-10 md:h-10" strokeWidth={2.5} />
                 </div>
                 <div className="space-y-3">
                   <h4 className={`text-2xl md:text-4xl font-black uppercase tracking-tighter leading-tight ${textClass}`}>Policies</h4>
-                  <p className={`text-sm md:text-lg font-medium leading-relaxed ${subTextClass}`}>Review official city ordinances and national GAD mandates like CEDAW and Magna Carta.</p>
+                  <p className={`text-sm md:text-lg font-medium leading-relaxed text-gray-500`}>Review official city ordinances and national GAD mandates like CEDAW and Magna Carta.</p>
                   <Link to="/policy" className="inline-flex items-center gap-2 text-[10px] font-black text-purple-600 uppercase tracking-widest mt-4 group/link">
                     Explore Policies <ChevronRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
                   </Link>
@@ -261,11 +255,11 @@ const Dashboard: React.FC<DashboardProps> = ({ user, isDarkMode = false }) => {
                 ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-green-900/10' : 'bg-[#f0fff4] border-green-50'}`}>
                 <div className={`w-14 h-14 md:w-20 md:h-20 rounded-[20px] md:rounded-[28px] flex items-center justify-center shadow-md
                   ${isDarkMode ? 'bg-[#2A2438] text-green-400' : 'bg-white text-green-600'}`}>
-                  <Users className="w-8 h-8 md:w-10 h-10" strokeWidth={2.5} />
+                  <Users className="w-8 h-8 md:w-10 md:h-10" strokeWidth={2.5} />
                 </div>
                 <div className="space-y-3">
                   <h4 className={`text-2xl md:text-4xl font-black uppercase tracking-tighter leading-tight ${textClass}`}>People</h4>
-                  <p className={`text-sm md:text-lg font-medium leading-relaxed ${subTextClass}`}>Connect with dedicated Baguio City GFPS focal members and departmental leads.</p>
+                  <p className={`text-sm md:text-lg font-medium leading-relaxed text-gray-500`}>Connect with dedicated Baguio City GFPS focal members and departmental leads.</p>
                   <Link to="/members" className="inline-flex items-center gap-2 text-[10px] font-black text-green-600 uppercase tracking-widest mt-4 group/link">
                     View Focal Points <ChevronRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
                   </Link>

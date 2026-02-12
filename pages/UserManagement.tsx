@@ -10,7 +10,7 @@ import { User, UserRole } from '../types';
 
 interface ExtendedUser extends User {
   status: 'Pending' | 'Active' | 'Suspended';
-  roleId?: string; // Explicitly for SQL mapping
+  roleId?: string; 
 }
 
 const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
@@ -55,10 +55,7 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
   const generateSeedSql = (): string => {
     let sql = "-- GRIDS DATABASE REGISTRY (Seed.sql)\n";
     sql += "-- Updated: " + new Date().toLocaleString() + "\n\n";
-    
-    // Group users by whether they are already Active (Committed)
     const committed = users.filter(u => u.status === 'Active');
-    
     committed.forEach(u => {
       const roleId = u.roleId || mapRoleToId(u.role);
       const contact = u.contactInfo || u.phone || '';
@@ -129,18 +126,20 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
   );
 
   const textClass = isDarkMode ? 'text-white' : 'text-gray-900';
-  const subTextClass = isDarkMode ? 'text-purple-300' : 'text-gray-500';
-  const cardBgClass = isDarkMode ? 'bg-[#1A1625]' : 'bg-white';
 
   return (
-    <div className="max-w-screen-2xl mx-auto p-8 lg:p-12 animate-in fade-in duration-700 relative min-h-full">
-      <div className="mb-16 flex flex-col xl:flex-row xl:items-end justify-between gap-8">
-        <div>
-          <h1 className={`text-6xl font-black mb-2 uppercase tracking-tighter ${textClass}`}>User Accounts</h1>
-          <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em]">Integrated Database Governance & Seed.sql Sync</p>
+    <div className="max-w-7xl mx-auto p-4 md:p-12 animate-in fade-in duration-700 relative min-h-full">
+      {/* Standardized Consistent Header */}
+      <header className={`mb-12 md:mb-20 flex flex-col lg:flex-row lg:items-end justify-between gap-8 border-b pb-12 ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
+        <div className="space-y-2 max-w-2xl text-center lg:text-left">
+          <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>
+            User Management
+          </h1>
+          <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">System Registry Governance</p>
+          <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto lg:mx-0"></div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full xl:max-w-3xl">
+        <div className="flex flex-col md:flex-row items-center gap-4 w-full lg:max-w-3xl lg:mb-1">
           <div className="w-full relative group">
             <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors">
               <Search size={22} strokeWidth={3} />
@@ -151,7 +150,7 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={`w-full pl-16 pr-8 py-5 rounded-[28px] border shadow-[0_10px_40px_rgba(0,0,0,0.03)] focus:outline-none focus:ring-8 focus:ring-purple-600/5 transition-all text-sm font-bold
-                ${isDarkMode ? 'bg-[#2A2438] border-white/10 text-white placeholder:text-gray-600 focus:border-purple-600/40' : 'bg-white border-purple-50 text-gray-900 placeholder:text-gray-300 focus:border-purple-600/20'}`}
+                ${isDarkMode ? 'bg-[#2A2438] border-white/10 text-white placeholder:text-gray-600' : 'bg-white border-purple-50 text-gray-900 placeholder:text-gray-300'}`}
             />
           </div>
           <button 
@@ -162,9 +161,9 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
             Seed.sql Sync
           </button>
         </div>
-      </div>
+      </header>
 
-      <div className={`${cardBgClass} rounded-[48px] shadow-2xl border ${isDarkMode ? 'border-white/5' : 'border-purple-50'} overflow-hidden mb-32`}>
+      <div className={`${isDarkMode ? 'bg-[#1A1625]' : 'bg-white'} rounded-[48px] shadow-2xl border ${isDarkMode ? 'border-white/5' : 'border-purple-50'} overflow-hidden mb-32`}>
         <div className="table-container custom-scrollbar">
           <table className="w-full text-left border-collapse min-w-[1000px]">
             <thead className={`text-[9px] md:text-[10px] font-black ${isDarkMode ? 'text-purple-400' : 'text-gray-400'} uppercase tracking-[0.2em] border-b ${isDarkMode ? 'border-white/5' : 'border-gray-50'}`}>
@@ -193,7 +192,7 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
                   <td className="px-8 py-8">
                     <div className="flex items-center gap-2">
                       <Building2 size={14} className="text-gray-400" />
-                      <span className={`text-[10px] md:text-xs font-bold uppercase ${subTextClass}`}>{u.office}</span>
+                      <span className={`text-[10px] md:text-xs font-bold uppercase text-purple-600`}>{u.office}</span>
                     </div>
                   </td>
                   <td className="px-8 py-8">
@@ -250,7 +249,7 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
         </div>
       </div>
 
-      {/* SQL Generator Modal */}
+      {/* SQL Sync Modal */}
       {isSqlModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setIsSqlModalOpen(false)}></div>
@@ -303,11 +302,10 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
                     <X size={24} />
                   </button>
                </div>
-
                <div className="space-y-8">
                   <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className={`text-[9px] font-black uppercase tracking-widest ml-4 ${subTextClass}`}>First Name</label>
+                      <label className={`text-[9px] font-black uppercase tracking-widest ml-4 text-purple-600`}>First Name</label>
                       <input 
                         type="text" 
                         value={editFormData.firstName} 
@@ -316,7 +314,7 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className={`text-[9px] font-black uppercase tracking-widest ml-4 ${subTextClass}`}>Last Name</label>
+                      <label className={`text-[9px] font-black uppercase tracking-widest ml-4 text-purple-600`}>Last Name</label>
                       <input 
                         type="text" 
                         value={editFormData.lastName} 
@@ -325,9 +323,8 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
                       />
                     </div>
                   </div>
-
                   <div className="space-y-2">
-                    <label className={`text-[9px] font-black uppercase tracking-widest ml-4 ${subTextClass}`}>Office / Department Acronym</label>
+                    <label className={`text-[9px] font-black uppercase tracking-widest ml-4 text-purple-600`}>Office / Department Acronym</label>
                     <input 
                       type="text" 
                       value={editFormData.office} 
@@ -335,10 +332,9 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
                       className={`w-full px-6 py-4 rounded-[24px] text-xs font-bold focus:outline-none transition-all uppercase ${isDarkMode ? 'bg-[#2A2438] text-white border-white/5' : 'bg-gray-50 text-gray-900 border-gray-100'}`}
                     />
                   </div>
-
                   <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className={`text-[9px] font-black uppercase tracking-widest ml-4 ${subTextClass}`}>System Role</label>
+                      <label className={`text-[9px] font-black uppercase tracking-widest ml-4 text-purple-600`}>System Role</label>
                       <select 
                         value={editFormData.role} 
                         onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value as UserRole })}
@@ -353,7 +349,7 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
                       </select>
                     </div>
                     <div className="space-y-2">
-                      <label className={`text-[9px] font-black uppercase tracking-widest ml-4 ${subTextClass}`}>Account Status</label>
+                      <label className={`text-[9px] font-black uppercase tracking-widest ml-4 text-purple-600`}>Account Status</label>
                       <select 
                         value={editFormData.status} 
                         onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value as any })}
@@ -365,7 +361,6 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
                       </select>
                     </div>
                   </div>
-
                   <div className="pt-8 flex gap-4">
                     <button 
                       onClick={() => setIsEditModalOpen(false)}
@@ -390,17 +385,16 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
       {isDeleteModalOpen && selectedUser && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setIsDeleteModalOpen(false)}></div>
-          <div className={`relative w-full max-w-md rounded-[48px] p-12 shadow-2xl animate-in zoom-in-95 duration-300 border
+          <div className={`relative w-full max-md rounded-[48px] p-12 shadow-2xl animate-in zoom-in-95 duration-300 border
             ${isDarkMode ? 'bg-[#1A1625] border-white/10' : 'bg-white border-white'}`}>
             <div className="flex flex-col items-center text-center">
               <div className="w-20 h-20 bg-red-50 text-red-600 rounded-[28px] flex items-center justify-center mb-8">
                 <AlertTriangle size={40} />
               </div>
               <h3 className={`text-3xl font-black uppercase tracking-tighter mb-4 ${textClass}`}>Registry Removal</h3>
-              <p className={`text-sm font-medium leading-relaxed mb-10 ${subTextClass}`}>
-                You are about to delete <span className="font-black text-red-500">{selectedUser.firstName} {selectedUser.lastName}</span> from the system. This will also remove them from the Seed.sql generator list.
+              <p className={`text-sm font-medium leading-relaxed mb-10 text-gray-500`}>
+                You are about to delete <span className="font-black text-red-500">{selectedUser.firstName} {selectedUser.lastName}</span> from the system registry.
               </p>
-              
               <div className="w-full flex flex-col gap-3">
                  <button 
                   onClick={handleDelete}

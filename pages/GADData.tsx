@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { 
   GraduationCap, TrendingUp, Heart, ShieldAlert, 
@@ -19,23 +20,21 @@ const GADData: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
   ];
 
   const textClass = isDarkMode ? 'text-white' : 'text-gray-900';
-  const subTextClass = isDarkMode ? 'text-purple-300' : 'text-gray-500';
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-12 animate-in fade-in duration-700">
       
+      {/* Consistent Standard Header Block */}
       <header className={`mb-12 md:mb-20 flex flex-col lg:flex-row lg:items-end justify-between gap-8 border-b pb-12 ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
-        <div className="space-y-4 max-w-2xl text-center lg:text-left">
-          <div className="flex items-center justify-center lg:justify-start gap-3">
-             <div className="w-8 h-1 bg-purple-600 rounded-full"></div>
-             <span className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em]">Sectoral Catalog</span>
-          </div>
-          <h1 className={`text-4xl md:text-7xl font-black tracking-tighter uppercase italic leading-none ${textClass}`}>
-            GAD Indicators
+        <div className="space-y-2 max-w-2xl text-center lg:text-left">
+          <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>
+            GAD Data and Analysis
           </h1>
-          <p className={`text-sm md:text-lg font-medium leading-relaxed ${subTextClass}`}>
+          <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Sectoral Indicator Catalog</p>
+          <p className={`text-sm md:text-lg font-medium leading-relaxed text-gray-500 mt-6`}>
             Evidence-based gender data categorized into key development sectors.
           </p>
+          <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto lg:mx-0"></div>
         </div>
         
         <div className="flex shrink-0">
@@ -59,16 +58,15 @@ const GADData: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
                <div className={`absolute inset-0 bg-gradient-to-b from-transparent ${isDarkMode ? 'to-[#1A1625]' : 'to-white'}`}></div>
                <div className={`absolute top-4 left-4 md:top-6 md:left-6 w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg transition-all
                  ${isDarkMode ? 'bg-[#2A2438] text-purple-400 group-hover:bg-purple-600 group-hover:text-white' : 'bg-white text-purple-600 group-hover:bg-purple-600 group-hover:text-white'}`}>
-                 {/* Fix: Replaced invalid md:size prop with responsive Tailwind classes */}
                  <s.icon className="w-5 h-5 md:w-6 h-6" />
                </div>
             </div>
 
             <div className="flex-1 p-6 md:p-8 flex flex-col justify-between pt-2">
               <div className="space-y-2">
-                <span className="text-[9px] font-black uppercase text-purple-500">{s.count} Data Points</span>
+                <span className="text-9px font-black uppercase text-purple-500">{s.count} Data Points</span>
                 <h3 className={`text-xl md:text-2xl font-black leading-tight uppercase tracking-tight ${textClass}`}>{s.title}</h3>
-                <p className={`text-xs md:text-sm font-medium line-clamp-2 md:line-clamp-3 leading-relaxed ${subTextClass}`}>
+                <p className={`text-xs md:text-sm font-medium line-clamp-2 md:line-clamp-3 leading-relaxed text-gray-500`}>
                   {s.desc}
                 </p>
               </div>
@@ -77,7 +75,6 @@ const GADData: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
                  <span className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">Explore</span>
                  <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all
                    ${isDarkMode ? 'bg-white text-black group-hover:bg-purple-600 group-hover:text-white' : 'bg-gray-900 text-white group-hover:bg-purple-600'}`}>
-                   {/* Fix: Replaced invalid md:size prop with responsive Tailwind classes */}
                    <ArrowRight className="w-4 h-4 md:w-[18px] md:h-[18px]" strokeWidth={3} />
                  </div>
               </div>

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Check, X, Eye, AlertCircle, Save, Loader2 } from 'lucide-react';
 import { Submission, User, Notification } from '../types';
@@ -21,7 +22,6 @@ const DataApproval: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({ u
   }, []);
 
   const handleAction = (id: string, status: 'Approved' | 'Denied') => {
-    // Rejection requires a remark
     if (status === 'Denied' && !remarks.trim()) {
       alert('Please provide remarks explaining why the data was disapproved.');
       return;
@@ -47,7 +47,6 @@ const DataApproval: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({ u
       localStorage.setItem('grids_submissions', JSON.stringify(updated));
       setSubmissions(updated);
 
-      // Notify the Data Provider
       const targetSub = updated.find(s => s.id === id);
       if (targetSub) {
         const notifications: Notification[] = JSON.parse(localStorage.getItem('grids_notifications') || '[]');
@@ -58,7 +57,7 @@ const DataApproval: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({ u
           date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           isRead: false,
           department: user?.office || 'System',
-          targetUrl: '/data-submission' // Jump to logs to see status/remarks
+          targetUrl: '/data-submission' 
         };
         localStorage.setItem('grids_notifications', JSON.stringify([newNotif, ...notifications]));
       }
@@ -76,9 +75,11 @@ const DataApproval: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({ u
 
   return (
     <div className="p-4 lg:p-8 animate-in fade-in duration-500 relative min-h-full">
-      <div className="mb-10 text-center lg:text-left">
-        <h1 className={`text-3xl md:text-4xl font-black mb-2 uppercase tracking-tighter ${textClass}`}>Data Approval</h1>
-        <div className="h-1.5 w-32 bg-purple-600 rounded-full mx-auto lg:mx-0"></div>
+      {/* Standardized Header */}
+      <div className="mb-16 text-center lg:text-left">
+        <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>Data Approval</h1>
+        <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Registry Review Portal</p>
+        <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto lg:mx-0"></div>
       </div>
 
       <div className={`${cardBgClass} rounded-[32px] md:rounded-[48px] p-4 md:p-12 shadow-2xl border ${borderClass} overflow-hidden mb-20 md:mb-32`}>
@@ -105,10 +106,10 @@ const DataApproval: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({ u
                     </div>
                   </td>
                   <td className="px-4 md:px-6 py-6 md:py-8 whitespace-nowrap">
-                    <span className="text-[10px] md:text-xs font-bold text-gray-500 uppercase">{s.submittedBy}</span>
+                    <span className="text-[10px] font-bold text-gray-500 uppercase">{s.submittedBy}</span>
                   </td>
                   <td className="px-4 md:px-6 py-6 md:py-8 whitespace-nowrap">
-                    <span className="text-[10px] md:text-xs font-bold text-gray-500 uppercase">{s.date}</span>
+                    <span className="text-[10px] font-bold text-gray-500 uppercase">{s.date}</span>
                   </td>
                   <td className="px-4 md:px-6 py-6 md:py-8">
                     <span className={`text-[8px] md:text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border shadow-sm
