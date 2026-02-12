@@ -6,10 +6,10 @@ import { Link } from 'react-router-dom';
  * Logo component representing the GRIDS (Gender-Responsive Integrated Database System)
  * visual identity - a leaf with a tree-branch structure, divided into purple and green halves.
  */
-export const Logo: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 'md' }) => {
+export const Logo: React.FC<{ size?: 'sm' | 'md' | 'lg', isDarkMode?: boolean }> = ({ size = 'md', isDarkMode = false }) => {
   const scale = size === 'sm' ? 0.5 : size === 'lg' ? 1.5 : 1;
-  const logoWidth = 120 * scale;
-  const logoHeight = 150 * scale;
+  const logoWidth = 100 * scale;
+  const logoHeight = 125 * scale;
   
   return (
     <Link 
@@ -34,19 +34,17 @@ export const Logo: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 'md' }) =
         <path d="M100 80L50 40" stroke="white" strokeWidth="6" strokeLinecap="round" />
         <path d="M100 120L40 90" stroke="white" strokeWidth="6" strokeLinecap="round" />
         <path d="M100 160L30 140" stroke="white" strokeWidth="6" strokeLinecap="round" />
-        <path d="M50 40V30" stroke="white" strokeWidth="4" strokeLinecap="round" />
         
         {/* Right Branches */}
         <path d="M100 80L150 40" stroke="white" strokeWidth="6" strokeLinecap="round" />
         <path d="M100 120L160 90" stroke="white" strokeWidth="6" strokeLinecap="round" />
         <path d="M100 160L170 140" stroke="white" strokeWidth="6" strokeLinecap="round" />
-        <path d="M150 40V30" stroke="white" strokeWidth="4" strokeLinecap="round" />
       </svg>
       
       {size !== 'sm' && (
-        <div className="mt-1 text-center">
-          <h1 className={`font-bold text-black tracking-tighter leading-none ${size === 'lg' ? 'text-4xl' : 'text-2xl'}`}>GRIDS</h1>
-          <div className={`font-semibold tracking-tight ${size === 'lg' ? 'text-lg' : 'text-[10px]'}`}>
+        <div className="mt-2 text-center">
+          <h1 className={`font-black tracking-tighter leading-none transition-colors duration-500 ${size === 'lg' ? 'text-5xl' : 'text-4xl'} ${isDarkMode ? 'text-white' : 'text-black'}`}>GRIDS</h1>
+          <div className={`font-bold tracking-tight mt-1 ${size === 'lg' ? 'text-xl' : 'text-[12px]'}`}>
             <span className="text-[#8B44AF]">it</span> <span className="text-[#5D921C]">connects</span>
           </div>
         </div>
@@ -57,7 +55,6 @@ export const Logo: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 'md' }) =
 
 /**
  * BaguioLogo component used in the Header, displaying the Baguio City Seal.
- * Updated to be larger and more prominent to match the reference.
  */
 export const BaguioLogo: React.FC = () => (
   <div className="flex items-center group cursor-pointer">
@@ -65,7 +62,7 @@ export const BaguioLogo: React.FC = () => (
       <img 
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Baguio_City_Seal.png/1200px-Baguio_City_Seal.png" 
         alt="Baguio Seal" 
-        className="h-12 w-12 object-contain relative z-10 drop-shadow-md group-hover:scale-110 transition-transform duration-300" 
+        className="h-10 w-10 object-contain relative z-10 drop-shadow-sm group-hover:scale-110 transition-transform duration-300" 
       />
     </div>
   </div>

@@ -4,7 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { 
   GraduationCap, TrendingUp, Heart, ShieldAlert, 
   UserCheck, Globe, Briefcase, ImageIcon, 
-  Sun, UserPlus, HelpCircle, ChevronRight, Building2, BookOpen
+  Sun, UserPlus, HelpCircle, ChevronRight, Building2, BookOpen,
+  Award, Database as DbIcon, ClipboardList, PenTool, Layout, FileCheck, Landmark, ReceiptText
 } from 'lucide-react';
 
 interface Indicator {
@@ -12,10 +13,10 @@ interface Indicator {
   slug: string;
   title: string;
   office: string;
-  // Fix: Added office2 as an optional property to allow for multiple agencies responsible for an indicator.
   office2?: string;
   definition: string;
   details?: string[];
+  isResource?: boolean;
 }
 
 interface SectorData {
@@ -23,6 +24,12 @@ interface SectorData {
   icon: any;
   img: string;
   indicators: Indicator[];
+  sections?: {
+    id: string;
+    title: string;
+    icon: any;
+    items: Indicator[];
+  }[];
 }
 
 const SECTOR_DATA: Record<string, SectorData> = {
@@ -31,17 +38,7 @@ const SECTOR_DATA: Record<string, SectorData> = {
     icon: GraduationCap,
     img: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=1200',
     indicators: [
-      {
-        id: "1",
-        slug: "literacy-rate",
-        title: "Basic and Functional Literacy Rate, by Sex",
-        office: "DEPED / PSA (FLEMMS)",
-        definition: "The ability of a person to read, write, and compute with understanding basic or functional messages in any language.",
-        details: [
-          "Basic/Simple Literacy - Percentage of the population 10 years old and over, who can read, write and understand simple messages in any language or dialect.",
-          "Functional Literacy - Significantly higher level including numeracy skills to participate fully in life situations."
-        ]
-      },
+      { id: "1", slug: "literacy-rate", title: "Basic and Functional Literacy Rate, by Sex", office: "DEPED / PSA (FLEMMS)", definition: "The ability of a person to read, write, and compute with understanding basic or functional messages in any language." },
       { id: "2", slug: "completion-rate", title: "Elementary and Highschool/Secondary Completion Rate, by Sex", office: "DEPED", definition: "Percentage of first grade/year entrants who finish a level in accordance with the required number of years." },
       { id: "3", slug: "dropout-rate", title: "Elementary and Secondary Dropout Rate, by Sex", office: "DEPED", definition: "Percentage of students who leave school during the year or fail to enroll in the next grade/year level." },
       { id: "4", slug: "enrolment-rate", title: "Net Enrolment Rate for Primary and Secondary Education, by Sex", office: "DEPED", definition: "Ratio of enrolment for the official school-age group to the population of the same age group." },
@@ -86,6 +83,73 @@ const SECTOR_DATA: Record<string, SectorData> = {
       { id: "29", slug: "hiv-total", title: "Number of Reported HIV-AIDS Cases (Annual and Cumulative)", office: "CHSO", definition: "Cumulative total number of HIV and AIDS cases in the Philippine registry." }
     ]
   },
+  'institutional': {
+    title: 'Enabling Mechanism',
+    icon: Briefcase,
+    img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200',
+    indicators: [], 
+    sections: [
+      {
+        id: 'awards',
+        title: 'A. SIGED GAD Awards',
+        icon: Award,
+        items: [
+          { id: "A1", slug: "siged-awards", title: "The Sustaining Initiatives on Gender Equality and Development (SIGED) GAD Awards", office: "CPDSO", definition: "Official awards platform recognizing excellence in gender mainstreaming among city departments and barangays." }
+        ]
+      },
+      {
+        id: 'database',
+        title: 'B. The GAD Database',
+        icon: DbIcon,
+        items: [
+          { id: "B1", slug: "res-8", title: "Resolution No. 8 Approval and Adoption of the Updated Philippine Core GAD Indicators", office: "CPDSO", definition: "Localized policy adopting standard indicators for city-wide GAD monitoring." },
+          { id: "B2", slug: "metadata", title: "Metadata of the Updated Core GAD Indicators", office: "CPDSO", definition: "Technical definitions and data collection methodologies for all 51 core indicators." },
+          { id: "B3", slug: "annex-b", title: "Annex B: GAD Indicators (PCW-DILG-DBM-NEDA JMC 2013-01)", office: "PSA", definition: "National indicator set required for local government GAD reporting." }
+        ]
+      },
+      {
+        id: 'planning',
+        title: 'C. Local GAD Planning and Budgeting',
+        icon: ClipboardList,
+        items: [
+          { id: "C1", slug: "agenda", title: "Baguio City GAD Agenda (2025-2030)", office: "CPDSO", definition: "Strategic plan outlining Baguio's GAD direction and priority programs for the next 6 years." },
+          { id: "C2", slug: "plans", title: "Annual GAD Plan and Budgets (2022-2025)", office: "CBAO", definition: "Yearly budgetary allocations for gender-responsive programs and infrastructure." },
+          { id: "C3", slug: "reports", title: "Annual GAD Accomplishment Reports (2022-2024)", office: "CPDSO", definition: "Consolidated outcomes of GAD activities and budget utilization per year." },
+          { id: "C4", slug: "gmef", title: "Gender Mainstreaming Evaluation Framework (GMEF)", office: "PCW", definition: "PCW tool to assess progress in institutionalizing GAD within the LGU." },
+          { id: "C5", slug: "gerl", title: "Gender-responsive LGU (GeRL) Tool", office: "PCW", definition: "Assessment tool for measuring local government gender-responsiveness." },
+          { id: "C6", slug: "gfast", title: "GFPS Functionality Assessment Tool (GFAsT)", office: "PCW", definition: "Tool for evaluating the effectiveness of Focal Point Systems." },
+          { id: "C7", slug: "hgdg", title: "Harmonized Gender and Development Guidelines (HGDG)", office: "PCW", definition: "Guidelines for gender analysis in development program design." }
+        ]
+      },
+      {
+        id: 'mainstreaming',
+        title: 'D. Mainstreaming Gender Perspectives',
+        icon: Layout,
+        items: [
+          { id: "D1", slug: "cdp", title: "Comprehensive Development Plan (CDP)", office: "CPDSO", definition: "Integration of GAD objectives into Baguio City's long-term multi-sectoral development roadmap." }
+        ]
+      },
+      {
+        id: 'gad-code',
+        title: 'E. Implementation of the GAD Code',
+        icon: FileCheck,
+        items: [
+          { id: "E1", slug: "gad-code-2020", title: "2020 Amended GAD Code", office: "SP", definition: "The localized legal framework for gender rights and development in Baguio City." },
+          { id: "E2", slug: "gad-code-draft", title: "Draft Proposed Amendments of Baguio City GAD Code", office: "SP", definition: "Current legislative efforts to refine and strengthen the existing GAD Code." }
+        ]
+      },
+      {
+        id: 'monitoring',
+        title: 'F. Monitoring and Evaluating the Implementation of MCW',
+        icon: PenTool,
+        items: [
+          { id: "F1", slug: "me-team", title: "The Baguio City GAD Monitoring and Evaluation Team", office: "CPDSO", definition: "Team tasked with verifying the progress of Magna Carta of Women implementation." },
+          { id: "F2", slug: "coa-mc", title: "COA MC 2021-008 - Responsibility Center for GAD Focal Point System", office: "COA", definition: "Guidelines on accounting and reporting GAD-related financial transactions." },
+          { id: "F3", slug: "responsibility-codes", title: "The GAD Responsibility Codes of Baguio City", office: "CBAO", definition: "Unique accounting codes for tracking gender-responsive investments across offices." }
+        ]
+      }
+    ]
+  },
   'poverty': {
     title: 'Poverty',
     icon: HelpCircle,
@@ -119,54 +183,10 @@ const SECTOR_DATA: Record<string, SectorData> = {
       { id: "41", slug: "abuse-cases", title: "Number of Reported Abuse Cases for Women and Children", office: "CSWDO", definition: "Gender-based violence results recorded in the Crime Incident Reporting and Analysis System." },
       { id: "42", slug: "dswd-cases", title: "Cases Served by DSWD on Violence Against Women and Child Abuse", office: "CSWDO", definition: "Number of abuse cases (abandoned, neglected, exploited) served by social welfare departments." }
     ]
-  },
-  'human-rights': {
-    title: 'Human Rights',
-    icon: Globe,
-    img: 'https://images.unsplash.com/photo-1589216532372-1c2a367900d9?auto=format&fit=crop&q=80&w=1200',
-    indicators: [
-      { id: "43", slug: "child-marriage", title: "Percentage of Women Married or in Union Before Age 15 or 18", office: "CCRO", definition: "The proportion of women aged 20-24 who entered a union before reaching legal adulthood." }
-    ]
-  },
-  'institutional': {
-    title: 'Institutional Mechanism',
-    icon: Briefcase,
-    img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200',
-    indicators: [
-      { id: "44", slug: "gad-plans", title: "Proportion of Agencies with Approved GAD Plans and Budget", office: "CPDSO", office2: "PCW", definition: "Percentage of government units that formulate endorsed annual Gender and Development plans." },
-      { id: "45", slug: "gad-allocation", title: "Annual GAD Budget Allocation and Utilization", office: "CPDSO", definition: "Total budget allocated and actual amount utilized by agencies for GAD programs." },
-      { id: "46", slug: "vaw-desks", title: "Proportion of Barangays with VAW Desks", office: "CSWDO", definition: "Percentage of local communities with functional facilities to address violence against women." },
-      { id: "47", slug: "focal-points", title: "Number of Agencies with Established GAD Focal Point Systems", office: "CPDSO", definition: "Mechanism established to catalyze gender mainstreaming and coordinate GAD development." }
-    ]
-  },
-  'media': {
-    title: 'Media',
-    icon: ImageIcon,
-    img: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=1200',
-    indicators: [
-      { id: "48", slug: "mtrcb-complaints", title: "Complaints on Abuse or Derogatory Portrayal of Women via MTRCB", office: "PIO", definition: "Number of complaints regarding derogatory media content recorded by the classification board." }
-    ]
-  },
-  'environment': {
-    title: 'Environment',
-    icon: Sun,
-    img: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=1200',
-    indicators: [
-      { id: "49", slug: "disaster-deaths", title: "Deaths, Missing, and Affected Persons Attributed to Disasters", office: "CDRRMO / CSWDO", definition: "Measure of people impacted per 100,000 population following natural or man-made disasters." },
-      { id: "50", slug: "waterborne-diseases", title: "Mortality Due to Water-borne and Vector-borne Diseases", office: "CHSO", definition: "Mortality rates attributed to bacteria, viruses, or pathogens transmitted via water or organisms like insects." }
-    ]
-  },
-  'social-protection': {
-    title: 'Social Protection',
-    icon: UserPlus,
-    img: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80&w=1200',
-    indicators: [
-      { id: "51", slug: "social-access", title: "Proportion of Women and Men with Access to Social Protection", office: "CSWDO", definition: "Proportion of the population covered by basic social security guarantees and essential healthcare." }
-    ]
   }
 };
 
-const GADSectorDetail: React.FC = () => {
+const GADSectorDetail: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
   const { sectorId } = useParams();
   const navigate = useNavigate();
 
@@ -174,25 +194,72 @@ const GADSectorDetail: React.FC = () => {
 
   if (!currentSector) {
     return (
-      <div className="flex flex-col items-center justify-center h-full p-20 text-center">
-        <h2 className="text-4xl font-black text-gray-900 uppercase mb-4">Sector Not Found</h2>
+      <div className={`flex flex-col items-center justify-center h-full p-20 text-center ${isDarkMode ? 'bg-[#1A1625]' : 'bg-white'}`}>
+        <h2 className={`text-4xl font-black uppercase mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Sector Not Found</h2>
         <button onClick={() => navigate('/gad-data')} className="text-purple-600 font-bold hover:underline">Return to Sector List</button>
       </div>
     );
   }
 
   const SectorIcon = currentSector.icon;
+  const textClass = isDarkMode ? 'text-white' : 'text-gray-900';
+  const subTextClass = isDarkMode ? 'text-gray-400' : 'text-gray-500';
+
+  const renderItem = (indicator: Indicator) => (
+    <div key={indicator.id} className={`group border-b pb-10 last:border-0 ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
+      <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8">
+        <div className="flex-1 space-y-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <span className="bg-purple-600 text-white text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-widest shadow-lg shadow-purple-200">
+              Ref {indicator.id}
+            </span>
+            <div className={`flex items-center gap-2 px-4 py-1 rounded-full border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-100'}`}>
+              <Building2 size={12} className="text-gray-400" />
+              <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">
+                {indicator.office}{indicator.office2 ? ` / ${indicator.office2}` : ''}
+              </span>
+            </div>
+          </div>
+
+          <h3 className={`text-3xl font-black leading-tight tracking-tight group-hover:text-purple-600 transition-colors ${textClass}`}>
+            {indicator.title}
+          </h3>
+          
+          <div className={`p-6 rounded-[24px] border ${isDarkMode ? 'bg-purple-900/10 border-purple-500/20' : 'bg-purple-50/30 border-purple-100/50'}`}>
+            <div className="flex items-start gap-3">
+              <BookOpen size={16} className="text-purple-400 mt-1 flex-shrink-0" />
+              <p className={`text-sm font-medium leading-relaxed italic ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                <span className="text-[10px] font-black uppercase tracking-widest text-purple-600 block mb-1 not-italic">Definition / Scope</span>
+                {indicator.definition}
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="lg:pt-2">
+          <button 
+            onClick={() => navigate(`/analysis/${indicator.slug}`)}
+            className={`w-full lg:w-auto px-10 py-4 rounded-full font-black text-xs uppercase tracking-widest transition-all shadow-md active:scale-95 flex items-center justify-center gap-2
+              ${isDarkMode ? 'bg-white text-black border-2 border-white hover:bg-purple-600 hover:text-white hover:border-purple-600' : 'bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'}`}
+          >
+            Access Resource <ChevronRight size={14} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="max-w-screen-2xl mx-auto p-4 animate-in fade-in duration-500 relative">
       <div className="mb-12 flex items-start justify-between">
         <div>
-          <h1 className="text-4xl font-black text-gray-900 mb-2 uppercase tracking-tight">GAD Data and Analysis</h1>
+          <h1 className={`text-4xl font-black mb-2 uppercase tracking-tight ${textClass}`}>{currentSector.title} Hub</h1>
           <div className="h-1.5 w-32 bg-purple-600 rounded-full"></div>
         </div>
       </div>
 
-      <div className="bg-white rounded-[48px] p-8 lg:p-16 shadow-2xl shadow-purple-950/5 border border-purple-50">
+      <div className={`rounded-[48px] p-8 lg:p-16 shadow-2xl shadow-purple-950/5 border transition-colors duration-500
+        ${isDarkMode ? 'bg-[#1A1625] border-white/5' : 'bg-white border-purple-50'}`}>
         
         {/* Sector Hero Banner */}
         <div className="relative h-64 lg:h-80 rounded-[40px] overflow-hidden mb-16 shadow-xl group">
@@ -214,69 +281,26 @@ const GADSectorDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Indicators List */}
-        <div className="space-y-10 max-w-6xl mx-auto">
-          <div className="flex items-center gap-4 mb-8">
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">List of Indicators</span>
-            <div className="h-px flex-1 bg-gray-100"></div>
-          </div>
-          
-          {currentSector.indicators.map((indicator) => (
-            <div key={indicator.id} className="group border-b border-gray-100 pb-10 last:border-0">
-              <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8">
-                <div className="flex-1 space-y-4">
-                  <div className="flex flex-wrap items-center gap-4">
-                    <span className="bg-purple-600 text-white text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-widest shadow-lg shadow-purple-200">
-                      Indicator {indicator.id}
-                    </span>
-                    <div className="flex items-center gap-2 bg-gray-50 px-4 py-1 rounded-full border border-gray-100">
-                      <Building2 size={12} className="text-gray-400" />
-                      {/* Fix: Display both office and office2 if the latter is provided. */}
-                      <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                        {indicator.office}{indicator.office2 ? ` / ${indicator.office2}` : ''}
-                      </span>
-                    </div>
-                  </div>
-
-                  <h3 className="text-3xl font-black text-gray-900 leading-tight tracking-tight group-hover:text-purple-600 transition-colors">
-                    {indicator.title}
-                  </h3>
-                  
-                  <div className="bg-purple-50/30 p-6 rounded-[24px] border border-purple-100/50">
-                    <div className="flex items-start gap-3">
-                      <BookOpen size={16} className="text-purple-400 mt-1 flex-shrink-0" />
-                      <p className="text-sm font-medium text-gray-600 leading-relaxed italic">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-purple-600 block mb-1 not-italic">Definition</span>
-                        {indicator.definition}
-                      </p>
-                    </div>
-                  </div>
-
-                  {indicator.details && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                      {indicator.details.map((detail, idx) => (
-                        <div key={idx} className="flex items-start gap-3 p-4 rounded-2xl bg-gray-50/50 border border-gray-100">
-                          <div className="w-1.5 h-1.5 bg-purple-600 rounded-full mt-2 flex-shrink-0"></div>
-                          <p className="text-xs font-bold text-gray-500 leading-relaxed">
-                            {detail}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+        {/* Indicators or Sections */}
+        <div className="space-y-20 max-w-6xl mx-auto">
+          {currentSector.sections ? currentSector.sections.map(section => (
+            <div key={section.id} className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <div className="flex items-center gap-6">
+                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-lg">
+                  <section.icon size={24} />
                 </div>
-                
-                <div className="lg:pt-2">
-                  <button 
-                    onClick={() => navigate(`/analysis/${indicator.slug}`)}
-                    className="w-full lg:w-auto px-10 py-4 bg-white border-2 border-gray-900 rounded-full font-black text-xs uppercase tracking-widest text-gray-900 hover:bg-gray-900 hover:text-white transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
-                  >
-                    View Analysis <ChevronRight size={14} />
-                  </button>
-                </div>
+                <h3 className={`text-3xl font-black uppercase tracking-tight ${textClass}`}>{section.title}</h3>
+                <div className={`h-px flex-1 ${isDarkMode ? 'bg-white/5' : 'bg-gray-100'}`}></div>
+              </div>
+              <div className="space-y-10">
+                {section.items.map(item => renderItem(item))}
               </div>
             </div>
-          ))}
+          )) : (
+            <div className="space-y-10">
+              {currentSector.indicators.map(indicator => renderItem(indicator))}
+            </div>
+          )}
         </div>
 
         <footer className="mt-32 w-full flex flex-col items-center">

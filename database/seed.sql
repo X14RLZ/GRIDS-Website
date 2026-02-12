@@ -1,26 +1,32 @@
--- SEED DATA FOR GRIDS
--- Populating initial state
 
--- 1. Offices
-INSERT INTO offices (name, acronym) VALUES 
-('City Mayor''s Office', 'CMO'),
-('City Planning, Development, and Sustainability Office', 'CPDSO'),
-('City Health Services Office', 'CHSO'),
-('City Social Welfare and Development Office', 'CSWDO'),
-('City Environment and Parks Management Office', 'CEPMO');
+-- Seed data for GRIDS
 
--- 2. Sectors
-INSERT INTO sectors (slug, title, icon_name, image_url) VALUES 
-('education-and-training', 'Education and Training', 'GraduationCap', 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=1200'),
-('economy', 'Economy', 'TrendingUp', 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=1200'),
-('health', 'Health', 'Heart', 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?q=80&w=1200');
+-- Roles
+INSERT INTO roles (role_id, role_name, description) VALUES 
+('role_admin', 'Administrator', 'Full system access and user management'),
+('role_provider', 'Data Provider', 'Upload and submit data sets'),
+('role_reviewer', 'Data Reviewer', 'Validate and approve/deny submissions'),
+('role_analyst', 'Data Analyst', 'Analyze approved data sets'),
+('role_public', 'Public User', 'Access and download public information');
 
--- 3. Indicators (Sample)
-INSERT INTO indicators (sector_id, slug, title, primary_office_id, definition) VALUES 
-(1, 'literacy-rate', 'Basic and Functional Literacy Rate, by Sex', 2, 'The ability of a person to read, write, and compute with understanding basic or functional messages in any language.'),
-(2, 'labor-participation', 'Labor Force Participation Rate, by Sex and Age Group', 2, 'Proportion of the total labor force to the total household population aged 15 years old and over.');
+-- Departments
+INSERT INTO departments (department_id, department_name) VALUES 
+('dept_cpdso', 'City Planning, Development and Sustainability Office'),
+('dept_cmo', 'City Mayor''s Office'),
+('dept_health', 'City Health Services Office');
 
--- 4. Initial GFPS Members
-INSERT INTO gfps_members (full_name, role_title, office_id, email, joined_at) VALUES 
-('Alice Walker', 'Administrator', 2, 'cpdso.awalker@gmail.com', '2019-09-12'),
-('John Doe', 'Data Reviewer', 1, 'cmo.johndoe@gmail.com', '2020-10-29');
+-- Offices
+INSERT INTO offices (office_id, office_name, department_id) VALUES 
+('off_cbms', 'CBMS Division', 'dept_cpdso'),
+('off_gad', 'GAD Secretariat', 'dept_cpdso'),
+('off_admin', 'Executive Admin', 'dept_cmo');
+
+-- 1. Admin User
+-- GRIDS DATABASE REGISTRY (Seed.sql)
+-- Updated: 2/10/2026, 2:43:35 PM
+
+INSERT INTO users (user_id, username, password_hash, email, first_name, last_name, role_id, office_id, contact_info, created_at, is_active)
+VALUES ('u_admin_1', 'charles_admin', 'hashed_pwd_123', 'cbmscharles@gmail.com', 'Charles', 'Chantioco', 'role_admin', 'CPDSO', '442-3939', '2025-01-01T00:00:00.000Z', TRUE);
+
+INSERT INTO users (user_id, username, password_hash, email, first_name, last_name, role_id, office_id, contact_info, created_at, is_active)
+VALUES ('u_reg_775914', 'cbmsangie', 'PBKDF2_SIMULATED', 'cbmsangie@gmail.com', 'Angie', 'Ilagan', 'role_analyst', 'CPDSO', '', '2026-02-10T06:42:55.914Z', TRUE);

@@ -3,45 +3,118 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GRIDS - Baguio City</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#8B44AF">
+  
+  <!-- Primary SEO -->
+  <title>GRIDS | Gender-Responsive Integrated Database System - Baguio City</title>
+  <meta name="title" content="GRIDS | Baguio City Gender-Responsive Database">
+  <meta name="description" content="Access official Gender and Development (GAD) indicators, CBMS statistics, and policy frameworks for Baguio City. The GRIDS platform supports evidence-based planning and inclusive governance.">
+  <meta name="keywords" content="Baguio City, GRIDS, GAD, Gender and Development, CBMS, Data Analysis, Gender Equality, CPDSO, Philippines Statistics, Gender Planning Baguio, Local Government Data, GAD Indicators, Magna Carta of Women">
+  <meta name="author" content="City Government of Baguio - CPDSO">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://grids.baguio.gov.ph/">
+  <meta property="og:title" content="GRIDS | Gender-Responsive Integrated Database System">
+  <meta property="og:description" content="Centralized hub for Baguio City's GAD data and CBMS statistics, supporting evidence-based policymaking and gender mainstreaming.">
+  <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Baguio_City_Seal.png/1200px-Baguio_City_Seal.png">
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- 3 DISTINCT FONTS: Poppins (Headers), Inter (Body), Lexend (Accents) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=Inter:wght@400;500;600&family=Lexend:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
     :root {
       --primary-purple: #8B44AF;
       --primary-green: #5D921C;
     }
+    
+    /* 1. BODY FONT: Inter - Optimized for UI data legibility */
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
     body {
-      font-family: 'Lexend', sans-serif;
-      background-color: #f1f3f9;
+      background-color: #f8f9fc;
       color: #1a1a1a;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
-    h1, h2, h3, h4, h5, h6 {
-      font-family: 'Poppins', sans-serif;
+    
+    /* 2. HEADER FONT: Poppins - Bold geometric authority */
+    h1, h2, h3, h4, h5, h6, .font-display, [class*='text-6xl'], [class*='text-5xl'], [class*='text-4xl'] {
+      font-family: 'Poppins', sans-serif !important;
     }
-    .grids-purple-text { color: var(--primary-purple); }
-    .grids-green-text { color: var(--primary-green); }
-    .grids-purple-bg { background-color: var(--primary-purple); }
-    .grids-sidebar-bg { background-color: #f5f0ff; }
+    
+    /* 3. ACCENT FONT: Lexend - Stylized for labels, buttons, and navigation */
+    .uppercase, 
+    .tracking-widest, 
+    [class*='tracking-['], 
+    button, 
+    nav, 
+    a, 
+    .text-[10px], 
+    .text-[9px], 
+    .text-[8px],
+    .font-black {
+      font-family: 'Lexend', sans-serif;
+    }
+
     .welcome-gradient {
-      background: linear-gradient(90deg, #22D3EE 0%, #8B5CF6 50%, #C084FC 100%);
+      background: linear-gradient(135deg, #4F46E5 0%, #8B5CF6 50%, #C084FC 100%);
     }
+    
+    /* Responsive Scrollbars */
     .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
+      width: 4px;
+      height: 4px;
+    }
+    @media (min-width: 768px) {
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
     }
     .custom-scrollbar::-webkit-scrollbar-track {
       background: transparent;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #e2e8f0;
+      background: #d1d5db;
       border-radius: 10px;
     }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: #cbd5e1;
+    
+    .card-hover {
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .card-shadow {
-      shadow: 0 4px 20px -2px rgba(139, 68, 175, 0.05);
+    @media (hover: hover) {
+      .card-hover:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 30px 60px -12px rgba(139, 68, 175, 0.15);
+      }
+    }
+
+    /* Table responsive wrapper */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Better touch targets for mobile */
+    button, a {
+      touch-action: manipulation;
+    }
+
+    /* Hide scrollbar utility */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
   </style>
   <script type="importmap">

@@ -1,14 +1,38 @@
-
 import React, { useState, useEffect } from 'react';
-import { X, Printer, Settings, Share2, Download, Check, Copy, Info, Calendar, FileText, User, Loader2, FileSpreadsheet } from 'lucide-react';
+import { X, Printer, Settings, Share2, Download, Check, Copy, Info, Calendar, FileText, User, Loader2, FileSpreadsheet, AlertCircle } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-const DataViewer: React.FC = () => {
+// IndexedDB Helper for file storage
+const DB_NAME = 'GRIDS_FileStorage';
+const STORE_NAME = 'files';
+
+const initDB = (): Promise<IDBDatabase> => {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, 1);
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+};
+
+const getFileFromDB = async (id: string): Promise<any> => {
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_NAME, 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.get(id);
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+};
+
+// Fix: Added isDarkMode to props to resolve TypeScript error in App.tsx
+const DataViewer: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   
   const [loading, setLoading] = useState(true);
   const [fileData, setFileData] = useState<any>(null);
+  const [storedBinary, setStoredBinary] = useState<any>(null);
   const [showShare, setShowShare] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -26,9 +50,8 @@ const DataViewer: React.FC = () => {
   ];
 
   useEffect(() => {
-    // Resolve which file we are viewing
-    const resolveFile = () => {
-      // 1. Check user submissions in localStorage
+    const resolveFile = async () => {
+      // 1. Check user submissions in localStorage for metadata
       const stored = JSON.parse(localStorage.getItem('grids_submissions') || '[]');
       
       // 2. Define standard mock files
@@ -37,12 +60,23 @@ const DataViewer: React.FC = () => {
         { id: '2', formName: 'CEPMO - Environmental Quality Indicators 2024.xlsx', submittedBy: 'CEPMO Admin', date: '28 September, 2025', fileSize: '12.8 MB' },
       ];
 
-      const found = [...stored, ...staticFiles].find(f => f.id === id);
+      const foundMetadata = [...stored, ...staticFiles].find(f => f.id === id);
       
-      if (found) {
-        setFileData(found);
+      if (foundMetadata) {
+        setFileData(foundMetadata);
+        
+        // 3. Try to fetch actual binary from IndexedDB if it's a real user upload
+        if (id) {
+          try {
+            const binaryData = await getFileFromDB(id);
+            if (binaryData) {
+              setStoredBinary(binaryData);
+            }
+          } catch (e) {
+            console.warn("No binary data found for this record in IndexedDB");
+          }
+        }
       } else {
-        // Default if not found
         setFileData({
           formName: 'Document Preview.xls',
           submittedBy: 'System',
@@ -50,16 +84,12 @@ const DataViewer: React.FC = () => {
           fileSize: 'Unknown'
         });
       }
+      
+      // Artificial delay for professional feel
+      setTimeout(() => setLoading(false), 1200);
     };
 
     resolveFile();
-
-    // Simulate file retrieval time
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-
-    return () => clearTimeout(timer);
   }, [id]);
 
   const handlePrint = () => {
@@ -73,12 +103,23 @@ const DataViewer: React.FC = () => {
   };
 
   const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = '#';
-    link.download = fileData?.formName || 'document.xls';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (storedBinary) {
+      // Real file download from IndexedDB
+      const link = document.createElement('a');
+      link.href = storedBinary.content;
+      link.download = storedBinary.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      // Mock file download (behavior for pre-seeded records)
+      const link = document.createElement('a');
+      link.href = '#';
+      link.download = fileData?.formName || 'document.xls';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   if (loading) {
@@ -93,7 +134,7 @@ const DataViewer: React.FC = () => {
         </div>
         <div className="flex flex-col items-center gap-2">
           <h2 className="text-xl font-black uppercase tracking-widest animate-pulse">Opening Document</h2>
-          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.3em]">Establishing secure connection to GRIDS database...</span>
+          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em]">Establishing secure connection to GRIDS database...</span>
         </div>
       </div>
     );
@@ -113,13 +154,13 @@ const DataViewer: React.FC = () => {
               <X size={22} />
             </button>
             <div className="flex items-center gap-3">
-              <div className="w-3 h-3 bg-green-500 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+              <div className={`w-3 h-3 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)] ${storedBinary ? 'bg-purple-500' : 'bg-green-500'}`}></div>
               <div className="flex flex-col">
                 <span className="text-white text-sm font-black tracking-tight uppercase truncate max-w-[300px] lg:max-w-none">
                   {fileData?.formName}
                 </span>
                 <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                  Secure Preview • {fileData?.fileSize || 'Database Record'}
+                  {storedBinary ? 'Stored Secure File' : 'Secure Preview'} • {fileData?.fileSize || 'Database Record'}
                 </span>
               </div>
             </div>
@@ -159,7 +200,13 @@ const DataViewer: React.FC = () => {
         </div>
 
         {/* Excel Content */}
-        <div className="flex-1 bg-white overflow-auto custom-scrollbar print:overflow-visible">
+        <div className="flex-1 bg-white overflow-auto custom-scrollbar print:overflow-visible relative">
+          {storedBinary && (
+            <div className="sticky top-0 right-0 left-0 bg-purple-600 text-white p-2 text-center text-[10px] font-black uppercase tracking-[0.3em] z-30 print:hidden flex items-center justify-center gap-2">
+               <AlertCircle size={14} /> This is a locally stored file record. The preview below is a template display.
+            </div>
+          )}
+          
           <table className="w-full border-collapse">
             <thead className="sticky top-0 bg-white z-10 print:static">
               <tr className="bg-gray-100">

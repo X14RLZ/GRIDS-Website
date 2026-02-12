@@ -1,12 +1,15 @@
-
 import React from 'react';
 import { Mail, MapPin, Globe, Phone, Facebook } from 'lucide-react';
 
-const ContactUs: React.FC = () => {
+// Fix: Added isDarkMode to props and implemented theme-aware classes to resolve TS error in App.tsx
+const ContactUs: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
+  const textClass = isDarkMode ? 'text-white' : 'text-gray-900';
+  const subTextClass = isDarkMode ? 'text-gray-400' : 'text-gray-300';
+
   return (
     <div className="p-4 lg:p-8 animate-in fade-in duration-700 relative min-h-screen">
       <div className="mb-8">
-        <h1 className="text-4xl font-black text-gray-900 mb-2 uppercase tracking-tight">GAD Data and Analysis</h1>
+        <h1 className={`text-4xl font-black mb-2 uppercase tracking-tight ${textClass}`}>GAD Data and Analysis</h1>
       </div>
 
       <div className="relative w-full rounded-[48px] overflow-hidden shadow-2xl border border-white group">
@@ -157,7 +160,7 @@ const ContactUs: React.FC = () => {
 
       {/* Page Footer Branding */}
       <footer className="mt-12 w-full flex flex-col items-center pb-8">
-        <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em] text-center leading-relaxed">
+        <p className={`text-[10px] font-black uppercase tracking-[0.3em] text-center leading-relaxed ${subTextClass}`}>
           Copyright © City Government of Baguio<br />
           City Planning, Development, and Sustainability Office – CBMS<br />
           Developed by: Charles S. Chantioco

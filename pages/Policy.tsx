@@ -1,155 +1,147 @@
 
 import React from 'react';
+import { Globe, Shield, FileText, Landmark, ChevronRight, Gavel, ExternalLink, BookOpen, ShieldCheck, ScrollText } from 'lucide-react';
 
-const Policy: React.FC = () => {
+const Policy: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
   const SectionDivider = () => (
-    <div className="w-full max-w-lg mx-auto h-[3px] bg-black my-16 rounded-full opacity-100"></div>
+    <div className={`w-full max-w-lg mx-auto h-[3px] my-12 rounded-full transition-colors
+      ${isDarkMode ? 'bg-white/10' : 'bg-gray-900/5'}`}></div>
+  );
+
+  const textClass = isDarkMode ? 'text-gray-400' : 'text-gray-600';
+  const headingClass = isDarkMode ? 'text-white' : 'text-gray-900';
+
+  const PolicyCard = ({ title, desc, link = "#" }: { title: string, desc: string, link?: string }) => (
+    <div className={`p-8 rounded-[32px] border transition-all hover:shadow-xl group
+      ${isDarkMode ? 'bg-white/5 border-white/5 hover:border-purple-900/50' : 'bg-[#FBF6FF] border-purple-50 hover:border-purple-200'}`}>
+      <div className="flex justify-between items-start mb-4">
+        <h4 className={`text-xl font-black uppercase tracking-tight leading-tight group-hover:text-purple-600 transition-colors ${headingClass}`}>
+          {title}
+        </h4>
+        <ExternalLink size={18} className="text-gray-300 group-hover:text-purple-600" />
+      </div>
+      <p className={`text-sm font-medium leading-relaxed mb-6 ${textClass}`}>{desc}</p>
+      <a href={link} target="_blank" rel="noopener noreferrer" className="text-[10px] font-black uppercase tracking-widest text-purple-600 inline-flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+        View Document <ChevronRight size={14} />
+      </a>
+    </div>
   );
 
   return (
-    <div className="max-w-screen-2xl mx-auto p-4 lg:p-8 animate-in fade-in duration-700 relative min-h-screen">
-      {/* Header Title */}
+    <div className="max-w-screen-2xl mx-auto p-4 lg:p-12 animate-in fade-in duration-700 relative min-h-screen">
       <div className="mb-12">
-        <h1 className="text-4xl font-black text-gray-900 mb-2 uppercase tracking-tight">Privacy Policy</h1>
-        <div className="h-1.5 w-32 bg-purple-600 rounded-full"></div>
+        <h1 className={`text-5xl lg:text-6xl font-black mb-2 uppercase tracking-tighter ${headingClass}`}>Policy Framework</h1>
+        <div className="h-2 w-48 bg-purple-600 rounded-full"></div>
       </div>
 
-      <div className="bg-white rounded-[48px] p-10 md:p-20 shadow-2xl shadow-purple-900/5 border border-purple-50 mb-20">
-        <div className="max-w-4xl mx-auto space-y-12">
-          
-          {/* 1. Introduction */}
-          <section>
-            <h2 className="text-3xl font-black text-gray-900 mb-6 tracking-tight">1. Introduction</h2>
-            <p className="text-gray-600 leading-relaxed text-lg text-justify font-medium">
-              The City Planning and Development and Sustainability Office (CPDSO) of Baguio City is committed to protecting the privacy and ensuring the security of all personal and sensitive information collected through the implementation of the Community-Based Monitoring System (CBMS). This policy outlines how data is collected, used, stored, shared, and protected in compliance with the Data Privacy Act of 2012 (Republic Act No. 10173).
-            </p>
-          </section>
+      <div className={`rounded-[48px] p-8 md:p-16 lg:p-20 shadow-2xl border mb-20 transition-colors duration-500
+        ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-purple-950/20' : 'bg-white border-purple-50 shadow-purple-900/5'}`}>
+        
+        {/* A. International Conventions */}
+        <section id="international">
+          <div className="flex items-center gap-4 mb-10">
+            <Globe className="text-purple-600" size={32} />
+            <h2 className={`text-3xl md:text-4xl font-black uppercase tracking-tighter ${headingClass}`}>International Conventions</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <PolicyCard 
+              title="CEDAW" 
+              desc="Convention on the Elimination of All Forms of Discrimination Against Women. Often described as an international bill of rights for women."
+              link="https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-elimination-all-forms-discrimination-against-women"
+            />
+            <PolicyCard 
+              title="Beijing Platform for Action" 
+              desc="BPFA - An agenda for women's empowerment that aims at accelerating the implementation of the Nairobi Forward-looking Strategies."
+              link="https://www.unwomen.org/en/how-we-work/intergovernmental-support/world-conferences-on-women/beijing"
+            />
+          </div>
+        </section>
 
-          <SectionDivider />
+        <SectionDivider />
 
-          {/* 2. Purpose of Data Collection */}
-          <section>
-            <h2 className="text-3xl font-black text-gray-900 mb-6 tracking-tight">2. Purpose of Data Collection</h2>
-            <p className="text-gray-600 leading-relaxed text-lg mb-6 font-medium">
-              The CBMS is a data-driven tool used to collect household- and individual-level information to:
-            </p>
-            <ul className="list-disc pl-8 space-y-4 text-gray-600 text-lg font-medium">
-              <li>Aid in local planning, budgeting, and policy formulation.</li>
-              <li>Monitor and evaluate the impact of government programs.</li>
-              <li>Identify and prioritize areas for social protection and service delivery.</li>
-              <li>Support evidence-based governance and sustainable development goals.</li>
-            </ul>
-          </section>
+        {/* B. National Laws */}
+        <section id="national">
+          <div className="flex items-center gap-4 mb-10">
+            <Landmark className="text-purple-600" size={32} />
+            <h2 className={`text-3xl md:text-4xl font-black uppercase tracking-tighter ${headingClass}`}>National Laws</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <PolicyCard 
+              title="Magna Carta of Women" 
+              desc="Republic Act No. 9710. A comprehensive women's human rights law that seeks to eliminate discrimination through recognition and protection."
+              link="https://pcw.gov.ph/republic-act-9710-magna-carta-of-women/"
+            />
+            <PolicyCard 
+              title="Safe Spaces Act" 
+              desc="Republic Act No. 11313. Defines and penalizes gender-based sexual harassment in streets, public spaces, and online."
+              link="https://pcw.gov.ph/republic-act-11313-safe-spaces-act-bawal-bastos-law/"
+            />
+            <div className={`p-8 rounded-[32px] border border-dashed flex items-center justify-center text-center ${isDarkMode ? 'border-white/10' : 'border-gray-200'}`}>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 leading-relaxed px-4">Including Cybercrime Law, Solo Parents Welfare, and VAWC Act</span>
+            </div>
+          </div>
+        </section>
 
-          <SectionDivider />
+        <SectionDivider />
 
-          {/* 3. Scope and Coverage */}
-          <section>
-            <h2 className="text-3xl font-black text-gray-900 mb-6 tracking-tight">3. Scope and Coverage</h2>
-            <p className="text-gray-600 leading-relaxed text-lg mb-6 font-medium">
-              This privacy policy covers all data collected by the CPDSO through CBMS, including:
-            </p>
-            <ul className="list-disc pl-8 space-y-4 text-gray-600 text-lg font-medium">
-              <li>Sensitive personal information (e.g., income, health status, education, disability status).</li>
-              <li>Geolocation and household demographic data.</li>
-            </ul>
-          </section>
+        {/* C. Joint Memorandum Circulars */}
+        <section id="jmc">
+          <div className="flex items-center gap-4 mb-10">
+            <FileText className="text-purple-600" size={32} />
+            <h2 className={`text-3xl md:text-4xl font-black uppercase tracking-tighter ${headingClass}`}>Joint Memorandum Circulars</h2>
+          </div>
+          <div className="space-y-4">
+            {[
+              { id: "PCW-DILG-DBM-NEDA JMC 2013-01", desc: "Guidelines for the localization of the Magna Carta of Women." },
+              { id: "PCW-DILG-DBM-NEDA JMC 2016-01", desc: "Amendments to the localization guidelines for GAD planning and budgeting." },
+              { id: "PCW-DILG-DBM-NEDA JMC 2024-01", desc: "Latest updated harmonized guidelines for GAD mainstreaming." }
+            ].map(jmc => (
+              <div key={jmc.id} className={`p-6 rounded-3xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:bg-purple-600/5
+                ${isDarkMode ? 'bg-[#2A2438] border-white/5' : 'bg-gray-50 border-gray-100'}`}>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center text-white font-black text-[10px]">JMC</div>
+                  <div>
+                    <h5 className={`font-black text-sm uppercase tracking-widest ${headingClass}`}>{jmc.id}</h5>
+                    <p className={`text-[11px] font-medium ${textClass}`}>{jmc.desc}</p>
+                  </div>
+                </div>
+                <button className="px-6 py-2 bg-black text-white rounded-full font-black text-[9px] uppercase tracking-widest hover:bg-purple-600 transition-colors">Download</button>
+              </div>
+            ))}
+          </div>
+        </section>
 
-          <SectionDivider />
+        <SectionDivider />
 
-          {/* 4. Legal Basis for Processing */}
-          <section>
-            <h2 className="text-3xl font-black text-gray-900 mb-6 tracking-tight">4. Legal Basis for Processing</h2>
-            <p className="text-gray-600 leading-relaxed text-lg mb-6 font-medium">
-              The processing of personal data under CBMS is based on:
-            </p>
-            <ul className="list-disc pl-8 space-y-4 text-gray-600 text-lg font-medium">
-              <li>Republic Act No. 11315 (Community-Based Monitoring System Act).</li>
-              <li>Republic Act No. 10173 (Data Privacy Act of 2012).</li>
-              <li>DILG Memorandum Circulars and Joint Memoranda with the Philippine Statistics Authority (PSA).</li>
-            </ul>
-          </section>
+        {/* D. Baguio City */}
+        <section id="local" className="pb-10">
+          <div className="flex items-center gap-4 mb-10">
+            <Gavel className="text-purple-600" size={32} />
+            <h2 className={`text-3xl md:text-4xl font-black uppercase tracking-tighter ${headingClass}`}>Baguio City</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <div className={`p-10 rounded-[40px] border flex flex-col gap-6 ${isDarkMode ? 'bg-white/5 border-white/5' : 'bg-[#f0f9ff] border-blue-50'}`}>
+               <div className="flex items-center gap-3">
+                 <ShieldCheck className="text-blue-600" />
+                 <h4 className="text-2xl font-black uppercase tracking-tight text-blue-600">Ordinances</h4>
+               </div>
+               <p className={`text-sm font-medium leading-relaxed ${textClass}`}>Local legislative acts passed by the Sangguniang Panlungsod governing gender welfare and city-wide GAD implementation.</p>
+               <button className="mt-auto px-8 py-4 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest self-start">Explore Repository</button>
+            </div>
+            <div className={`p-10 rounded-[40px] border flex flex-col gap-6 ${isDarkMode ? 'bg-white/5 border-white/5' : 'bg-[#fff7ed] border-orange-50'}`}>
+               <div className="flex items-center gap-3">
+                 <ScrollText className="text-orange-600" />
+                 <h4 className="text-2xl font-black uppercase tracking-tight text-orange-600">Executive Orders</h4>
+               </div>
+               <p className={`text-sm font-medium leading-relaxed ${textClass}`}>Directives issued by the City Mayor for the administration and enforcement of GAD programs and task force creation.</p>
+               <button className="mt-auto px-8 py-4 bg-orange-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest self-start">View Latest Orders</button>
+            </div>
+          </div>
+        </section>
 
-          <SectionDivider />
-
-          {/* 5. Data Collection Methods */}
-          <section>
-            <h2 className="text-3xl font-black text-gray-900 mb-6 tracking-tight">5. Data Collection Methods</h2>
-            <p className="text-gray-600 leading-relaxed text-lg mb-6 font-medium">
-              CBMS data is collected using:
-            </p>
-            <ul className="list-disc pl-8 space-y-4 text-gray-600 text-lg font-medium mb-8">
-              <li>Structured household surveys.</li>
-              <li>Mobile applications or digital data-gathering tools.</li>
-              <li>Face-to-face interviews conducted by trained enumerators.</li>
-            </ul>
-            <p className="text-gray-600 leading-relaxed text-lg text-justify font-medium italic">
-              Participation in CBMS is voluntary, and data subjects are informed of their rights and the purpose of data collection before the survey.
-            </p>
-          </section>
-
-          <SectionDivider />
-
-          {/* 6. Data Storage and Retention */}
-          <section>
-            <h2 className="text-3xl font-black text-gray-900 mb-6 tracking-tight">6. Data Storage and Retention</h2>
-            <ul className="list-disc pl-8 space-y-4 text-gray-600 text-lg font-medium">
-              <li>All collected data is stored in secure, access-controlled digital systems managed by the CPDSO and the PSA.</li>
-              <li>Physical forms, if any, are securely kept and disposed of following retention and disposal policies.</li>
-              <li>Personal data is retained only as long as necessary to fulfill the stated purposes or as required by law.</li>
-            </ul>
-          </section>
-
-          <SectionDivider />
-
-          {/* 7. Data Sharing and Access */}
-          <section>
-            <h2 className="text-3xl font-black text-gray-900 mb-6 tracking-tight">7. Data Sharing and Access</h2>
-            <ul className="list-disc pl-8 space-y-4 text-gray-600 text-lg font-medium">
-              <li>CBMS data may be shared with national agencies, academic institutions, or development partners only when anonymized and aggregated.</li>
-              <li>Individual-level data is kept confidential and accessible only to authorized personnel, in accordance with strict data-sharing agreements.</li>
-              <li>No personal data is sold, traded, or disclosed for commercial purposes.</li>
-            </ul>
-          </section>
-
-          <SectionDivider />
-
-          {/* 8. Security Measures */}
-          <section>
-            <h2 className="text-3xl font-black text-gray-900 mb-6 tracking-tight">8. Security Measures</h2>
-            <p className="text-gray-600 leading-relaxed text-lg mb-6 font-medium">
-              We implement appropriate organizational, physical, and technical measures to:
-            </p>
-            <ul className="list-disc pl-8 space-y-4 text-gray-600 text-lg font-medium">
-              <li>Protect data from unauthorized access, alteration, or destruction.</li>
-              <li>Regularly audit systems for vulnerabilities and perform updates.</li>
-              <li>Train staff and enumerators in data privacy protocols and secure handling procedures.</li>
-            </ul>
-          </section>
-
-          <SectionDivider />
-
-          {/* 9. Rights of Data Subjects */}
-          <section className="pb-10">
-            <h2 className="text-3xl font-black text-gray-900 mb-6 tracking-tight">9. Rights of Data Subjects</h2>
-            <p className="text-gray-600 leading-relaxed text-lg mb-6 font-medium">
-              Data subjects have the following rights under the Data Privacy Act:
-            </p>
-            <ul className="list-disc pl-8 space-y-4 text-gray-600 text-lg font-medium">
-              <li><span className="font-black text-gray-800">Right to be informed</span> – You have the right to know how your data will be used.</li>
-              <li><span className="font-black text-gray-800">Right to access</span> – You may request access to your personal data.</li>
-              <li><span className="font-black text-gray-800">Right to object</span> – You may refuse participation or withdraw consent at any time.</li>
-              <li><span className="font-black text-gray-800">Right to correct</span> – You may request correction of inaccurate or outdated information.</li>
-              <li><span className="font-black text-gray-800">Right to erasure</span> – You may request deletion of data, subject to legal and policy constraints.</li>
-              <li><span className="font-black text-gray-800">Right to data portability and to file a complaint</span> – You may raise concerns with our Data Protection Officer or with the National Privacy Commission.</li>
-            </ul>
-          </section>
-
-        </div>
-
-        {/* Footer info consistent with branding */}
         <footer className="w-full flex flex-col items-center pt-20">
-          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-center leading-relaxed text-gray-900 opacity-30">
+          <p className={`text-[10px] font-black uppercase tracking-[0.3em] text-center leading-relaxed transition-colors
+            ${isDarkMode ? 'text-gray-700' : 'text-gray-900 opacity-20'}`}>
             Copyright © City Government of Baguio<br />
             City Planning Development Service Office – CBMS<br />
             Developed by: Charles S. Chantioco
