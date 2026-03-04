@@ -1,33 +1,45 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import { User, Notification } from './types';
-import Landing from './pages/Landing';
-import Dashboard from './pages/Dashboard';
-import GADData from './pages/GADData';
-import GADSectorDetail from './pages/GADSectorDetail';
-import IndicatorAnalysis from './pages/IndicatorAnalysis';
-import CBMS from './pages/CBMS';
-import DataSubmission from './pages/DataSubmission';
-import DataApproval from './pages/DataApproval';
-import DataRetrieval from './pages/DataRetrieval';
-import UserManagement from './pages/UserManagement';
-import AuditTrail from './pages/AuditTrail';
-import About from './pages/About';
-import Policy from './pages/Policy';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import Profile from './pages/Profile';
-import Members from './pages/Members';
-import Programs from './pages/Programs';
-import EnablingMechanisms from './pages/EnablingMechanisms';
-import DataViewer from './pages/DataViewer';
-import ContactUs from './pages/ContactUs';
-import Help from './pages/Help';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Breadcrumbs from './components/Breadcrumbs';
 import { recordAuditLog } from './utils/auditLogger';
+
+// Lazy load pages for code splitting
+const Landing = lazy(() => import('./pages/Landing'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const GADData = lazy(() => import('./pages/GADData'));
+const GADSectorDetail = lazy(() => import('./pages/GADSectorDetail'));
+const IndicatorAnalysis = lazy(() => import('./pages/IndicatorAnalysis'));
+const CBMS = lazy(() => import('./pages/CBMS'));
+const DataSubmission = lazy(() => import('./pages/DataSubmission'));
+const DataApproval = lazy(() => import('./pages/DataApproval'));
+const DataRetrieval = lazy(() => import('./pages/DataRetrieval'));
+const UserManagement = lazy(() => import('./pages/UserManagement'));
+const AuditTrail = lazy(() => import('./pages/AuditTrail'));
+const About = lazy(() => import('./pages/About'));
+const Policy = lazy(() => import('./pages/Policy'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const Profile = lazy(() => import('./pages/Profile'));
+const Members = lazy(() => import('./pages/Members'));
+const Programs = lazy(() => import('./pages/Programs'));
+const EnablingMechanisms = lazy(() => import('./pages/EnablingMechanisms'));
+const DataViewer = lazy(() => import('./pages/DataViewer'));
+const ContactUs = lazy(() => import('./pages/ContactUs'));
+const Help = lazy(() => import('./pages/Help'));
+
+// Loading component for Suspense
+const PageLoader = () => (
+  <div className="flex-1 flex items-center justify-center p-12">
+    <div className="flex flex-col items-center gap-4">
+      <Loader2 className="w-10 h-10 text-purple-600 animate-spin" />
+      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Loading Component...</span>
+    </div>
+  </div>
+);
 
 const AppContent: React.FC<{
   user: User | null;
@@ -165,31 +177,33 @@ const AppContent: React.FC<{
                    <Breadcrumbs isDarkMode={isDarkMode} />
                  </div>
                )}
-               <Routes>
-                 <Route path="/" element={<Dashboard user={user} isDarkMode={isDarkMode} />} />
-                 <Route path="/home" element={<Navigate to="/" replace />} />
-                 <Route path="/login" element={<Landing onLogin={onLogin} isDarkMode={isDarkMode} />} />
-                 <Route path="/gad-data" element={<GADData isDarkMode={isDarkMode} />} />
-                 <Route path="/enabling-mechanisms" element={<EnablingMechanisms isDarkMode={isDarkMode} />} />
-                 <Route path="/gad-data/:sectorId" element={<GADSectorDetail isDarkMode={isDarkMode} />} />
-                 <Route path="/analysis/:indicatorId" element={<IndicatorAnalysis isDarkMode={isDarkMode} />} />
-                 <Route path="/cbms" element={<CBMS isDarkMode={isDarkMode} />} />
-                 <Route path="/data-submission" element={<DataSubmission user={user} isDarkMode={isDarkMode} />} />
-                 <Route path="/data-approval" element={<DataApproval user={user} isDarkMode={isDarkMode} />} />
-                 <Route path="/data-retrieval" element={isAnalyzer ? <DataRetrieval isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
-                 <Route path="/user-management" element={isAdmin ? <UserManagement isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
-                 <Route path="/audit-trail" element={isAdmin ? <AuditTrail isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
-                 <Route path="/about" element={<About isDarkMode={isDarkMode} />} />
-                 <Route path="/policy" element={<Policy isDarkMode={isDarkMode} />} />
-                 <Route path="/privacy-policy" element={<PrivacyPolicy isDarkMode={isDarkMode} />} />
-                 <Route path="/profile" element={user ? <Profile user={user} onUpdateUser={onUpdateUser} isDarkMode={isDarkMode} /> : <Navigate to="/login" />} />
-                 <Route path="/members" element={<Members isDarkMode={isDarkMode} />} />
-                 <Route path="/programs" element={<Programs isDarkMode={isDarkMode} />} />
-                 <Route path="/view/:id" element={<DataViewer user={user} isDarkMode={isDarkMode} />} />
-                 <Route path="/contact" element={<ContactUs isDarkMode={isDarkMode} />} />
-                 <Route path="/help" element={<Help isDarkMode={isDarkMode} />} />
-                 <Route path="*" element={<Navigate to="/" replace />} />
-               </Routes>
+               <Suspense fallback={<PageLoader />}>
+                 <Routes>
+                   <Route path="/" element={<Dashboard user={user} isDarkMode={isDarkMode} />} />
+                   <Route path="/home" element={<Navigate to="/" replace />} />
+                   <Route path="/login" element={<Landing onLogin={onLogin} isDarkMode={isDarkMode} />} />
+                   <Route path="/gad-data" element={<GADData isDarkMode={isDarkMode} />} />
+                   <Route path="/enabling-mechanisms" element={<EnablingMechanisms isDarkMode={isDarkMode} />} />
+                   <Route path="/gad-data/:sectorId" element={<GADSectorDetail isDarkMode={isDarkMode} />} />
+                   <Route path="/analysis/:indicatorId" element={<IndicatorAnalysis isDarkMode={isDarkMode} />} />
+                   <Route path="/cbms" element={<CBMS isDarkMode={isDarkMode} />} />
+                   <Route path="/data-submission" element={<DataSubmission user={user} isDarkMode={isDarkMode} />} />
+                   <Route path="/data-approval" element={<DataApproval user={user} isDarkMode={isDarkMode} />} />
+                   <Route path="/data-retrieval" element={isAnalyzer ? <DataRetrieval isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
+                   <Route path="/user-management" element={isAdmin ? <UserManagement isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
+                   <Route path="/audit-trail" element={isAdmin ? <AuditTrail isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
+                   <Route path="/about" element={<About isDarkMode={isDarkMode} />} />
+                   <Route path="/policy" element={<Policy isDarkMode={isDarkMode} />} />
+                   <Route path="/privacy-policy" element={<PrivacyPolicy isDarkMode={isDarkMode} />} />
+                   <Route path="/profile" element={user ? <Profile user={user} onUpdateUser={onUpdateUser} isDarkMode={isDarkMode} /> : <Navigate to="/login" />} />
+                   <Route path="/members" element={<Members isDarkMode={isDarkMode} />} />
+                   <Route path="/programs" element={<Programs isDarkMode={isDarkMode} />} />
+                   <Route path="/view/:id" element={<DataViewer user={user} isDarkMode={isDarkMode} />} />
+                   <Route path="/contact" element={<ContactUs isDarkMode={isDarkMode} />} />
+                   <Route path="/help" element={<Help isDarkMode={isDarkMode} />} />
+                   <Route path="*" element={<Navigate to="/" replace />} />
+                 </Routes>
+               </Suspense>
              </main>
           </div>
         </div>
