@@ -13,17 +13,21 @@ import DataSubmission from './pages/DataSubmission';
 import DataApproval from './pages/DataApproval';
 import DataRetrieval from './pages/DataRetrieval';
 import UserManagement from './pages/UserManagement';
+import AuditTrail from './pages/AuditTrail';
 import About from './pages/About';
 import Policy from './pages/Policy';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Profile from './pages/Profile';
 import Members from './pages/Members';
 import Programs from './pages/Programs';
+import EnablingMechanisms from './pages/EnablingMechanisms';
 import DataViewer from './pages/DataViewer';
 import ContactUs from './pages/ContactUs';
 import Help from './pages/Help';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
+import Breadcrumbs from './components/Breadcrumbs';
+import { recordAuditLog } from './utils/auditLogger';
 
 const AppContent: React.FC<{
   user: User | null;
@@ -90,30 +94,46 @@ const AppContent: React.FC<{
   
   const handleHierarchicalBack = () => {
     const path = location.pathname;
-    if (path.startsWith('/analysis/') || path.startsWith('/gad-data/')) {
-      navigate('/gad-data');
-    } else if (path.startsWith('/view/')) {
-      navigate(-1);
+    const pathnames = path.split('/').filter((x) => x);
+    
+    if (pathnames.length > 1) {
+      // Custom parent mapping for routes that don't have a direct parent index page
+      const parentMapping: Record<string, string> = {
+        'analysis': '/gad-data',
+        'view': '/data-retrieval',
+      };
+
+      const parentKey = pathnames[0];
+      if (parentMapping[parentKey]) {
+        navigate(parentMapping[parentKey]);
+      } else {
+        // Default: Go to parent path
+        const parentPath = `/${pathnames.slice(0, pathnames.length - 1).join('/')}`;
+        navigate(parentPath);
+      }
     } else if (path !== '/' && path !== '/home') {
+      // Go to home
       navigate('/');
     }
   };
 
+  const isViewerPage = location.pathname.startsWith('/view/');
+  
   return (
-    <div className={`${isDarkMode ? 'dark bg-[#0F0C15]' : 'bg-[#f0f2f5]'} min-h-screen flex transition-colors duration-500 ease-in-out`}>
-      {/* Sidebar */}
+    <div className={`${isDarkMode ? 'dark bg-[#0F0C15]' : 'bg-[#f0f2f5]'} h-screen w-full flex transition-colors duration-500 ease-in-out overflow-hidden md:gap-2`}>
+      {/* Sidebar Container - Fixed width to prevent pushing content */}
       {!isAuthPage && (
         <div className={`
-          fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0
-          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+          md:relative md:translate-x-0 fixed inset-y-0 left-0 z-50 transition-all duration-500 ease-in-out md:w-20
+          ${isMobileMenuOpen ? 'translate-x-0 w-72' : '-translate-x-full md:translate-x-0'}
         `}>
           {isMobileMenuOpen && (
-            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm lg:hidden z-[-1]" onClick={() => setIsMobileMenuOpen(false)} />
+            <div className="fixed inset-0 bg-black/40 md:hidden z-[-1]" onClick={() => setIsMobileMenuOpen(false)} />
           )}
           <Sidebar 
             role={role} 
             onLogout={onLogout} 
-            isCollapsed={isSidebarCollapsed} 
+            isCollapsed={isMobileMenuOpen ? false : isSidebarCollapsed} 
             onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             isDarkMode={isDarkMode}
           />
@@ -121,22 +141,36 @@ const AppContent: React.FC<{
       )}
       
       {/* MAIN LAYOUT WRAPPER */}
-      <div className={`flex-1 flex flex-col transition-all duration-500 ease-in-out relative overflow-hidden
-        ${!isAuthPage ? 'm-0 md:m-3 lg:ml-0 md:rounded-[24px] lg:rounded-[40px] shadow-2xl border' : ''}
+      <div 
+        onClick={() => {
+          if (!isAuthPage) {
+            if (isMobileMenuOpen) setIsMobileMenuOpen(false);
+            if (!isSidebarCollapsed) setIsSidebarCollapsed(true);
+          }
+        }}
+        className={`flex-1 flex flex-col transition-all duration-500 ease-in-out relative overflow-hidden
+        ${!isAuthPage ? `m-0 shadow-2xl border cursor-default md:rounded-l-[32px] lg:rounded-l-[48px]` : ''}
         ${isDarkMode ? 'bg-[#1A1625] border-white/5' : 'bg-white border-gray-200/50'}`}>
         
         {isNavFixed && renderHeader()}
 
-        <div className={`flex-1 relative flex flex-col ${isNavFixed ? 'overflow-auto custom-scrollbar' : 'overflow-visible'}`}>
-          <div className={`flex-1 flex flex-col min-h-full ${!isNavFixed ? 'overflow-auto custom-scrollbar' : ''}`}>
+        <div className={`flex-1 relative flex flex-col overflow-auto custom-scrollbar`}>
+          <div className="flex-1 flex flex-col min-h-full">
              {!isNavFixed && renderHeader()}
              
-             <main id="main-content" className="flex-1">
+             <main id="main-content" className="flex-1 flex flex-col">
+               {/* Breadcrumbs System */}
+               {!isAuthPage && !isAtDashboardWelcome && !isViewerPage && (
+                 <div className="px-4 md:px-12 pt-8">
+                   <Breadcrumbs isDarkMode={isDarkMode} />
+                 </div>
+               )}
                <Routes>
                  <Route path="/" element={<Dashboard user={user} isDarkMode={isDarkMode} />} />
                  <Route path="/home" element={<Navigate to="/" replace />} />
                  <Route path="/login" element={<Landing onLogin={onLogin} isDarkMode={isDarkMode} />} />
                  <Route path="/gad-data" element={<GADData isDarkMode={isDarkMode} />} />
+                 <Route path="/enabling-mechanisms" element={<EnablingMechanisms isDarkMode={isDarkMode} />} />
                  <Route path="/gad-data/:sectorId" element={<GADSectorDetail isDarkMode={isDarkMode} />} />
                  <Route path="/analysis/:indicatorId" element={<IndicatorAnalysis isDarkMode={isDarkMode} />} />
                  <Route path="/cbms" element={<CBMS isDarkMode={isDarkMode} />} />
@@ -144,6 +178,7 @@ const AppContent: React.FC<{
                  <Route path="/data-approval" element={<DataApproval user={user} isDarkMode={isDarkMode} />} />
                  <Route path="/data-retrieval" element={isAnalyzer ? <DataRetrieval isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
                  <Route path="/user-management" element={isAdmin ? <UserManagement isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
+                 <Route path="/audit-trail" element={isAdmin ? <AuditTrail isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
                  <Route path="/about" element={<About isDarkMode={isDarkMode} />} />
                  <Route path="/policy" element={<Policy isDarkMode={isDarkMode} />} />
                  <Route path="/privacy-policy" element={<PrivacyPolicy isDarkMode={isDarkMode} />} />
@@ -160,7 +195,7 @@ const AppContent: React.FC<{
         </div>
 
         {/* Global Floating Back Button */}
-        {!isAuthPage && !isAtDashboardWelcome && (
+        {!isAuthPage && !isAtDashboardWelcome && !isViewerPage && (
           <button 
             onClick={handleHierarchicalBack}
             aria-label="Navigate Back"
@@ -182,7 +217,7 @@ const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isNavFixed, setIsNavFixed] = useState(true);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const saved = localStorage.getItem('grids_dark_mode');
@@ -245,6 +280,9 @@ const App: React.FC = () => {
     setUser(authenticatedUser);
     localStorage.setItem('grids_session', JSON.stringify(authenticatedUser));
     
+    // Log Activity
+    recordAuditLog(authenticatedUser, 'LOGIN_SUCCESS', `User ${authenticatedUser.email} successfully logged into the session.`, 'Authentication');
+
     const notifications: Notification[] = JSON.parse(localStorage.getItem('grids_notifications') || '[]');
     const loginNotif: Notification = {
       id: `login-${Date.now()}`,
@@ -260,11 +298,15 @@ const App: React.FC = () => {
   };
 
   const handleLogout = () => {
+    if (user) {
+      recordAuditLog(user, 'LOGOUT_SUCCESS', `User ${user.email} terminated the session.`, 'Authentication');
+    }
     setUser(null);
     localStorage.removeItem('grids_session');
   };
 
   const handleUpdateUser = (updatedUser: User) => {
+    recordAuditLog(updatedUser, 'PROFILE_UPDATE', `User updated their personal registry profile details.`, 'User Profile');
     setUser(updatedUser);
     localStorage.setItem('grids_session', JSON.stringify(updatedUser));
   };

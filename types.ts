@@ -35,6 +35,7 @@ export interface User {
   phone?: string;
   landline?: string;
   status?: string;
+  facebook?: string;
 }
 
 // Organizational Structure
@@ -125,4 +126,17 @@ export interface Notification {
   // UML specific fields
   recipientUserId?: string;
   type?: string;
+}
+
+// Audit Trail (System Activity Logs)
+export interface AuditLog {
+  id: string;
+  userId: string;
+  userName: string;
+  userRole: string;
+  office: string;
+  action: string;
+  details: string;
+  timestamp: string;
+  module: string;
 }

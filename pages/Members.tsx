@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { Eye, Search, X, Mail, Building2, ShieldCheck, Database, UserCheck } from 'lucide-react';
+import { Eye, Search, X, Mail, Building2, ShieldCheck, Database, UserCheck, Phone, Calendar, Facebook } from 'lucide-react';
+import { CPDSOLogo } from '../components/Logo';
+import PageLayout from '../components/PageLayout';
 
 interface Member {
   id: string;
@@ -11,6 +13,8 @@ interface Member {
   email: string;
   phone: string;
   joined: string;
+  birthdate: string;
+  facebook?: string;
   isSeeded: boolean;
 }
 
@@ -34,6 +38,8 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
             status: u.status || (u.isActive ? 'Active' : 'Suspended'),
             email: u.email,
             phone: u.contactInfo || u.phone || 'Contact Office',
+            birthdate: u.birthdate || 'Unspecified',
+            facebook: u.facebook || '',
             joined: u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'System Default',
             isSeeded: isSeeded
           };
@@ -63,17 +69,11 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
   const textClass = isDarkMode ? 'text-white' : 'text-gray-900';
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-12 animate-in fade-in duration-700 relative min-h-full">
-      {/* Standardized Consistent Header */}
-      <header className={`mb-12 md:mb-20 flex flex-col lg:flex-row lg:items-end justify-between gap-8 border-b pb-12 ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
-        <div className="space-y-2 max-w-2xl text-center lg:text-left">
-          <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>
-            People
-          </h1>
-          <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Verified Database Personnel Registry</p>
-          <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto lg:mx-0"></div>
-        </div>
-
+    <PageLayout
+      isDarkMode={isDarkMode}
+      title="People"
+      subtitle="Verified Database Personnel Registry"
+      headerActions={
         <div className="w-full max-w-xl relative group mx-auto lg:mx-0 lg:mb-1">
           <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors">
             <Search size={22} strokeWidth={3} />
@@ -87,12 +87,12 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
               ${isDarkMode ? 'bg-[#2A2438] border-white/10 text-white placeholder:text-gray-600' : 'bg-white border-purple-50 text-gray-900 placeholder:text-gray-300'}`}
           />
         </div>
-      </header>
-
-      <div className="space-y-20 mb-32">
+      }
+    >
+      <div className="space-y-12 mb-12">
         {departments.length > 0 ? departments.map((dept) => (
           <div key={dept} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center gap-6 mb-10">
+            <div className="flex items-center gap-6 mb-6">
               <h2 className={`text-4xl font-black uppercase tracking-tighter ${textClass}`}>{dept}</h2>
               <div className={`h-px flex-1 ${isDarkMode ? 'bg-white/5' : 'bg-gray-100'}`}></div>
               <span className={`text-[10px] font-black uppercase tracking-widest text-purple-600`}>{groupedMembers[dept].length} Verified Personnel</span>
@@ -154,10 +154,10 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
       {selectedMember && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setSelectedMember(null)}></div>
-          <div className={`relative w-full max-w-2xl rounded-[56px] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border
+          <div className={`relative w-full max-w-3xl rounded-[56px] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border
             ${isDarkMode ? 'bg-[#1A1625] border-white/10' : 'bg-white border-white'}`}>
             <div className="flex flex-col md:flex-row">
-              <div className={`w-full md:w-1/2 p-12 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r transition-colors
+              <div className={`w-full md:w-5/12 p-12 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r transition-colors
                 ${isDarkMode ? 'bg-[#2A2438] border-white/5' : 'bg-white/50 border-gray-100'}`}>
                 <div className={`w-48 h-48 rounded-[56px] shadow-2xl overflow-hidden border-[10px] mb-8 ${isDarkMode ? 'bg-black/20 border-white/5' : 'bg-white border-white'}`}>
                   <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedMember.id}`} alt={selectedMember.name} className="w-full h-full object-cover" />
@@ -168,33 +168,57 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
                   Joined: {selectedMember.joined}
                 </div>
               </div>
-              <div className="flex-1 p-12 md:p-16 flex flex-col gap-8">
+              <div className="flex-1 p-10 md:p-12 flex flex-col gap-6">
                 <div className="flex items-center justify-between">
-                  <h4 className={`text-xl font-black uppercase tracking-tight ${textClass}`}>Database Info</h4>
+                  <h4 className={`text-xl font-black uppercase tracking-tight ${textClass}`}>Information Page</h4>
                   <button onClick={() => setSelectedMember(null)} className="p-2 text-gray-400 hover:text-white transition-colors"><X size={24} /></button>
                 </div>
-                <div className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="flex items-center gap-4 group">
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm bg-purple-50 text-purple-600"><Building2 size={20} /></div>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm bg-purple-50 text-purple-600"><Building2 size={18} /></div>
                     <div>
-                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Assigned Office</p>
-                      <p className={`text-sm font-black uppercase ${textClass}`}>{selectedMember.dept}</p>
+                      <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Office</p>
+                      <p className={`text-xs font-black uppercase ${textClass}`}>{selectedMember.dept}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 group">
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm bg-purple-50 text-purple-600"><Mail size={20} /></div>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm bg-purple-50 text-purple-600"><Mail size={18} /></div>
                     <div>
-                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Contact Point</p>
-                      <p className={`text-sm font-bold ${textClass}`}>{selectedMember.email}</p>
+                      <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Email Address</p>
+                      <p className={`text-xs font-bold ${textClass}`}>{selectedMember.email}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 group">
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm bg-purple-50 text-purple-600"><ShieldCheck size={20} /></div>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm bg-purple-50 text-purple-600"><Phone size={18} /></div>
                     <div>
-                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Registry ID</p>
-                      <p className={`text-sm font-bold font-mono ${textClass}`}>{selectedMember.id}</p>
+                      <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Phone Number</p>
+                      <p className={`text-xs font-bold ${textClass}`}>{selectedMember.phone}</p>
                     </div>
                   </div>
+                  <div className="flex items-center gap-4 group">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm bg-purple-50 text-purple-600"><Calendar size={18} /></div>
+                    <div>
+                      <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Birthdate</p>
+                      <p className={`text-xs font-bold ${textClass}`}>{selectedMember.birthdate}</p>
+                    </div>
+                  </div>
+                  {selectedMember.facebook && (
+                    <div className="flex items-center gap-4 group sm:col-span-2">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm bg-blue-50 text-blue-600"><Facebook size={18} /></div>
+                      <div>
+                        <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Social Connection</p>
+                        <a href={`https://${selectedMember.facebook.replace('https://', '')}`} target="_blank" rel="noopener noreferrer" className={`text-xs font-bold text-blue-600 hover:underline truncate block max-w-[200px]`}>
+                          {selectedMember.facebook}
+                        </a>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-4 p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                   <div className="flex items-center gap-3">
+                     <ShieldCheck size={16} className="text-green-500" />
+                     <p className="text-[9px] font-black uppercase tracking-widest text-gray-400">Registry ID: <span className="text-purple-600 font-mono">{selectedMember.id}</span></p>
+                   </div>
                 </div>
                 <button onClick={() => setSelectedMember(null)} className="w-full py-4 bg-black text-white rounded-[24px] font-black text-[11px] uppercase tracking-[0.3em] transition-all shadow-xl active:scale-95">Close Directory</button>
               </div>
@@ -202,13 +226,7 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
           </div>
         </div>
       )}
-
-      <footer className="mt-auto py-10 flex flex-col items-center">
-        <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] text-center leading-relaxed">
-          Copyright © City Government of Baguio<br />CPDSO – CBMS Division
-        </p>
-      </footer>
-    </div>
+    </PageLayout>
   );
 };
 
