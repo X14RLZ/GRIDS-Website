@@ -28,8 +28,8 @@ const getFileFromDB = async (id: string): Promise<any> => {
   });
 };
 
-// Fix: Added isDarkMode to props to resolve TypeScript error in App.tsx
-const DataViewer: React.FC<{ user: User | null; isDarkMode?: boolean }> = ({ user, isDarkMode = false }) => {
+// Fix: Added isDarkMode and user to props
+const DataViewer: React.FC<{ isDarkMode?: boolean; user: User | null }> = ({ isDarkMode = false, user }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   
@@ -68,9 +68,14 @@ const DataViewer: React.FC<{ user: User | null; isDarkMode?: boolean }> = ({ use
       if (foundMetadata) {
         setFileData(foundMetadata);
         
-        // Log Preview
-        recordAuditLog(user, 'DATA_PREVIEW', `User opened secure preview for: ${foundMetadata.formName}`, 'Data Viewer');
-
+        // Record view action
+        recordAuditLog(
+          user, 
+          'VIEW_DATA', 
+          `User viewed document: ${foundMetadata.formName} (ID: ${id})`, 
+          'Data Retrieval'
+        );
+        
         // 3. Try to fetch actual binary from IndexedDB if it's a real user upload
         if (id) {
           try {
@@ -99,19 +104,34 @@ const DataViewer: React.FC<{ user: User | null; isDarkMode?: boolean }> = ({ use
   }, [id]);
 
   const handlePrint = () => {
-    recordAuditLog(user, 'DATA_PRINT', `User initiated print for: ${fileData?.formName}`, 'Data Viewer');
+    recordAuditLog(
+      user, 
+      'PRINT_DATA', 
+      `User triggered print for document: ${fileData?.formName} (ID: ${id})`, 
+      'Data Retrieval'
+    );
     window.print();
   };
 
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
-    recordAuditLog(user, 'DATA_SHARE', `User copied sharing link for: ${fileData?.formName}`, 'Data Viewer');
+    recordAuditLog(
+      user, 
+      'SHARE_DATA', 
+      `User copied share link for document: ${fileData?.formName} (ID: ${id})`, 
+      'Data Retrieval'
+    );
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleDownload = () => {
-    recordAuditLog(user, 'DATA_DOWNLOAD', `User downloaded file via viewer: ${fileData?.formName}`, 'Data Viewer');
+    recordAuditLog(
+      user, 
+      'DOWNLOAD_DATA', 
+      `User downloaded document: ${fileData?.formName} (ID: ${id})`, 
+      'Data Retrieval'
+    );
     if (storedBinary) {
       // Real file download from IndexedDB
       const link = document.createElement('a');
@@ -366,7 +386,7 @@ const DataViewer: React.FC<{ user: User | null; isDarkMode?: boolean }> = ({ use
               <div className="p-8 bg-[#fdfaff] border border-purple-100 rounded-3xl space-y-6">
                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                       <User size={18} className="text-purple-600" />
+                     <UserIcon size={18} className="text-purple-600" />
                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Submitted By</span>
                     </div>
                     <span className="text-xs font-black text-gray-900 uppercase">{fileData?.submittedBy?.replace('by ', '') || 'Staff'}</span>
