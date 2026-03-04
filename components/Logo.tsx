@@ -10,12 +10,11 @@ export const Logo: React.FC<{ size?: 'sm' | 'md' | 'lg', isDarkMode?: boolean }>
   const logoSrc = "https://trello.com/1/cards/698d1c8d17be3891f45d9727/attachments/698d1da4c2b23845063374b0/download/GRIDS_LOGO_(No_BG).png";
   
   const height = size === 'sm' ? 'h-12' : size === 'lg' ? 'h-32' : 'h-20';
-  const isSmall = size === 'sm';
   
   return (
     <Link 
       to="/" 
-      className="flex flex-col items-center justify-center cursor-pointer no-underline group"
+      className="flex flex-col items-center justify-center transition-all duration-300 hover:scale-105 cursor-pointer no-underline group"
     >
       <img 
         src={logoSrc} 
@@ -24,12 +23,14 @@ export const Logo: React.FC<{ size?: 'sm' | 'md' | 'lg', isDarkMode?: boolean }>
         referrerPolicy="no-referrer"
       />
       
-      <div className={`mt-2 text-center overflow-hidden ${isSmall ? 'h-0 opacity-0' : 'h-auto opacity-100'}`}>
-        <h1 className={`font-black tracking-tighter leading-none ${size === 'lg' ? 'text-5xl' : 'text-4xl'} ${isDarkMode ? 'text-white' : 'text-black'}`}>GRIDS</h1>
-        <div className={`font-bold tracking-tight mt-1 ${size === 'lg' ? 'text-xl' : 'text-[12px]'}`}>
-          <span className="text-[#8B44AF]">it</span> <span className="text-[#5D921C]">connects</span>
+      {size !== 'sm' && (
+        <div className="mt-2 text-center">
+          <h1 className={`font-black tracking-tighter leading-none transition-colors duration-500 ${size === 'lg' ? 'text-5xl' : 'text-4xl'} ${isDarkMode ? 'text-white' : 'text-black'}`}>GRIDS</h1>
+          <div className={`font-bold tracking-tight mt-1 ${size === 'lg' ? 'text-xl' : 'text-[12px]'}`}>
+            <span className="text-[#8B44AF]">it</span> <span className="text-[#5D921C]">connects</span>
+          </div>
         </div>
-      </div>
+      )}
     </Link>
   );
 };
@@ -45,7 +46,7 @@ export const BaguioLogo: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 'md
         <img 
           src="https://new.baguio.gov.ph/assets/baguio-logo.676e0ef7.png" 
           alt="Baguio Seal" 
-          className={`${height} object-contain relative z-10 drop-shadow-sm`} 
+          className={`${height} object-contain relative z-10 drop-shadow-sm group-hover:scale-110 transition-transform duration-300`} 
           referrerPolicy="no-referrer"
         />
       </div>

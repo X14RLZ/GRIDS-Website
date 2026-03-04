@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bell, Moon, Sun, User as UserIcon, X, Menu } from 'lucide-react';
-import { BaguioLogo, Logo } from './Logo';
+import { BaguioLogo } from './Logo';
 import { User, Notification } from '../types';
 
 interface HeaderProps {
@@ -75,32 +75,25 @@ const Header: React.FC<HeaderProps> = ({
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
   return (
-    <header className={`${headerBgClass} backdrop-blur-md h-16 md:h-20 flex items-center justify-between px-0 md:px-6 border-b z-40 transition-all duration-300 ${isNavFixed ? 'sticky top-0' : 'relative'}`}>
-      <div className="flex items-center h-full gap-0 md:gap-4">
-        {/* Corner Logo Block - Overlaps Header and aligns with Sidebar Rail */}
-        <div className={`w-24 h-full flex items-center justify-center border-r transition-colors duration-500 ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
-          <Logo size="sm" isDarkMode={isDarkMode} />
-        </div>
+    <header className={`${headerBgClass} backdrop-blur-md h-16 md:h-20 flex items-center justify-between px-4 md:px-10 border-b z-40 transition-all duration-300 ${isNavFixed ? 'sticky top-0' : 'relative'}`}>
+      <div className="flex items-center gap-2 md:gap-4">
+        <button 
+          onClick={onToggleMobileMenu}
+          className="lg:hidden p-2 text-gray-500 hover:text-purple-600 transition-colors"
+          aria-label="Toggle navigation menu"
+        >
+          <Menu size={24} />
+        </button>
 
-        <div className="flex items-center gap-0 md:gap-4">
-          <button 
-            onClick={onToggleMobileMenu}
-            className="p-3 md:p-4 text-gray-500 hover:text-purple-600 transition-colors"
-            aria-label="Toggle navigation menu"
-          >
-            <Menu size={24} />
-          </button>
-
-          <a 
-            href="https://new.baguio.gov.ph/home" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 md:gap-3 no-underline group"
-          >
-            <BaguioLogo />
-            <span className={`text-base md:text-xl font-bold tracking-tight ${textClass} hidden xs:block`}>eGov: Baguio</span>
-          </a>
-        </div>
+        <a 
+          href="https://new.baguio.gov.ph/home" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 md:gap-3 no-underline group"
+        >
+          <BaguioLogo />
+          <span className={`text-base md:text-xl font-bold tracking-tight ${textClass} hidden xs:block`}>eGov: Baguio</span>
+        </a>
       </div>
 
       <div className="flex items-center gap-3 md:gap-8">
