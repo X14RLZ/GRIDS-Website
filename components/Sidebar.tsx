@@ -4,8 +4,10 @@ import { NavLink } from 'react-router-dom';
 import { Logo } from './Logo';
 import { 
   Home, LogOut, FileText, Users, Cog, 
-  Hand, Monitor, FileBarChart, Layers, Mail, CheckCircle, FileUp, Shield, HelpCircle,
-  ChevronLeft, ChevronRight, UserCircle
+  Hand, Monitor, Mail, HelpCircle,
+  ChevronLeft, ChevronRight, BarChart3, TreePine, Package,
+  ClipboardCheck, Shield, UserCog, User as UserIcon, CloudDownload,
+  History, Layers, X
 } from 'lucide-react';
 import { UserRole } from '../types';
 
@@ -21,110 +23,141 @@ const Sidebar: React.FC<SidebarProps> = ({ role, onLogout, isCollapsed = false, 
   const isAdmin = role === 'Administrator';
   const isProvider = role === 'Data Provider' || isAdmin;
   const isReviewer = role === 'Data Reviewer' || isAdmin;
-  const isGuest = role === 'Guest';
+  const isAnalyzer = role === 'Data Analyst' || isAdmin;
+  const isLoggedIn = role !== 'Guest';
 
-  // Fixed NavItem to correctly access isActive state within its children
+  const sectionLabelClass = `text-[10px] font-black uppercase tracking-[0.4em] mb-4 transition-all duration-500 ${
+    isDarkMode ? 'text-purple-400' : 'text-[#8B44AF]'
+  } ${isCollapsed ? 'px-0 text-center opacity-0' : 'pl-20 opacity-100'}`;
+
   const NavItem = ({ to, icon: Icon, children }: any) => (
     <NavLink 
       to={to} 
-      title={isCollapsed ? children : undefined}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+      title={isCollapsed ? children : ""}
       className={({ isActive }) => `
-        flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 relative group mb-1
+        flex items-center rounded-full transition-all duration-500 relative group mb-1.5
         ${isActive 
-          ? `shadow-md font-bold ${isDarkMode ? 'bg-[#7c3aed] text-white' : 'bg-purple-600 text-white'}` 
-          : `${isDarkMode ? 'text-slate-400 hover:bg-white/5 hover:text-white' : 'text-slate-600 hover:bg-purple-50 hover:text-purple-700'}`}
-        ${isCollapsed ? 'justify-center px-0 w-12 mx-auto' : ''}
+          ? `shadow-sm font-bold ${isDarkMode ? 'bg-purple-600/20 text-purple-200' : 'bg-[#F2E7FF] text-[#4A1D6E]'}` 
+          : `${isDarkMode ? 'text-purple-200/60 hover:bg-white/5 hover:text-white' : 'text-gray-900 hover:bg-gray-100'} font-medium`}
+        ${isCollapsed ? 'justify-center w-10 h-10 md:w-12 md:h-12 mx-auto' : 'w-full py-2.5'}
       `}
     >
       {({ isActive }) => (
         <>
-          <Icon size={18} strokeWidth={isActive ? 2.5 : 2} className="flex-shrink-0" />
-          <span className={`text-[12px] tracking-tight whitespace-nowrap overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
+          <div className="w-20 flex-shrink-0 flex items-center justify-center">
+            <Icon size={18} strokeWidth={isActive ? 3 : 2} className="transition-transform duration-500" />
+          </div>
+          <span className={`text-[12px] whitespace-nowrap overflow-hidden transition-all duration-500 
+            ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
             {children}
           </span>
-          
-          {isCollapsed && (
-            <div className="absolute left-16 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 z-[100] whitespace-nowrap shadow-xl -translate-x-2 group-hover:translate-x-0">
-              {children}
-            </div>
-          )}
         </>
       )}
     </NavLink>
   );
 
   return (
-    <div className={`flex flex-col h-screen sticky top-0 py-8 transition-all duration-500 ease-in-out z-50 ${isCollapsed ? 'w-[88px]' : 'w-[280px]'} ${isDarkMode ? 'bg-[#0f172a]' : 'bg-white border-r border-slate-100'}`}>
+    <div 
+      onClick={(e) => {
+        if (isCollapsed) {
+          e.stopPropagation();
+          onToggle?.();
+        }
+      }}
+      className={`
+      ${isDarkMode ? 'bg-[#1A1625]' : 'bg-white'} border transition-all duration-500 ease-in-out z-50 
+      ${isDarkMode ? 'border-white/5' : 'border-gray-100'}
+      flex flex-col h-full sticky top-0
+      ${isCollapsed ? 'md:w-20 cursor-pointer' : 'md:absolute md:top-0 md:left-0 md:w-72 shadow-2xl'}
+      w-full md:rounded-r-[32px] lg:rounded-r-[48px]
+    `}>
       
-      {/* Toggle Button */}
-      <button 
-        onClick={onToggle}
-        className={`absolute -right-4 top-12 w-8 h-8 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-50 border active:scale-90
-          ${isDarkMode ? 'bg-slate-800 border-slate-700 text-purple-400' : 'bg-white border-slate-200 text-purple-600 hover:bg-purple-600 hover:text-white'}`}
-      >
-        {isCollapsed ? <ChevronRight size={14} strokeWidth={3} /> : <ChevronLeft size={14} strokeWidth={3} />}
-      </button>
-
-      {/* Brand */}
-      <div className={`mb-12 flex justify-center ${isCollapsed ? 'px-2' : 'px-6'}`}>
-        <Logo size={isCollapsed ? 'sm' : 'md'} />
+      {/* Sidebar Header - Aligned with Content Header */}
+      <div className={`h-16 md:h-20 flex items-center border-b transition-all duration-500 mb-6
+        ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
+        <div className="w-20 flex-shrink-0 flex items-center justify-center">
+          <Logo size="sm" isDarkMode={isDarkMode} />
+        </div>
+        {!isCollapsed && (
+          <span className={`font-black text-xl tracking-tighter transition-all duration-500 ${isDarkMode ? 'text-white' : 'text-black'}`}>
+            GRIDS
+          </span>
+        )}
       </div>
 
-      {/* Navigation */}
-      <div className="flex-1 overflow-y-auto px-4 custom-scrollbar space-y-8">
-        <div>
-          {!isCollapsed && (
-            <h3 className={`text-[10px] font-black uppercase tracking-[0.2em] px-4 mb-3 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Database</h3>
-          )}
+      <div className="flex-1 overflow-y-auto no-scrollbar px-4 pb-4">
+        <div className="mb-8">
+          <h3 className={sectionLabelClass}>
+            Database
+          </h3>
+          {isCollapsed && <div className="h-px bg-gray-200 dark:bg-white/10 mx-6 mb-6 transition-all duration-500"></div>}
           <div className="space-y-0.5">
             <NavItem to="/gad-data" icon={Hand}>GAD Data and Analysis</NavItem>
             <NavItem to="/cbms" icon={Monitor}>CBMS Table</NavItem>
-            <NavItem to="/about" icon={FileBarChart}>About GRIDS</NavItem>
-            {!isGuest && (
-              <>
-                {isProvider && <NavItem to="/data-submission" icon={FileUp}>Data Submission</NavItem>}
-                {isReviewer && <NavItem to="/data-approval" icon={CheckCircle}>Data Review</NavItem>}
-              </>
-            )}
+            {isProvider && <NavItem to="/data-submission" icon={BarChart3}>Data Submission</NavItem>}
+            {isReviewer && <NavItem to="/data-approval" icon={ClipboardCheck}>Data Approval</NavItem>}
+            {isAnalyzer && <NavItem to="/data-retrieval" icon={CloudDownload}>Data Retrieval</NavItem>}
+            {isAdmin && <NavItem to="/user-management" icon={UserCog}>User Management</NavItem>}
+            {isAdmin && <NavItem to="/audit-trail" icon={History}>Audit Trail</NavItem>}
+            <NavItem to="/about" icon={TreePine}>About GRIDS</NavItem>
           </div>
+          {isCollapsed && <div className="h-px bg-gray-200 dark:bg-white/10 mx-6 mt-6 transition-all duration-500"></div>}
         </div>
 
-        <div>
-          {!isCollapsed && (
-            <h3 className={`text-[10px] font-black uppercase tracking-[0.2em] px-4 mb-3 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Entry Points</h3>
-          )}
+        <div className="mb-8">
+          <h3 className={sectionLabelClass}>
+            GAD Entry Points
+          </h3>
+          {!isCollapsed && <div className="h-px bg-gray-200 dark:bg-white/10 mx-6 mb-6 transition-all duration-500 opacity-0"></div>}
           <div className="space-y-0.5">
-            <NavItem to="/policy" icon={FileText}>Policy</NavItem>
+            <NavItem to="/policy" icon={FileText}>Legal Policies</NavItem>
             <NavItem to="/members" icon={Users}>People</NavItem>
-            <NavItem to="/mechanism" icon={Cog}>Mechanism</NavItem>
-            <NavItem to="/programs" icon={Layers}>Programs</NavItem>
+            <NavItem to="/enabling-mechanisms" icon={Layers}>Enabling Mechanisms</NavItem>
+            <NavItem to="/programs" icon={Package}>Program, Projects, Activities</NavItem>
           </div>
+          {isCollapsed && <div className="h-px bg-gray-200 dark:bg-white/10 mx-6 mt-6 transition-all duration-500"></div>}
         </div>
 
-        <div>
-          {!isCollapsed && (
-            <h3 className={`text-[10px] font-black uppercase tracking-[0.2em] px-4 mb-3 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>System</h3>
-          )}
+        <div className="mb-4">
+          <h3 className={sectionLabelClass}>
+            Menu
+          </h3>
+          {isCollapsed && <div className="h-px bg-gray-100 dark:bg-white/5 mx-4 mb-6 transition-all duration-500"></div>}
           <div className="space-y-0.5">
             <NavItem to="/" icon={Home}>Home</NavItem>
-            {!isGuest && <NavItem to="/profile" icon={UserCircle}>Profile</NavItem>}
+            {isLoggedIn && <NavItem to="/profile" icon={UserIcon}>Profile</NavItem>}
             <NavItem to="/contact" icon={Mail}>Contact Us</NavItem>
-            <NavItem to="/help" icon={HelpCircle}>Support</NavItem>
+            <NavItem to="/privacy-policy" icon={Shield}>Privacy Policy</NavItem>
+            <NavItem to="/help" icon={HelpCircle}>Help</NavItem>
           </div>
         </div>
       </div>
 
-      {/* Logout */}
-      <div className="px-4 mt-6">
-        {!isGuest && (
+      {/* Sidebar Footer */}
+      <div className={`p-4 border-t transition-all duration-500 ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
+        {isLoggedIn && (
           <button 
-            onClick={onLogout}
-            className={`flex items-center gap-3 w-full py-3 rounded-xl transition-all duration-200 font-bold text-[12px] 
-              ${isCollapsed ? 'justify-center' : 'px-4'}
-              ${isDarkMode ? 'text-red-400 hover:bg-red-500/10' : 'text-slate-500 hover:bg-red-50 hover:text-red-600'}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onLogout();
+            }}
+            title={isCollapsed ? "Log Out" : ""}
+            className={`flex items-center rounded-xl transition-all font-bold text-[12px]
+              ${isDarkMode 
+                ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20' 
+                : 'bg-red-50 text-red-600 hover:bg-red-100'}
+              ${isCollapsed ? 'justify-center w-10 h-10 md:w-12 md:h-12 mx-auto' : 'w-full py-3'}
+            `}
           >
-            <LogOut size={18} />
-            {!isCollapsed && <span>Sign Out</span>}
+            <div className="w-20 flex-shrink-0 flex items-center justify-center">
+              <LogOut size={18} />
+            </div>
+            <span className={`transition-all duration-500 overflow-hidden ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
+              Log Out
+            </span>
           </button>
         )}
       </div>

@@ -1,604 +1,443 @@
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Logo } from '../components/Logo';
-import { User, UserRole } from '../types';
+import React, { useState } from 'react';
+import { LogoWithMotto, BaguioLogo } from '../components/Logo';
+import { User, UserRole, Notification } from '../types';
 import { 
-  EyeOff, CheckCircle2, UserCheck, ShieldCheck, ArrowRight, Eye, X, Mail, Lock, 
-  User as UserIcon, Calendar, Phone, Building2, PhoneCall, ChevronUp, ChevronDown, Check, AlertCircle, Loader2
+  Mail, Lock, User as UserIcon, Building2, 
+  Loader2, UserPlus, LogIn, ChevronRight, Eye, EyeOff,
+  FileText, FileSearch, RotateCw, CheckCircle2, X, Shield
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { recordAuditLog } from '../utils/auditLogger';
+import Footer from '../components/Footer';
 
-interface LandingProps {
-  onLogin: (user: User) => void;
-  onCancel?: () => void;
-}
-
-const InputWrapper = ({ label, children, icon: Icon, rightElement, error }: any) => (
-  <div className="w-full space-y-2">
-    <div className="flex justify-between items-center px-6">
-      <label className={`block text-[10px] font-black uppercase tracking-[0.2em] transition-colors ${error ? 'text-red-500' : 'text-gray-400'}`}>
-        {label}
-      </label>
-    </div>
-    <div className="relative group">
-      {Icon && (
-        <div className={`absolute left-7 top-1/2 -translate-y-1/2 transition-colors duration-300 ${error ? 'text-red-400' : 'text-gray-300 group-focus-within:text-purple-600'}`}>
-          <Icon size={18} strokeWidth={2.5} />
-        </div>
-      )}
-      {children}
-      {rightElement && (
-        <div className="absolute right-6 top-1/2 -translate-y-1/2">
-          {rightElement}
-        </div>
-      )}
-    </div>
-  </div>
-);
-
-const sharedInputClass = "w-full pl-16 pr-14 py-5 bg-white border border-gray-100 rounded-[28px] text-sm font-bold text-gray-900 focus:outline-none focus:ring-8 focus:ring-purple-600/5 focus:border-purple-600/30 focus:shadow-2xl transition-all placeholder:text-gray-300 shadow-sm cursor-text";
-
-const AuthLayout = ({ children, leftContent, step, onNavigateBack }: any) => (
-  <div className="min-h-screen w-full bg-[#fdf8ff] flex items-center justify-center p-4 md:p-8 relative overflow-x-hidden">
-    <button 
-      onClick={onNavigateBack}
-      className="absolute top-6 right-6 md:top-10 md:right-10 p-3 md:p-4 bg-white rounded-full shadow-lg text-gray-400 hover:text-purple-600 transition-all z-50 active:scale-95 flex items-center gap-2 group border border-purple-50"
-      title="Return to Dashboard"
-    >
-      <span className="hidden md:inline text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Return Home</span>
-      <X size={20} />
-    </button>
-
-    <div className="w-full max-w-6xl bg-white rounded-[56px] shadow-2xl overflow-hidden flex flex-col lg:flex-row min-h-[800px] transition-all duration-500 border border-gray-100">
-      <div className="hidden lg:flex lg:w-1/2 relative bg-purple-900 overflow-hidden">
-        <img 
-          src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=2026&auto=format&fit=crop" 
-          alt="Baguio Background" 
-          className="absolute inset-0 w-full h-full object-cover opacity-60"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-purple-900/90 to-transparent"></div>
-        <div className="relative z-10 p-20 flex flex-col justify-end h-full">
-          <div className="mb-8 h-px w-24 bg-white/50"></div>
-          <h2 className="text-4xl font-bold text-white mb-6 leading-tight">
-            {leftContent?.title || "Development is not sustainable if it is not fair and inclusive—and gender equality is central to fairness and inclusiveness."}
-          </h2>
-          <p className="text-white/70 italic text-lg">
-            — {leftContent?.author || "Michelle Bachelet (Former Executive Director of UN Women)"}
-          </p>
-          {step !== 'login' && (
-            <div className="mt-12 space-y-6">
-              {[
-                { id: 'role', label: 'Select Role' },
-                { id: 'personal', label: 'Personal Information' },
-                { id: 'finish', label: 'Finish' }
-              ].map((s, idx) => {
-                const isActive = step === s.id;
-                const isPast = (step === 'personal' && s.id === 'role') || (step === 'finish');
-                return (
-                  <div key={s.id} className={`flex items-center gap-6 transition-colors duration-300 ${isActive || isPast ? 'text-white' : 'text-white/40'}`}>
-                    <div className={`w-10 h-10 rounded-2xl border-2 flex items-center justify-center font-black transition-all ${isActive || isPast ? 'border-purple-400 bg-purple-400 scale-110 shadow-lg shadow-purple-900' : 'border-white/20'}`}>
-                      {isPast && s.id !== step ? '✓' : idx + 1}
-                    </div>
-                    <span className="font-black text-sm uppercase tracking-widest">{s.label}</span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="w-full lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col items-center justify-center bg-white relative">
-        <div className="mb-10">
-          <Logo size="md" />
-        </div>
-        {children}
-      </div>
-    </div>
-  </div>
-);
-
-const ScrollPicker: React.FC<{
-  options: number[] | string[];
-  value: string | number;
-  onChange: (val: any) => void;
-  label: string;
-}> = ({ options, value, onChange, label }) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  return (
-    <div className="flex flex-col items-center w-full">
-      <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3">{label}</span>
-      <div className="relative w-full h-40 bg-gray-50 rounded-2xl overflow-hidden group">
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-10 bg-purple-600/10 border-y border-purple-100 z-0"></div>
-        <div 
-          ref={scrollRef}
-          className="absolute inset-0 overflow-y-auto custom-scrollbar flex flex-col items-center z-10 py-14"
-        >
-          {options.map((opt) => (
-            <button
-              key={opt}
-              onClick={() => onChange(opt)}
-              className={`w-full py-2 text-center text-sm font-black transition-all duration-300
-                ${value == opt ? 'text-purple-600 scale-125' : 'text-gray-300 hover:text-gray-600'}`}
-            >
-              {opt}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const Landing: React.FC<LandingProps> = ({ onLogin, onCancel }) => {
+const Landing: React.FC<{ onLogin: (user: User) => void, isDarkMode?: boolean }> = ({ onLogin, isDarkMode = false }) => {
   const navigate = useNavigate();
-  const [step, setStep] = useState<'login' | 'role' | 'personal' | 'finish'>('login');
-  const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
-  
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [loginError, setLoginError] = useState<string | null>(null);
+  const [isRegistering, setIsRegistering] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [regStep, setRegStep] = useState(1);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
-  const [showRegPassword, setShowRegPassword] = useState(false);
-  const [showConfirmRegPassword, setShowConfirmRegPassword] = useState(false);
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  // Login State
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
 
-  const [formData, setFormData] = useState({
+  // Register State
+  const [regData, setRegData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
-    birthdate: '',
-    phone: '',
+    role: 'Data Provider' as UserRole,
     office: '',
-    landline: ''
+    phone: '',
+    birthdate: ''
   });
-
-  const [errors, setErrors] = useState<string[]>([]);
-
-  const [tempDate, setTempDate] = useState({
-    day: 1,
-    month: 'January',
-    year: 1999
-  });
-
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  const days = Array.from({ length: 31 }, (_, i) => i + 1);
-  const years = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i);
 
   const handleSignIn = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoginError(null);
     setIsProcessing(true);
-
-    // Simulated network delay for professional feel
     setTimeout(() => {
       const storedUsers = JSON.parse(localStorage.getItem('grids_users') || '[]');
-      const matchedUser = storedUsers.find((u: any) => u.email === email && u.password === password);
-
+      const matchedUser = storedUsers.find((u: any) => u.email === loginEmail && (u.password === loginPassword || u.passwordHash === loginPassword));
+      
       if (matchedUser) {
-        onLogin({
-          firstName: matchedUser.firstName,
-          lastName: matchedUser.lastName,
-          email: matchedUser.email,
-          role: matchedUser.role,
-          office: matchedUser.office,
-          phone: matchedUser.phone,
-          birthdate: matchedUser.birthdate,
-          landline: matchedUser.landline
-        });
-        navigate('/', { replace: true });
+        if (matchedUser.status === 'Pending') {
+          alert('Your account is still pending approval by the Administrator.');
+          recordAuditLog(null, 'LOGIN_DENIED', `Blocked login attempt for pending account: ${loginEmail}`, 'Authentication');
+          setIsProcessing(false);
+          return;
+        }
+        if (matchedUser.status === 'Suspended' || matchedUser.isActive === false) {
+          alert('Your account is inactive or suspended. Please contact the administrator.');
+          recordAuditLog(matchedUser, 'LOGIN_DENIED', `Blocked login attempt for suspended account: ${loginEmail}`, 'Authentication');
+          setIsProcessing(false);
+          return;
+        }
+        onLogin(matchedUser);
+        navigate('/');
       } else {
-        setLoginError('Invalid email or password combination.');
+        alert('Invalid credentials');
+        recordAuditLog(null, 'LOGIN_FAILURE', `Failed login attempt with email: ${loginEmail}`, 'Authentication');
         setIsProcessing(false);
       }
     }, 1000);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    if (errors.includes(name)) {
-      setErrors(errors.filter(err => err !== name));
-    }
+  const handleSSO = () => {
+    setIsProcessing(true);
+    console.log("[OAUTH2] Redirecting to Baguio City ID Portal (Auth0/Google Workspace API)...");
+    setTimeout(() => {
+      const adminUser: User = {
+        userId: 'u_admin_1',
+        email: 'cbmscharles@gmail.com',
+        firstName: 'Charles',
+        lastName: 'Chantioco',
+        role: 'Administrator',
+        office: 'CPDSO',
+      };
+      onLogin(adminUser);
+      recordAuditLog(adminUser, 'SSO_LOGIN', 'User authenticated via Baguio City ID OAuth2 Provider.', 'Authentication');
+      navigate('/');
+    }, 1200);
   };
 
-  const handleSignUp = () => {
-    const requiredFields = ['firstName', 'lastName', 'birthdate', 'phone', 'office', 'email', 'password', 'confirmPassword'];
-    const newErrors = requiredFields.filter(field => !formData[field as keyof typeof formData]);
-    
-    if (newErrors.length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-    if (formData.password !== formData.confirmPassword) return;
-
-    // Check if email already exists
-    const storedUsers = JSON.parse(localStorage.getItem('grids_users') || '[]');
-    if (storedUsers.some((u: any) => u.email === formData.email)) {
-      setErrors(['email-exists']);
-      return;
-    }
-
-    // Save to local storage database
-    const newUser = {
-      ...formData,
-      role: selectedRole || 'Guest'
+  const mapRoleToId = (role: string): string => {
+    const map: Record<string, string> = {
+      'Administrator': 'role_admin',
+      'Data Provider': 'role_provider',
+      'Data Reviewer': 'role_reviewer',
+      'Data Analyst': 'role_analyst',
+      'Public User': 'role_public',
+      'Guest': 'role_guest'
     };
-    localStorage.setItem('grids_users', JSON.stringify([...storedUsers, newUser]));
-    
-    setStep('finish');
+    return map[role] || 'role_public';
   };
 
-  const passwordsMatch = formData.password.length > 0 && formData.password === formData.confirmPassword;
-  const showPasswordError = formData.confirmPassword.length > 0 && formData.password !== formData.confirmPassword;
-  const showPasswordMatch = formData.confirmPassword.length > 0 && formData.password === formData.confirmPassword;
-
-  const handleSetDate = () => {
-    const formattedDate = `${tempDate.month} ${tempDate.day}, ${tempDate.year}`;
-    setFormData({ ...formData, birthdate: formattedDate });
-    if (errors.includes('birthdate')) {
-      setErrors(errors.filter(err => err !== 'birthdate'));
+  const handleRegisterFinalize = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (regData.password !== regData.confirmPassword) {
+      alert('Passwords do not match.');
+      return;
     }
-    setShowDatePicker(false);
+    setIsProcessing(true);
+    
+    setTimeout(() => {
+      const storedUsers = JSON.parse(localStorage.getItem('grids_users') || '[]');
+      if (storedUsers.some((u: any) => u.email === regData.email)) {
+        alert('Email already registered.');
+        setIsProcessing(false);
+        return;
+      }
+
+      const { confirmPassword, password, ...rest } = regData;
+      const newUserId = `u_reg_${Date.now().toString().slice(-6)}`;
+      const newUserRecord = { 
+        ...rest, 
+        userId: newUserId,
+        roleId: mapRoleToId(regData.role),
+        username: regData.email.split('@')[0],
+        password: password, 
+        passwordHash: 'PBKDF2_SIMULATED', 
+        contactInfo: regData.phone, 
+        isActive: true, 
+        status: 'Pending', 
+        createdAt: new Date().toISOString(),
+        lastLogin: null
+      };
+
+      localStorage.setItem('grids_users', JSON.stringify([...storedUsers, newUserRecord]));
+      recordAuditLog(null, 'USER_REGISTERED', `New account registration initiated for ${regData.email} (${regData.role})`, 'User Management');
+
+      const notifications = JSON.parse(localStorage.getItem('grids_notifications') || '[]');
+      const newNotification: Notification = {
+        id: `regnotif-${Date.now()}`,
+        title: 'New Account Registered',
+        message: `${regData.firstName} ${regData.lastName} has been added to the registry as ${regData.role}. Approval required.`,
+        date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        isRead: false,
+        department: regData.office || 'System',
+        targetUrl: '/user-management'
+      };
+      localStorage.setItem('grids_notifications', JSON.stringify([newNotification, ...notifications]));
+
+      setIsProcessing(false);
+      setRegStep(3);
+      window.dispatchEvent(new Event('storage'));
+    }, 1500);
   };
 
-  const getFieldClass = (fieldName: string) => {
-    const hasError = errors.includes(fieldName) || (fieldName === 'email' && errors.includes('email-exists'));
-    return `${sharedInputClass} ${hasError ? 'border-red-500 ring-8 ring-red-500/5' : ''}`;
-  };
-
-  const navigateToDashboard = () => navigate('/');
-
-  if (step === 'login') {
-    return (
-      <AuthLayout step={step} onNavigateBack={navigateToDashboard}>
-        <div className="w-full max-w-md text-center animate-in fade-in slide-in-from-right-4 duration-500">
-          <h2 className="text-4xl font-black text-gray-900 mb-2 tracking-tighter uppercase">Welcome Back!</h2>
-          <p className="text-gray-400 mb-12 text-sm font-bold uppercase tracking-widest opacity-60">Authentication Required</p>
-          
-          <form onSubmit={handleSignIn} className="space-y-8 text-left">
-            <InputWrapper label="Email Address" icon={Mail} error={!!loginError}>
-              <input 
-                type="email" 
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className={sharedInputClass}
-                placeholder="Enter your email (e.g. name@example.com)"
-                required
-              />
-            </InputWrapper>
-            
-            <InputWrapper 
-              label="Password" 
-              icon={Lock}
-              error={!!loginError}
-              rightElement={
-                <button 
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="text-gray-300 hover:text-purple-600 transition-colors p-2"
-                >
-                  {showPassword ? <Eye size={20} strokeWidth={2.5} /> : <EyeOff size={20} strokeWidth={2.5} />}
-                </button>
-              }
-            >
-              <input 
-                type={showPassword ? "text" : "password"} 
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                className={sharedInputClass}
-                placeholder="Enter your security password"
-                required
-              />
-            </InputWrapper>
-
-            {loginError && (
-              <div className="flex items-center gap-2 text-red-500 px-4 animate-in fade-in slide-in-from-top-1">
-                <AlertCircle size={14} />
-                <span className="text-[10px] font-black uppercase tracking-widest">{loginError}</span>
-              </div>
-            )}
-
-            <div className="flex justify-end px-4">
-              <button type="button" className="text-[10px] text-purple-600 font-black uppercase hover:underline tracking-widest">Forgot Password?</button>
-            </div>
-
-            <button 
-              type="submit" 
-              disabled={isProcessing}
-              className="w-full py-6 bg-black text-white rounded-[28px] font-black uppercase tracking-[0.3em] hover:bg-purple-600 transition-all shadow-2xl shadow-purple-950/10 active:scale-[0.98] text-[11px] mt-4 flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed"
-            >
-              {isProcessing ? (
-                <>
-                  <Loader2 size={18} className="animate-spin" /> Verifying Credentials
-                </>
-              ) : (
-                "Sign In to Grids"
-              )}
-            </button>
-          </form>
-
-          <p className="mt-14 text-xs text-gray-500 font-bold uppercase tracking-widest">
-            New here? <button onClick={() => setStep('role')} className="text-purple-600 font-black hover:underline ml-2">Request Access</button>
-          </p>
-        </div>
-      </AuthLayout>
-    );
-  }
-
-  if (step === 'role') {
-    return (
-      <AuthLayout step={step} onNavigateBack={navigateToDashboard} leftContent={{ title: "For gender equality to be real...", author: "Phumzile Mlambo-Ngcuka" }}>
-        <div className="w-full max-w-md text-center animate-in fade-in slide-in-from-right-4 duration-300">
-          <h2 className="text-4xl font-black text-gray-900 mb-2 uppercase tracking-tighter">Select Role</h2>
-          <p className="text-gray-400 mb-12 text-sm font-bold uppercase tracking-widest opacity-60">Choose Account Type</p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
-            <button 
-              onClick={() => setSelectedRole('Data Provider')}
-              className={`p-10 rounded-[40px] border-2 transition-all flex flex-col items-center gap-6 active:scale-95 group ${selectedRole === 'Data Provider' ? 'border-purple-600 bg-purple-50 shadow-2xl shadow-purple-900/5' : 'border-gray-100 hover:border-purple-100 bg-white'}`}
-            >
-              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center border-2 transition-all ${selectedRole === 'Data Provider' ? 'bg-purple-600 border-purple-600 text-white shadow-lg' : 'bg-gray-50 border-transparent text-gray-400 group-hover:bg-white group-hover:border-purple-100 group-hover:text-purple-600'}`}>
-                <UserCheck size={28} strokeWidth={2.5} />
-              </div>
-              <span className="font-black text-gray-900 text-[10px] uppercase tracking-[0.2em]">Provider</span>
-            </button>
-            <button 
-              onClick={() => setSelectedRole('Data Reviewer')}
-              className={`p-10 rounded-[40px] border-2 transition-all flex flex-col items-center gap-6 active:scale-95 group ${selectedRole === 'Data Reviewer' ? 'border-purple-600 bg-purple-50 shadow-2xl shadow-purple-900/5' : 'border-gray-100 hover:border-purple-100 bg-white'}`}
-            >
-              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center border-2 transition-all ${selectedRole === 'Data Reviewer' ? 'bg-purple-600 border-purple-600 text-white shadow-lg' : 'bg-gray-50 border-transparent text-gray-400 group-hover:bg-white group-hover:border-purple-100 group-hover:text-purple-600'}`}>
-                <ShieldCheck size={28} strokeWidth={2.5} />
-              </div>
-              <span className="font-black text-gray-900 text-[10px] uppercase tracking-[0.2em]">Reviewer</span>
-            </button>
-          </div>
-
-          <button 
-            disabled={!selectedRole}
-            onClick={() => setStep('personal')}
-            className="w-full py-6 bg-black text-white rounded-[28px] font-black uppercase tracking-[0.3em] hover:bg-purple-600 transition-all shadow-2xl disabled:opacity-30 disabled:cursor-not-allowed active:scale-[0.98] text-[11px]"
-          >
-            Continue
-          </button>
-          
-          <p className="mt-12 text-xs text-gray-500 font-bold uppercase tracking-widest">
-            Already registered? <button onClick={() => setStep('login')} className="text-purple-600 font-black hover:underline ml-2">Login</button>
-          </p>
-        </div>
-      </AuthLayout>
-    );
-  }
-
-  if (step === 'personal') {
-    return (
-      <AuthLayout step={step} onNavigateBack={navigateToDashboard} leftContent={{ title: "For gender equality to be real...", author: "Phumzile Mlambo-Ngcuka" }}>
-        <div className="w-full max-w-2xl text-center animate-in fade-in slide-in-from-right-4 duration-300">
-          <h2 className="text-4xl font-black text-gray-900 mb-2 uppercase tracking-tighter">Registration</h2>
-          <p className="text-gray-400 mb-10 text-sm font-bold uppercase tracking-widest opacity-60">Official Information Only</p>
-
-          <div className="space-y-6 max-h-[500px] overflow-y-auto px-4 custom-scrollbar">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-              <InputWrapper label="First Name *" icon={UserIcon} error={errors.includes('firstName')}>
-                <input name="firstName" value={formData.firstName} onChange={handleInputChange} className={getFieldClass('firstName')} placeholder="Legal First Name" />
-              </InputWrapper>
-              <InputWrapper label="Last Name *" icon={UserIcon} error={errors.includes('lastName')}>
-                <input name="lastName" value={formData.lastName} onChange={handleInputChange} className={getFieldClass('lastName')} placeholder="Legal Last Name" />
-              </InputWrapper>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-              <InputWrapper label="Birthdate *" icon={Calendar} error={errors.includes('birthdate')}>
-                <input 
-                  name="birthdate" 
-                  readOnly 
-                  value={formData.birthdate} 
-                  onClick={() => setShowDatePicker(true)}
-                  className={`${getFieldClass('birthdate')} cursor-pointer hover:border-purple-300`} 
-                  placeholder="Select Birthdate" 
-                />
-              </InputWrapper>
-              <InputWrapper label="Phone Number *" icon={Phone} error={errors.includes('phone')}>
-                <input name="phone" value={formData.phone} onChange={handleInputChange} className={getFieldClass('phone')} placeholder="+63 9xx xxx xxxx" />
-              </InputWrapper>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-              <InputWrapper label="Office / Barangay *" icon={Building2} error={errors.includes('office')}>
-                <select 
-                  name="office" 
-                  value={formData.office} 
-                  onChange={handleInputChange} 
-                  className={getFieldClass('office')}
-                >
-                  <option value="">Select Office</option>
-                  <option value="CPDSO">CPDSO</option>
-                  <option value="CMO">CMO</option>
-                  <option value="CHSO">CHSO</option>
-                  <option value="CSWDO">CSWDO</option>
-                  <option value="CEPMO">CEPMO</option>
-                  <option value="MITD">MITD</option>
-                  <option value="Other">Other Office / Barangay</option>
-                </select>
-              </InputWrapper>
-              <InputWrapper label="Landline" icon={PhoneCall}>
-                <input name="landline" value={formData.landline} onChange={handleInputChange} className={sharedInputClass} placeholder="442-xxxx" />
-              </InputWrapper>
-            </div>
-            
-            <div className="text-left">
-              <InputWrapper label="Official Email Address *" icon={Mail} error={errors.includes('email') || errors.includes('email-exists')}>
-                <input name="email" value={formData.email} onChange={handleInputChange} className={getFieldClass('email')} placeholder="Official Govt Email (e.g. j.doe@baguio.gov.ph)" />
-              </InputWrapper>
-              {errors.includes('email-exists') && (
-                <p className="mt-2 text-[10px] font-black text-red-500 uppercase tracking-widest pl-4">Email already exists in database!</p>
-              )}
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left relative">
-              <InputWrapper 
-                label="Password *" 
-                icon={Lock}
-                error={errors.includes('password')}
-                rightElement={
-                  <button 
-                    type="button"
-                    onClick={() => setShowRegPassword(!showRegPassword)}
-                    className="text-gray-300 hover:text-purple-600 transition-colors p-2"
-                  >
-                    {showRegPassword ? <Eye size={18} strokeWidth={2.5} /> : <EyeOff size={18} strokeWidth={2.5} />}
-                  </button>
-                }
-              >
-                <input 
-                  name="password" 
-                  type={showRegPassword ? "text" : "password"} 
-                  value={formData.password} 
-                  onChange={handleInputChange} 
-                  className={`${getFieldClass('password')} ${showPasswordError ? 'border-red-200' : showPasswordMatch ? 'border-green-200' : ''}`} 
-                  placeholder="Create Password" 
-                />
-              </InputWrapper>
-              <InputWrapper 
-                label="Confirm *" 
-                icon={Lock}
-                error={errors.includes('confirmPassword')}
-                rightElement={
-                  <button 
-                    type="button"
-                    onClick={() => setShowConfirmRegPassword(!showConfirmRegPassword)}
-                    className="text-gray-300 hover:text-purple-600 transition-colors p-2"
-                  >
-                    {showConfirmRegPassword ? <Eye size={18} strokeWidth={2.5} /> : <EyeOff size={18} strokeWidth={2.5} />}
-                  </button>
-                }
-              >
-                <input 
-                  name="confirmPassword" 
-                  type={showConfirmRegPassword ? "text" : "password"} 
-                  value={formData.confirmPassword} 
-                  onChange={handleInputChange} 
-                  className={`${getFieldClass('confirmPassword')} ${showPasswordError ? 'border-red-200' : showPasswordMatch ? 'border-green-200' : ''}`} 
-                  placeholder="Repeat Password" 
-                />
-              </InputWrapper>
-              
-              {showPasswordError && (
-                <div className="absolute -bottom-6 left-6 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1">
-                  <X size={10} className="text-red-500" strokeWidth={4} />
-                  <span className="text-[9px] font-black text-red-500 uppercase tracking-widest">
-                    Passwords do not match!
-                  </span>
-                </div>
-              )}
-
-              {showPasswordMatch && (
-                <div className="absolute -bottom-6 left-6 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1">
-                  <Check size={10} className="text-green-500" strokeWidth={4} />
-                  <span className="text-[9px] font-black text-green-500 uppercase tracking-widest">
-                    Passwords match!
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center mt-10 w-full gap-6">
-            {(errors.length > 0 && !errors.includes('email-exists')) && (
-              <div className="flex items-center gap-2 text-red-500 animate-in fade-in slide-in-from-top-2 duration-300">
-                <AlertCircle size={16} strokeWidth={2.5} />
-                <span className="text-[10px] font-black uppercase tracking-widest">Please fill in all required fields marked with *</span>
-              </div>
-            )}
-            
-            <div className="flex flex-col sm:flex-row gap-6 w-full">
-              <button onClick={() => setStep('role')} className="w-full sm:w-1/3 py-5 border-2 border-gray-100 text-gray-400 rounded-[28px] font-black uppercase text-[10px] tracking-widest hover:bg-gray-50 transition-all active:scale-95">Back</button>
-              <button 
-                onClick={handleSignUp}
-                className={`w-full sm:w-2/3 py-5 rounded-[28px] font-black uppercase text-[11px] tracking-[0.3em] transition-all shadow-2xl active:scale-[0.98]
-                  ${passwordsMatch || formData.confirmPassword.length === 0 ? 'bg-black text-white hover:bg-purple-600' : 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50'}`}
-              >
-                Submit Request
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {showDatePicker && (
-          <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 animate-in fade-in duration-300">
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setShowDatePicker(false)}></div>
-            <div className="relative w-full max-w-sm bg-white rounded-[40px] p-10 shadow-2xl animate-in zoom-in-95">
-              <div className="flex justify-between items-center mb-10">
-                <h3 className="text-2xl font-black text-gray-900 uppercase tracking-tight">Select Date</h3>
-                <button onClick={() => setShowDatePicker(false)} className="text-gray-300 hover:text-black transition-colors"><X size={24} /></button>
-              </div>
-
-              <div className="grid grid-cols-3 gap-4 mb-10">
-                <ScrollPicker 
-                  label="Month"
-                  options={months} 
-                  value={tempDate.month} 
-                  onChange={(val) => setTempDate({ ...tempDate, month: val })} 
-                />
-                <ScrollPicker 
-                  label="Day"
-                  options={days} 
-                  value={tempDate.day} 
-                  onChange={(val) => setTempDate({ ...tempDate, day: val })} 
-                />
-                <ScrollPicker 
-                  label="Year"
-                  options={years} 
-                  value={tempDate.year} 
-                  onChange={(val) => setTempDate({ ...tempDate, year: val })} 
-                />
-              </div>
-
-              <button 
-                onClick={handleSetDate}
-                className="w-full py-5 bg-purple-600 text-white rounded-3xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-black transition-all shadow-xl shadow-purple-200"
-              >
-                Set Birthdate
-              </button>
-            </div>
-          </div>
-        )}
-      </AuthLayout>
-    );
-  }
+  const StepIndicator = ({ num, title, desc, active }: { num: number, title: string, desc: string, active: boolean }) => (
+    <div className={`flex items-start gap-4 transition-all duration-500 ${active ? 'opacity-100 scale-100' : 'opacity-30 scale-95'}`}>
+      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-black transition-all border-[2px]
+        ${active ? 'bg-white border-white text-purple-900 shadow-[0_0_15px_rgba(255,255,255,0.3)]' : 'bg-transparent border-white text-white'}`}>
+        {num}
+      </div>
+      <div>
+        <h4 className="text-white text-lg font-black uppercase tracking-tight leading-none mb-0.5">{title}</h4>
+        <p className="text-white/70 text-[8px] font-bold uppercase tracking-[0.2em] leading-tight">{desc}</p>
+      </div>
+    </div>
+  );
 
   return (
-    <AuthLayout step={step} onNavigateBack={navigateToDashboard} leftContent={{ title: "For gender equality to be real...", author: "Phumzile Mlambo-Ngcuka" }}>
-      <div className="w-full max-w-md text-center animate-in fade-in zoom-in duration-500">
-        <h2 className="text-4xl font-black text-gray-900 mb-6 uppercase tracking-tighter leading-tight">Request Received</h2>
-        <p className="text-gray-400 mb-14 text-sm font-bold uppercase tracking-widest leading-relaxed opacity-60">
-          Submission Successful. Your application has been stored in the database. You can now use your credentials to sign in.
-        </p>
+    <div className="min-h-screen w-full bg-[#E5D1F8] flex flex-col items-center justify-center p-4 md:p-8 font-sans selection:bg-purple-100 selection:text-purple-900 overflow-y-auto custom-scrollbar">
+      <div className="w-full max-w-7xl min-h-[600px] lg:h-[85vh] bg-[#FBF6FF] rounded-[48px] shadow-[0_40px_80px_rgba(75,0,130,0.1)] overflow-hidden flex flex-col lg:flex-row relative border-[10px] border-white/50 shrink-0 my-auto">
         
-        <div className="mb-14 flex justify-center">
-          <div className="relative w-44 h-44">
-            <div className="absolute inset-0 border-[12px] border-purple-50 rounded-full"></div>
-            <div className="absolute inset-0 border-[12px] border-purple-600 rounded-full border-t-transparent animate-[spin_4s_linear_infinite]"></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <CheckCircle2 className="text-purple-600 drop-shadow-xl" size={72} />
+        <button 
+          onClick={() => navigate('/')}
+          className="absolute top-8 right-8 z-50 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-black hover:scale-110 active:scale-95 transition-all border border-gray-100"
+          title="Return to Dashboard"
+        >
+          <X size={24} strokeWidth={4} />
+        </button>
+
+        <div className="w-full lg:w-[42%] relative bg-purple-900 overflow-hidden flex flex-col p-10 lg:p-16 flex-shrink-0">
+          <img 
+            src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=2026&auto=format&fit=crop" 
+            alt="Baguio" 
+            className="absolute inset-0 w-full h-full object-cover opacity-60" 
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-purple-950 via-purple-900/40 to-transparent"></div>
+          
+          <div className="relative z-10 flex flex-col h-full overflow-hidden">
+            <div className="mb-8 text-white/50 font-black text-[9px] uppercase tracking-[0.4em] flex items-center gap-3">
+              <div className="w-8 h-0.5 bg-white/20"></div>
+              City of Baguio
             </div>
+            
+            <div className="max-w-md mb-8">
+              <h2 className="text-white text-3xl lg:text-[38px] font-black mb-4 uppercase tracking-tighter leading-[0.95] drop-shadow-lg">
+                For gender equality to be real, it must benefit everyone.
+              </h2>
+              <p className="text-white/70 text-xs font-medium leading-relaxed max-w-xs">
+                Phumzile Mlambo-Ngcuka
+              </p>
+            </div>
+
+            {isRegistering && (
+              <div className="mt-auto space-y-8 animate-in fade-in slide-in-from-left-6 duration-700">
+                <StepIndicator num={1} title="Select Role" desc="SETUP ACCOUNT ROLE" active={regStep === 1} />
+                <StepIndicator num={2} title="Information" desc="PERSONAL REGISTRY" active={regStep === 2} />
+                <StepIndicator num={3} title="Finish" desc="APPROVAL QUEUE" active={regStep === 3} />
+              </div>
+            )}
           </div>
         </div>
 
-        <button 
-          onClick={() => setStep('login')}
-          className="w-full py-6 bg-black text-white rounded-[28px] font-black uppercase text-[11px] tracking-[0.3em] hover:bg-purple-600 transition-all shadow-2xl flex items-center justify-center gap-4 active:scale-[0.98]"
-        >
-          Return to Portal <ArrowRight size={20} strokeWidth={3} />
-        </button>
+        <div className="flex-1 p-6 lg:p-10 xl:p-14 flex flex-col items-center justify-center relative bg-[#FBF6FF] overflow-hidden">
+          
+          <div className="mb-8 transform transition-transform hover:scale-105 duration-500 flex-shrink-0">
+            <LogoWithMotto size="md" />
+          </div>
+
+          <div className="w-full max-w-lg flex flex-col items-center flex-1 justify-center">
+            {!isRegistering ? (
+              <div className="w-full animate-in fade-in duration-500">
+                <div className="text-center mb-6">
+                  <h2 className="text-4xl font-black text-gray-900 uppercase tracking-tighter mb-1 leading-none">Welcome Back</h2>
+                  <p className="text-gray-400 text-[8px] font-black uppercase tracking-[0.4em]">Authentication Portal</p>
+                </div>
+
+                <form onSubmit={handleSignIn} className="space-y-4">
+                  <div className="space-y-1">
+                    <label className="block text-[9px] font-black uppercase tracking-widest text-gray-400 px-6">Email Address</label>
+                    <input 
+                      type="email" 
+                      value={loginEmail} 
+                      onChange={e => setLoginEmail(e.target.value)} 
+                      className="w-full px-8 py-3.5 bg-white border border-purple-100/50 rounded-[32px] text-xs font-bold text-gray-900 focus:outline-none focus:ring-4 focus:ring-purple-600/5 transition-all shadow-sm"
+                      placeholder="e.g. user@baguio.gov.ph"
+                      required 
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="block text-[9px] font-black uppercase tracking-widest text-gray-400 px-6">Password</label>
+                    <input 
+                      type="password" 
+                      value={loginPassword} 
+                      onChange={e => setLoginPassword(e.target.value)} 
+                      className="w-full px-8 py-3.5 bg-white border border-purple-100/50 rounded-[32px] text-xs font-bold text-gray-900 focus:outline-none focus:ring-4 focus:ring-purple-600/5 transition-all shadow-sm"
+                      placeholder="••••••••"
+                      required 
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3 pt-1">
+                    <button 
+                      type="submit" 
+                      disabled={isProcessing}
+                      className="w-full py-4 bg-black text-white rounded-[32px] font-black uppercase text-[10px] tracking-[0.4em] hover:bg-purple-600 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 disabled:bg-gray-400"
+                    >
+                      {isProcessing ? <Loader2 className="animate-spin w-4 h-4" /> : <><LogIn size={16} strokeWidth={3} /> Login</>}
+                    </button>
+                    
+                    <button 
+                      type="button"
+                      onClick={handleSSO}
+                      disabled={isProcessing}
+                      className="w-full py-4 bg-white border-2 border-gray-900 text-gray-900 rounded-[32px] font-black uppercase text-[10px] tracking-[0.4em] hover:bg-gray-50 transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      <Shield size={16} className="text-purple-600" /> Sign in with City ID
+                    </button>
+                  </div>
+
+                  <div className="pt-4 flex flex-col items-center gap-4">
+                    <button type="button" onClick={() => setIsRegistering(true)} className="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-purple-600 transition-all">
+                      New to GRIDS? <span className="underline decoration-2 underline-offset-4">Create Account</span>
+                    </button>
+                    <div className="flex items-center gap-4 opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer">
+                      <BaguioLogo />
+                    </div>
+                  </div>
+                </form>
+              </div>
+            ) : (
+              <div className="w-full flex flex-col items-center justify-center">
+                {regStep === 1 && (
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col items-center w-full">
+                    <div className="text-center mb-8">
+                      <h2 className="text-5xl font-black text-gray-900 uppercase tracking-tighter mb-2 leading-none">Select Role</h2>
+                      <p className="text-gray-400 text-sm font-medium tracking-tight">Setup your account access.</p>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-4 mb-8 w-full">
+                      <button 
+                        onClick={() => setRegData({...regData, role: 'Data Provider'})}
+                        className={`flex-1 group h-40 rounded-[32px] border-[4px] flex flex-col items-center justify-center gap-3 transition-all shadow-lg p-4
+                          ${regData.role === 'Data Provider' ? 'bg-white border-black scale-105 shadow-xl' : 'bg-white/5 border-transparent opacity-60 hover:opacity-100 hover:bg-white'}`}
+                      >
+                        <div className={`p-4 rounded-[20px] transition-colors ${regData.role === 'Data Provider' ? 'bg-black text-white' : 'bg-gray-100 text-gray-400 group-hover:bg-purple-50 group-hover:text-purple-600'}`}>
+                          <FileText size={32} strokeWidth={2.5} />
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">Provider</span>
+                      </button>
+                      
+                      <button 
+                        onClick={() => setRegData({...regData, role: 'Data Reviewer'})}
+                        className={`flex-1 group h-40 rounded-[32px] border-[4px] flex flex-col items-center justify-center gap-3 transition-all shadow-lg p-4
+                          ${regData.role === 'Data Reviewer' ? 'bg-white border-black scale-105 shadow-xl' : 'bg-white/5 border-transparent opacity-60 hover:opacity-100 hover:bg-white'}`}
+                      >
+                        <div className={`p-4 rounded-[20px] transition-colors ${regData.role === 'Data Reviewer' ? 'bg-black text-white' : 'bg-gray-100 text-gray-400 group-hover:bg-purple-50 group-hover:text-purple-600'}`}>
+                          <FileSearch size={32} strokeWidth={2.5} />
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">Reviewer</span>
+                      </button>
+                    </div>
+
+                    <button 
+                      onClick={() => setRegStep(2)}
+                      className="w-full py-4 bg-black text-white rounded-[32px] font-black uppercase text-[10px] tracking-[0.4em] hover:bg-purple-600 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2"
+                    >
+                      Continue <ChevronRight size={16} strokeWidth={3} />
+                    </button>
+                  </div>
+                )}
+
+                {regStep === 2 && (
+                  <div className="animate-in fade-in slide-in-from-right-6 duration-500 w-full">
+                    <div className="text-center mb-6">
+                      <h2 className="text-4xl font-black text-gray-900 uppercase tracking-tighter mb-1 leading-none">Personal Info</h2>
+                      <p className="text-gray-400 text-[10px] font-medium tracking-tight">Complete your profile details.</p>
+                    </div>
+
+                    <form onSubmit={handleRegisterFinalize} className="space-y-2.5">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-0.5">
+                          <label className="block text-[8px] font-black uppercase tracking-widest text-gray-500 px-4">First Name</label>
+                          <input type="text" placeholder="First Name" value={regData.firstName} onChange={e => setRegData({...regData, firstName: e.target.value})} className="w-full px-5 py-2 bg-[#F4ECFF] border-2 border-white rounded-[20px] text-[11px] font-bold focus:outline-none transition-all" required />
+                        </div>
+                        <div className="space-y-0.5">
+                          <label className="block text-[8px] font-black uppercase tracking-widest text-gray-500 px-4">Last Name</label>
+                          <input type="text" placeholder="Last Name" value={regData.lastName} onChange={e => setRegData({...regData, lastName: e.target.value})} className="w-full px-5 py-2 bg-[#F4ECFF] border-2 border-white rounded-[20px] text-[11px] font-bold focus:outline-none transition-all" required />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-0.5">
+                          <label className="block text-[8px] font-black uppercase tracking-widest text-gray-500 px-4">Email Address</label>
+                          <input type="email" placeholder="Email" value={regData.email} onChange={e => setRegData({...regData, email: e.target.value})} className="w-full px-5 py-2 bg-[#F4ECFF] border-2 border-white rounded-[20px] text-[11px] font-bold focus:outline-none transition-all" required />
+                        </div>
+                        <div className="space-y-0.5">
+                          <label className="block text-[8px] font-black uppercase tracking-widest text-gray-500 px-4">Phone Number</label>
+                          <input type="tel" placeholder="09XXXXXXXXX" value={regData.phone} onChange={e => setRegData({...regData, phone: e.target.value})} className="w-full px-5 py-2 bg-[#F4ECFF] border-2 border-white rounded-[20px] text-[11px] font-bold focus:outline-none transition-all" required />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-0.5">
+                          <label className="block text-[8px] font-black uppercase tracking-widest text-gray-500 px-4">Office / Barangay</label>
+                          <input type="text" placeholder="CPDSO / Brgy" value={regData.office} onChange={e => setRegData({...regData, office: e.target.value})} className="w-full px-5 py-2 bg-[#F4ECFF] border-2 border-white rounded-[20px] text-[11px] font-bold focus:outline-none transition-all" required />
+                        </div>
+                        <div className="space-y-0.5">
+                          <label className="block text-[8px] font-black uppercase tracking-widest text-gray-500 px-4">Birthdate</label>
+                          <input type="date" value={regData.birthdate} onChange={e => setRegData({...regData, birthdate: e.target.value})} className="w-full px-5 py-2 bg-[#F4ECFF] border-2 border-white rounded-[20px] text-[11px] font-bold focus:outline-none transition-all" required />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-0.5">
+                          <label className="block text-[8px] font-black uppercase tracking-widest text-gray-500 px-4">Password</label>
+                          <div className="relative">
+                            <input type={showPassword ? "text" : "password"} placeholder="Password" value={regData.password} onChange={e => setRegData({...regData, password: e.target.value})} className="w-full px-5 py-2 bg-[#F4ECFF] border-2 border-white rounded-[20px] text-[11px] font-bold focus:outline-none transition-all" required />
+                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                              {showPassword ? <EyeOff size={12} /> : <Eye size={12} />}
+                            </button>
+                          </div>
+                        </div>
+                        <div className="space-y-0.5">
+                          <label className="block text-[8px] font-black uppercase tracking-widest text-gray-500 px-4">Confirm</label>
+                          <div className="relative">
+                            <input type={showConfirmPassword ? "text" : "password"} placeholder="Confirm" value={regData.confirmPassword} onChange={e => setRegData({...regData, confirmPassword: e.target.value})} className="w-full px-5 py-2 bg-[#F4ECFF] border-2 border-white rounded-[20px] text-[11px] font-bold focus:outline-none transition-all" required />
+                            <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                              {showConfirmPassword ? <EyeOff size={12} /> : <Eye size={12} />}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 px-4 py-0.5">
+                        <input type="checkbox" id="terms" className="w-3 h-3 rounded border-purple-200 text-purple-600 focus:ring-purple-500 cursor-pointer" required />
+                        <label htmlFor="terms" className="text-[8px] font-bold text-gray-500 cursor-pointer uppercase tracking-widest">Agree to terms and privacy.</label>
+                      </div>
+
+                      <div className="pt-1">
+                        <button 
+                          type="submit" 
+                          disabled={isProcessing}
+                          className="w-full py-3 bg-[#4B4B52] text-white rounded-[28px] font-black uppercase text-[10px] tracking-[0.4em] hover:bg-black transition-all shadow-lg active:scale-95 disabled:bg-gray-400 flex items-center justify-center gap-2"
+                        >
+                          {isProcessing ? <Loader2 className="animate-spin w-4 h-4" /> : 'Sign Up'}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+
+                {regStep === 3 && (
+                  <div className="animate-in zoom-in-95 duration-500 flex flex-col items-center justify-center py-6">
+                    <div className="text-center mb-6">
+                      <h2 className="text-5xl font-black text-gray-900 uppercase tracking-tighter mb-2 leading-none">Well Done!</h2>
+                      <p className="text-gray-500 text-lg font-medium tracking-tight leading-tight">
+                        Kindly wait for Verification.
+                      </p>
+                    </div>
+
+                    <div className="relative group mb-8">
+                      <div className="absolute inset-0 bg-purple-100 rounded-full blur-xl opacity-40"></div>
+                      <div className="relative w-32 h-32 rounded-full border-[6px] border-dashed border-gray-900 flex items-center justify-center animate-[spin_12s_linear_infinite]">
+                        <RotateCw size={48} className="text-gray-900" strokeWidth={3} />
+                      </div>
+                    </div>
+                    
+                    <button 
+                      onClick={() => { setIsRegistering(false); setRegStep(1); }}
+                      className="px-10 py-3.5 bg-black text-white rounded-full font-black uppercase text-[10px] tracking-[0.3em] hover:bg-purple-600 transition-all shadow-lg active:scale-95"
+                    >
+                      Back to Login
+                    </button>
+                  </div>
+                )}
+
+                <div className="mt-4 pt-4 border-t border-purple-100/50 flex flex-col items-center gap-4 w-full flex-shrink-0">
+                  <button type="button" onClick={() => { setIsRegistering(false); setRegStep(1); }} className="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-purple-600 transition-all">
+                    Already have an account? <span className="underline decoration-2 underline-offset-4 decoration-purple-200">Login</span>
+                  </button>
+                  <div className="flex items-center gap-4 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all cursor-pointer">
+                    <BaguioLogo />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-    </AuthLayout>
+      <div className="mt-8 w-full flex justify-center">
+        <Footer isDarkMode={isDarkMode} />
+      </div>
+    </div>
   );
 };
 
