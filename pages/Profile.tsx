@@ -1,7 +1,8 @@
 
 import React, { useState } from 'react';
 import { User } from '../types';
-import { User as UserIcon, Save, X, Mail, Phone, Building2, Calendar, ShieldCheck } from 'lucide-react';
+import { User as UserIcon, Save, X, Mail, Phone, Building2, Calendar, ShieldCheck, Facebook, MessageCircle } from 'lucide-react';
+import PageLayout from '../components/PageLayout';
 
 interface ProfileProps {
   user: User | null;
@@ -18,6 +19,7 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
     phone: user?.phone || '',
     office: user?.office || '',
     birthdate: user?.birthdate || '',
+    facebook: user?.facebook || '',
   });
 
   const handleSave = () => {
@@ -33,16 +35,12 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
   const inputBgClass = isDarkMode ? 'bg-[#2A2438] border-white/10' : 'bg-gray-50 border-gray-100';
 
   return (
-    <div className="max-w-4xl mx-auto p-8 lg:p-12 animate-in fade-in duration-700 relative min-h-full">
-      {/* Standardized Header */}
-      <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
-        <div className="text-center md:text-left">
-          <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>Profile</h1>
-          <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Individual System Registry Record</p>
-          <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto md:mx-0"></div>
-        </div>
-        
-        {!isEditing ? (
+    <PageLayout
+      isDarkMode={isDarkMode}
+      title="Profile"
+      subtitle="Individual System Registry Record"
+      headerActions={
+        !isEditing ? (
           <button 
             onClick={() => setIsEditing(true)}
             className="px-10 py-4 bg-black text-white rounded-full font-black text-xs uppercase tracking-widest hover:bg-purple-600 transition-all shadow-xl active:scale-95"
@@ -64,9 +62,9 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
               <Save size={16} /> Save Changes
             </button>
           </div>
-        )}
-      </div>
-
+        )
+      }
+    >
       <div className={`${cardBgClass} rounded-[48px] shadow-2xl border ${isDarkMode ? 'border-white/5' : 'border-purple-50'} overflow-hidden mb-20`}>
         <div className="p-10 md:p-16">
           <div className="flex flex-col items-center mb-16">
@@ -112,6 +110,26 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
                   {user?.email}
                 </div>
               </div>
+              <div className="space-y-2">
+                <label className={`text-[9px] font-black uppercase tracking-widest ml-4 ${subTextClass}`}>Social (Facebook/Messenger)</label>
+                {isEditing ? (
+                  <div className="relative">
+                    <Facebook className="absolute left-6 top-1/2 -translate-y-1/2 text-blue-500" size={16} />
+                    <input 
+                      type="text" 
+                      placeholder="facebook.com/yourprofile"
+                      value={formData.facebook}
+                      onChange={(e) => setFormData({...formData, facebook: e.target.value})}
+                      className={`w-full pl-14 pr-6 py-4 rounded-2xl text-sm font-bold focus:outline-none transition-all ${inputBgClass}`}
+                    />
+                  </div>
+                ) : (
+                  <div className={`px-6 py-4 rounded-2xl text-sm font-bold flex items-center gap-3 ${isDarkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
+                    <Facebook size={16} className="text-blue-500" />
+                    {user?.facebook || 'Not added'}
+                  </div>
+                )}
+              </div>
             </div>
             <div className="space-y-6">
               <div className="space-y-2">
@@ -141,8 +159,7 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
                 <label className={`text-[9px] font-black uppercase tracking-widest ml-4 ${subTextClass}`}>Birthdate</label>
                 {isEditing ? (
                   <input 
-                    type="text" 
-                    placeholder="YYYY-MM-DD"
+                    type="date" 
                     value={formData.birthdate}
                     onChange={(e) => setFormData({...formData, birthdate: e.target.value})}
                     className={`w-full px-6 py-4 rounded-2xl text-sm font-bold focus:outline-none transition-all ${inputBgClass}`}
@@ -154,11 +171,23 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
                   </div>
                 )}
               </div>
+              {user?.facebook && !isEditing && (
+                <div className="pt-4">
+                  <a 
+                    href={`https://${user.facebook.replace('https://', '')}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-3 w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl hover:bg-blue-700 transition-all active:scale-95"
+                  >
+                    <MessageCircle size={18} /> Open Messenger
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 

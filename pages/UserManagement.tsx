@@ -7,6 +7,8 @@ import {
   Database, Copy, FileCode, CheckCircle2, Server
 } from 'lucide-react';
 import { User, UserRole } from '../types';
+import { recordAuditLog } from '../utils/auditLogger';
+import PageLayout from '../components/PageLayout';
 
 interface ExtendedUser extends User {
   status: 'Pending' | 'Active' | 'Suspended';
@@ -22,6 +24,9 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
   const [isSqlModalOpen, setIsSqlModalOpen] = useState(false);
   const [copiedSql, setCopiedSql] = useState(false);
   const [editFormData, setEditFormData] = useState<Partial<ExtendedUser>>({});
+
+  // Current session user for logging
+  const currentUser: User | null = JSON.parse(localStorage.getItem('grids_session') || 'null');
 
   useEffect(() => {
     const loadUsers = () => {
@@ -66,6 +71,7 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
   };
 
   const handleCopySql = () => {
+    recordAuditLog(currentUser, 'SQL_EXPORT', 'Administrator exported the latest system registry as Seed.sql format.', 'User Management');
     navigator.clipboard.writeText(generateSeedSql());
     setCopiedSql(true);
     setTimeout(() => setCopiedSql(false), 2000);
@@ -78,6 +84,7 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
   };
 
   const handleApproveAndCommit = (email: string) => {
+    const target = users.find(u => u.email === email);
     const updated = users.map(u => u.email === email ? { 
       ...u, 
       status: 'Active' as const,
@@ -85,6 +92,10 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
       roleId: u.roleId || mapRoleToId(u.role)
     } : u);
     saveToStorage(updated);
+    
+    if (target) {
+      recordAuditLog(currentUser, 'USER_APPROVED', `Administrator approved and committed account: ${target.email} to the registry.`, 'User Management');
+    }
     alert('User successfully committed to GRIDS database registry. Generate updated Seed.sql to reflect changes.');
   };
 
@@ -95,6 +106,7 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
         setIsDeleteModalOpen(false);
         return;
       }
+      recordAuditLog(currentUser, 'USER_DELETED', `Administrator deleted account: ${selectedUser.email} from the system.`, 'User Management');
       const updated = users.filter(u => u.email !== selectedUser.email);
       saveToStorage(updated);
       setIsDeleteModalOpen(false);
@@ -104,6 +116,7 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
 
   const handleEditSave = () => {
     if (selectedUser && editFormData) {
+      recordAuditLog(currentUser, 'USER_EDITED', `Administrator modified registry details for: ${selectedUser.email}. New Role: ${editFormData.role}, Status: ${editFormData.status}`, 'User Management');
       const updated = users.map(u => 
         u.email === selectedUser.email ? { ...u, ...editFormData, roleId: mapRoleToId(editFormData.role || u.role) } as ExtendedUser : u
       );
@@ -128,17 +141,11 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
   const textClass = isDarkMode ? 'text-white' : 'text-gray-900';
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-12 animate-in fade-in duration-700 relative min-h-full">
-      {/* Standardized Consistent Header */}
-      <header className={`mb-12 md:mb-20 flex flex-col lg:flex-row lg:items-end justify-between gap-8 border-b pb-12 ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
-        <div className="space-y-2 max-w-2xl text-center lg:text-left">
-          <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>
-            User Management
-          </h1>
-          <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">System Registry Governance</p>
-          <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto lg:mx-0"></div>
-        </div>
-
+    <PageLayout
+      isDarkMode={isDarkMode}
+      title="User Management"
+      subtitle="System Registry Governance"
+      headerActions={
         <div className="flex flex-col md:flex-row items-center gap-4 w-full lg:max-w-3xl lg:mb-1">
           <div className="w-full relative group">
             <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors">
@@ -161,9 +168,9 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
             Seed.sql Sync
           </button>
         </div>
-      </header>
-
-      <div className={`${isDarkMode ? 'bg-[#1A1625]' : 'bg-white'} rounded-[48px] shadow-2xl border ${isDarkMode ? 'border-white/5' : 'border-purple-50'} overflow-hidden mb-32`}>
+      }
+    >
+      <div className={`${isDarkMode ? 'bg-[#1A1625]' : 'bg-white'} rounded-[48px] shadow-2xl border ${isDarkMode ? 'border-white/5' : 'border-purple-50'} overflow-hidden mb-8`}>
         <div className="table-container custom-scrollbar">
           <table className="w-full text-left border-collapse min-w-[1000px]">
             <thead className={`text-[9px] md:text-[10px] font-black ${isDarkMode ? 'text-purple-400' : 'text-gray-400'} uppercase tracking-[0.2em] border-b ${isDarkMode ? 'border-white/5' : 'border-gray-50'}`}>
@@ -413,15 +420,7 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
           </div>
         </div>
       )}
-
-      <footer className="mt-auto py-10 flex flex-col items-center">
-        <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] text-center leading-relaxed">
-          Copyright © City Government of Baguio<br />
-          City Planning, Development, and Sustainability Office – CBMS<br />
-          Developed by: Charles S. Chantioco
-        </p>
-      </footer>
-    </div>
+    </PageLayout>
   );
 };
 

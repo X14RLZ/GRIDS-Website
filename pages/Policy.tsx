@@ -1,10 +1,11 @@
-
 import React from 'react';
 import { Globe, Shield, FileText, Landmark, ChevronRight, Gavel, ExternalLink, BookOpen, ShieldCheck, ScrollText } from 'lucide-react';
 
+import PageLayout from '../components/PageLayout';
+
 const Policy: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
   const SectionDivider = () => (
-    <div className={`w-full max-w-lg mx-auto h-[3px] my-12 rounded-full transition-colors
+    <div className={`w-full max-w-lg mx-auto h-[3px] my-6 rounded-full transition-colors
       ${isDarkMode ? 'bg-white/10' : 'bg-gray-900/5'}`}></div>
   );
 
@@ -28,15 +29,12 @@ const Policy: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
   );
 
   return (
-    <div className="max-w-screen-2xl mx-auto p-4 lg:p-12 animate-in fade-in duration-700 relative min-h-screen">
-      {/* Standardized Header */}
-      <div className="mb-16 text-center lg:text-left">
-        <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${headingClass}`}>Legal Policies</h1>
-        <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Legal and Regulatory Mandates</p>
-        <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto lg:mx-0"></div>
-      </div>
-
-      <div className={`rounded-[48px] p-8 md:p-16 lg:p-20 shadow-2xl border mb-20 transition-colors duration-500
+    <PageLayout
+      isDarkMode={isDarkMode}
+      title="Legal Policies"
+      subtitle="Legal and Regulatory Mandates"
+    >
+      <div className={`rounded-[48px] p-6 md:p-10 shadow-2xl border mb-8 transition-colors duration-500
         ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-purple-950/20' : 'bg-white border-purple-50 shadow-purple-900/5'}`}>
         
         <section id="international">
@@ -136,17 +134,8 @@ const Policy: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
             </div>
           </div>
         </section>
-
-        <footer className="w-full flex flex-col items-center pt-20">
-          <p className={`text-[10px] font-black uppercase tracking-[0.3em] text-center leading-relaxed transition-colors
-            ${isDarkMode ? 'text-gray-700' : 'text-gray-900 opacity-20'}`}>
-            Copyright © City Government of Baguio<br />
-            City Planning Development Service Office – CBMS<br />
-            Developed by: Charles S. Chantioco
-          </p>
-        </footer>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 
