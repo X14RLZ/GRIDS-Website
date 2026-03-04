@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Bell, Moon, Sun, User as UserIcon, X, Menu } from 'lucide-react';
-import { BaguioLogo, Logo } from './Logo';
+import { Link, useNavigate } from 'react-router-dom';
+import { Bell, Moon, Sun, User as UserIcon, ToggleLeft, ToggleRight, X, ChevronDown } from 'lucide-react';
+import { BaguioLogo } from './Logo';
 import { User, Notification } from '../types';
 
 interface HeaderProps {
@@ -11,34 +11,24 @@ interface HeaderProps {
   onToggleNav?: () => void;
   isDarkMode?: boolean;
   onToggleDarkMode?: () => void;
-  onToggleMobileMenu?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
-  user, onLoginClick, isNavFixed = true, onToggleNav, isDarkMode = false, 
-  onToggleDarkMode, onToggleMobileMenu
+  user, 
+  onLoginClick, 
+  isNavFixed = true, 
+  onToggleNav, 
+  isDarkMode = false, 
+  onToggleDarkMode 
 }) => {
   const [showNotifications, setShowNotifications] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
   const notificationRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  const loadNotifications = () => {
-    const stored: Notification[] = JSON.parse(localStorage.getItem('grids_notifications') || '[]');
-    // If admin, show all (including registrations). If user, show relevant to them.
-    if (user?.role === 'Administrator') {
-      setNotifications(stored);
-    } else {
-      // Filter out registration notifications for non-admins
-      setNotifications(stored.filter((n: Notification) => n.title !== 'New Registration'));
-    }
-  };
-
-  useEffect(() => {
-    loadNotifications();
-    window.addEventListener('storage', loadNotifications);
-    return () => window.removeEventListener('storage', loadNotifications);
-  }, [user]);
+  const notifications: Notification[] = [
+    { id: '1', title: 'John Doe', message: 'New data submission available for review.', date: '3:24 PM', isRead: false, department: 'CPDSO' },
+    { id: '2', title: 'System', message: 'Data submission approved for CMO.', date: '1:15 PM', isRead: false, department: 'IT' },
+  ];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -50,117 +40,106 @@ const Header: React.FC<HeaderProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const clearNotifications = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    localStorage.setItem('grids_notifications', JSON.stringify([]));
-    setNotifications([]);
+  const handleUserClick = () => {
+    if (user) navigate('/profile');
+    else if (onLoginClick) onLoginClick();
   };
-
-  const handleNotificationClick = (notif: Notification) => {
-    // Mark as read
-    const stored: Notification[] = JSON.parse(localStorage.getItem('grids_notifications') || '[]');
-    const updated = stored.map(n => n.id === notif.id ? { ...n, isRead: true } : n);
-    localStorage.setItem('grids_notifications', JSON.stringify(updated));
-    setNotifications(updated);
-
-    // Jump to interface
-    if (notif.targetUrl) {
-      navigate(notif.targetUrl);
-    }
-    setShowNotifications(false);
-  };
-
-  const headerBgClass = isDarkMode ? 'bg-[#1A1625]/80 border-white/5' : 'bg-white/80 border-white/20';
-  const textClass = isDarkMode ? 'text-white' : 'text-gray-900';
-  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   return (
-    <header className={`${headerBgClass} backdrop-blur-md h-16 md:h-20 flex items-center justify-between px-0 md:px-6 border-b z-40 transition-all duration-300 ${isNavFixed ? 'sticky top-0' : 'relative'}`}>
-      <div className="flex items-center h-full gap-0 md:gap-4">
-        {/* Corner Logo Block - Overlaps Header and aligns with Sidebar Rail */}
-        <div className={`w-24 h-full flex items-center justify-center border-r transition-colors duration-500 ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
-          <Logo size="sm" isDarkMode={isDarkMode} />
+    <header className={`h-20 flex items-center justify-between px-8 z-40 transition-all duration-300 border-b
+      ${isDarkMode ? 'bg-[#0f172a]/80 border-slate-800' : 'bg-white/80 border-slate-100'} 
+      backdrop-blur-md ${isNavFixed ? 'sticky top-0' : 'relative'}`}>
+      
+      {/* Brand */}
+      <a 
+        href="https://new.baguio.gov.ph/home" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="flex items-center gap-3 group transition-all"
+      >
+        <BaguioLogo />
+        <div className="flex flex-col">
+          <span className={`text-lg font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>eGov Baguio</span>
+          <span className={`text-[10px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Smart City Portal</span>
         </div>
+      </a>
 
-        <div className="flex items-center gap-0 md:gap-4">
-          <button 
-            onClick={onToggleMobileMenu}
-            className="p-3 md:p-4 text-gray-500 hover:text-purple-600 transition-colors"
-            aria-label="Toggle navigation menu"
-          >
-            <Menu size={24} />
+      {/* Actions */}
+      <div className="flex items-center gap-6">
+        
+        {/* Fix Nav Toggle */}
+        <div className="hidden md:flex items-center gap-2 pr-6 border-r border-slate-200/50">
+          <span className={`text-[10px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Dock Nav</span>
+          <button onClick={onToggleNav} className="transition-all hover:scale-110 active:scale-95">
+            {isNavFixed ? (
+              <ToggleRight className="text-purple-600" size={32} />
+            ) : (
+              <ToggleLeft className="text-slate-300" size={32} />
+            )}
           </button>
-
-          <a 
-            href="https://new.baguio.gov.ph/home" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 md:gap-3 no-underline group"
-          >
-            <BaguioLogo />
-            <span className={`text-base md:text-xl font-bold tracking-tight ${textClass} hidden xs:block`}>eGov: Baguio</span>
-          </a>
         </div>
-      </div>
 
-      <div className="flex items-center gap-3 md:gap-8">
-        <button 
-          onClick={() => user ? navigate('/profile') : onLoginClick?.()}
-          className={`flex items-center gap-2 group md:px-4 py-1.5 rounded-full transition-all ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-white/50'}`}
-        >
-          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full border-2 flex items-center justify-center transition-all 
-            ${isDarkMode ? 'border-white/20 text-white' : 'border-gray-900 text-gray-900 group-hover:bg-gray-900 group-hover:text-white'}`}>
-            <UserIcon className="w-4 h-4 md:w-5 h-5" />
-          </div>
-          <span className={`text-[10px] md:text-sm font-bold ${textClass} hidden sm:block`}>
-            {user ? `${user.firstName}` : 'Login'}
-          </span>
-        </button>
-
-        <div className={`flex items-center gap-3 md:gap-6 ${textClass}`}>
-          <button onClick={onToggleDarkMode} className="hover:scale-110 active:scale-90 transition-all p-1">
-            {isDarkMode ? <Sun className="w-5 h-5 md:w-6 h-6 text-yellow-400" /> : <Moon className="w-5 h-5 md:w-6 h-6"/>}
+        <div className="flex items-center gap-5">
+          {/* Theme Toggle */}
+          <button 
+            onClick={onToggleDarkMode}
+            className={`p-2.5 rounded-xl transition-all hover:scale-110 active:scale-95 ${isDarkMode ? 'bg-slate-800 text-yellow-400' : 'bg-slate-50 text-slate-500'}`}
+          >
+            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
           </button>
           
+          {/* Notifications */}
           <div className="relative" ref={notificationRef}>
-            <button onClick={() => setShowNotifications(!showNotifications)} className="relative hover:scale-110 active:scale-90 transition-all p-1">
-              <Bell className="w-5 h-5 md:w-6 h-6"/>
-              {unreadCount > 0 && (
-                <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[8px] font-black rounded-full border-2 border-white flex items-center justify-center">
-                  {unreadCount}
-                </span>
-              )}
+            <button 
+              onClick={() => setShowNotifications(!showNotifications)}
+              className={`p-2.5 rounded-xl transition-all relative hover:scale-110 active:scale-95 ${isDarkMode ? 'bg-slate-800 text-purple-400' : 'bg-slate-50 text-slate-500'}`}
+            >
+              <Bell size={20} />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-800"></span>
             </button>
 
             {showNotifications && (
-              <div className={`absolute right-[-10px] md:right-0 mt-4 w-72 md:w-80 shadow-2xl rounded-2xl md:rounded-3xl border overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 
-                ${isDarkMode ? 'bg-[#2A2438] border-white/5' : 'bg-white border-gray-100'}`}>
-                <div className={`p-4 border-b flex items-center justify-between ${isDarkMode ? 'border-white/5' : 'border-gray-50'}`}>
-                  <h3 className={`text-xs font-black uppercase tracking-widest ${textClass}`}>Notifications</h3>
-                  <button onClick={clearNotifications} className="text-[8px] font-black uppercase text-purple-600 hover:underline">Clear All</button>
+              <div className={`absolute right-0 mt-4 w-80 shadow-2xl rounded-2xl border overflow-hidden z-50 animate-fade-in
+                ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
+                <div className={`p-4 border-b flex items-center justify-between ${isDarkMode ? 'border-slate-800' : 'border-slate-50'}`}>
+                  <h3 className={`text-xs font-black uppercase tracking-widest ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Notifications</h3>
+                  <button onClick={() => setShowNotifications(false)} className="text-slate-400 hover:text-slate-600">
+                    <X size={16} />
+                  </button>
                 </div>
-                <div className="max-h-64 overflow-y-auto p-2 custom-scrollbar">
-                  {notifications.length > 0 ? notifications.map((n) => (
-                    <div 
-                      key={n.id} 
-                      onClick={() => handleNotificationClick(n)}
-                      className={`p-4 rounded-xl transition-all cursor-pointer border-b last:border-0 
-                        ${n.isRead ? '' : (isDarkMode ? 'bg-white/5' : 'bg-purple-50')}
-                        ${isDarkMode ? 'hover:bg-white/10 border-white/5' : 'hover:bg-purple-100 border-gray-50'}`}
-                    >
-                      <div className="flex justify-between items-start mb-1">
-                        <h4 className={`text-xs font-black ${textClass}`}>{n.title}</h4>
-                        <span className="text-[8px] font-bold text-gray-400">{n.date}</span>
-                      </div>
-                      <p className={`text-[10px] leading-relaxed ${isDarkMode ? 'text-white/60' : 'text-gray-500'}`}>{n.message}</p>
+                <div className="max-h-80 overflow-y-auto">
+                  {notifications.map((n) => (
+                    <div key={n.id} className={`p-4 transition-all cursor-pointer border-b last:border-0 
+                      ${isDarkMode ? 'hover:bg-white/5 border-slate-800' : 'hover:bg-slate-50 border-slate-50'}`}>
+                      <h4 className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{n.title}</h4>
+                      <p className={`text-[11px] mt-1 line-clamp-2 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{n.message}</p>
+                      <span className="text-[9px] font-bold text-purple-500 mt-2 block uppercase">{n.date}</span>
                     </div>
-                  )) : (
-                    <div className="py-10 text-center text-gray-400 text-[10px] font-bold uppercase tracking-widest opacity-50">No new alerts</div>
-                  )}
+                  ))}
                 </div>
               </div>
             )}
           </div>
+
+          {/* Profile */}
+          <button 
+            onClick={handleUserClick}
+            className={`flex items-center gap-3 pl-2 pr-4 py-1.5 rounded-full transition-all border 
+              ${isDarkMode ? 'bg-slate-800 border-slate-700 hover:border-purple-500' : 'bg-slate-50 border-slate-200 hover:border-purple-300'}`}
+          >
+            <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white shadow-sm">
+              <UserIcon size={16} />
+            </div>
+            <div className="hidden sm:flex flex-col items-start">
+              <span className={`text-[11px] font-bold leading-none ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                {user ? user.firstName : 'Guest User'}
+              </span>
+              <span className="text-[9px] font-medium text-purple-500 uppercase tracking-widest">
+                {user ? user.role : 'Sign In'}
+              </span>
+            </div>
+            <ChevronDown size={14} className="text-slate-400" />
+          </button>
         </div>
       </div>
     </header>
