@@ -5,11 +5,9 @@ import {
   Search, Download, FileText, ChevronRight, ArrowRight, X, 
   Database, Layout, Users, Activity, Sparkles, BookOpen, 
   FileSearch, History, Globe, ShieldCheck, PieChart, TrendingUp,
-  Clock, Calendar as CalendarIcon, Gavel, ShieldAlert, Award, Info
+  Clock, Calendar as CalendarIcon, Gavel, ShieldAlert, Award
 } from 'lucide-react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
-import { CPDSOLogo, Logo } from '../components/Logo';
-import PageLayout from '../components/PageLayout';
 
 interface DashboardProps {
   user: User | null;
@@ -36,11 +34,11 @@ const Dashboard: React.FC<DashboardProps> = ({ user, isDarkMode = false }) => {
   }, []);
 
   const formattedDate = time.toLocaleDateString('en-US', { 
-    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' 
+    weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' 
   });
 
   const formattedTime = time.toLocaleTimeString('en-US', { 
-    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true 
+    hour: '2-digit', minute: '2-digit', hour12: true 
   });
 
   const getGreeting = () => {
@@ -61,7 +59,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, isDarkMode = false }) => {
 
   const searchableItems: SearchResult[] = [
     { id: 'p1', title: 'GAD Data and Analysis', type: 'Page', path: '/gad-data', description: 'Access 51 core Gender and Development indicators for Baguio City.' },
-    { id: 'p2', title: 'CBMS Table', type: 'Page', path: '/cbms', description: 'Official 2021 Community-Based Monitoring System data reports and records.', keywords: ['survey', 'census', 'economic'] },
+    { id: 'p2', title: 'CBMS Table Hub', type: 'Page', path: '/cbms', description: 'Official 2021 Community-Based Monitoring System data reports and records.', keywords: ['survey', 'census', 'economic'] },
     { id: 'p3', title: 'About GRIDS Project', type: 'Page', path: '/about', description: 'Information on the Gender-Responsive Integrated Database System initiative.' },
     { id: 'pol-cedaw', title: 'CEDAW Convention', type: 'Policy', path: '/policy', description: 'International convention on the elimination of discrimination against women.' },
     { id: 'pol-mcw', title: 'Magna Carta of Women', type: 'Policy', path: '/policy', description: 'RA 9710 - Comprehensive women\'s human rights law in the Philippines.' },
@@ -125,247 +123,73 @@ const Dashboard: React.FC<DashboardProps> = ({ user, isDarkMode = false }) => {
   const textClass = isDarkMode ? 'text-white' : 'text-gray-900';
 
   return (
-    <PageLayout
-      isDarkMode={isDarkMode}
-      title={isSearching ? "Search Results" : "GRIDS"}
-      subtitle={isSearching ? `Found ${searchResults.length} matches for "${searchQuery}"` : "Gender-Responsive Integrated Database System"}
-      headerActions={
-        <div className="relative group w-full sm:w-80">
-          <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors z-20">
-            <Search size={18} strokeWidth={3} />
+    <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-6 flex flex-col items-center animate-in fade-in duration-1000 scroll-smooth relative">
+      
+      {!isSearching && (
+        <div className="w-full flex flex-col md:flex-row items-center md:items-end justify-between mb-16 text-center md:text-left">
+           <div>
+             <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>
+               GRIDS Baguio
+             </h1>
+             <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Gender-Responsive Integrated Database System</p>
+             <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto md:mx-0"></div>
+           </div>
+           
+           <div className={`flex items-center gap-4 text-[10px] md:text-xs font-black uppercase tracking-widest ${textClass} opacity-60 mt-8 md:mt-0`}>
+              <div className="flex items-center gap-2">
+                <CalendarIcon size={14} className="text-purple-500" />
+                <span>{formattedDate}</span>
+              </div>
+              <div className="w-px h-4 bg-gray-300/30"></div>
+              <div className="flex items-center gap-2">
+                <Clock size={14} className="text-purple-500" />
+                <span className="tabular-nums">{formattedTime}</span>
+              </div>
+           </div>
+        </div>
+      )}
+
+      {!isSearching && (
+        <div className="w-full max-w-6xl aspect-[16/6] md:aspect-[24/6] rounded-[32px] md:rounded-[48px] relative overflow-hidden flex items-center px-8 md:px-16 mb-8 shadow-xl">
+           <div className={`absolute inset-0 transition-colors duration-500 ${isDarkMode ? 'bg-[#2A2438]' : 'bg-[#E5D1F8]'}`}>
+              <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[150%] bg-purple-600/20 blur-[120px] rounded-full animate-pulse"></div>
+              <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[140%] bg-green-500/10 blur-[100px] rounded-full"></div>
+           </div>
+           
+           <div className="relative z-10 space-y-2">
+             <h2 className={`text-[10px] md:text-xs font-black uppercase tracking-[0.5em] ${isDarkMode ? 'text-purple-300' : 'text-purple-800'}`}>
+                {getGreeting()}
+             </h2>
+             <h2 className={`text-4xl sm:text-6xl md:text-7xl font-black italic tracking-tighter drop-shadow-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+               {user ? `Welcome, ${user.firstName}!` : 'Welcome to GRIDS!'}
+             </h2>
+           </div>
+        </div>
+      )}
+
+      <div className={`w-full max-w-6xl transition-all duration-500 ease-out z-10 px-0 md:px-4 ${isSearching ? 'mb-8 mt-0' : 'mb-12 md:mb-20'}`}>
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-6 md:left-14 flex items-center pointer-events-none z-30">
+            <Search className={`${searchQuery ? 'text-purple-600' : (isDarkMode ? 'text-gray-500' : 'text-gray-400')} w-5 h-5 md:w-6 h-6`} strokeWidth={3} />
           </div>
           
-          {/* Ghost Text Suggestion */}
-          <div className="absolute left-12 top-1/2 -translate-y-1/2 pointer-events-none z-10">
-            <span className="text-[11px] font-black uppercase tracking-widest text-gray-200 dark:text-white/5">
-              {searchQuery && ghostText ? searchQuery : ''}
-              <span className="opacity-100">{searchQuery && ghostText ? ghostText.slice(searchQuery.length) : ''}</span>
-            </span>
+          <div className={`hidden md:flex absolute inset-y-0 left-[100px] right-32 items-center pointer-events-none select-none z-10 text-lg font-bold opacity-20 overflow-hidden whitespace-nowrap ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            {ghostText}
           </div>
 
           <input 
+            ref={searchInputRef}
             type="text" 
-            placeholder="Search database or records..."
             value={searchQuery}
             onChange={handleSearchChange}
-            className={`w-full pl-12 pr-10 py-4 rounded-[28px] border shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-600/10 transition-all text-[11px] font-black uppercase tracking-widest relative z-10 bg-transparent
-              ${isDarkMode ? 'text-white border-white/5' : 'text-gray-900 border-purple-50'}`}
+            className={`w-full pl-16 md:pl-24 pr-10 py-5 md:py-7 border-none rounded-[28px] md:rounded-[40px] shadow-lg text-sm md:text-lg font-bold placeholder:text-gray-400 focus:outline-none focus:ring-4 md:focus:ring-8 focus:ring-purple-600/5 transition-all relative z-20
+              ${isDarkMode ? 'bg-[#1A1625] text-white border border-white/5' : 'bg-white text-gray-900 border border-purple-50'}`}
+            placeholder="Search database, policies, or mechanisms..."
           />
-
-          {searchQuery && (
-            <button 
-              onClick={() => {
-                setSearchQuery('');
-                setSearchParams({});
-                setGhostText('');
-              }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-purple-600 transition-colors z-20"
-            >
-              <X size={14} strokeWidth={3} />
-            </button>
-          )}
         </div>
-      }
-    >
-      {!isSearching && (
-        <>
-          <div className="w-full flex flex-col items-center mb-8 animate-in fade-in slide-in-from-top-4 duration-1000">
-            <p className={`text-sm md:text-lg font-medium uppercase tracking-[0.3em] ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`}>
-              {formattedDate}
-            </p>
-            <p className={`text-sm md:text-lg font-medium uppercase tracking-[0.3em] mt-1 ${textClass}`}>
-              {formattedTime}
-            </p>
-          </div>
-          <div className="w-full max-w-6xl aspect-[16/6] md:aspect-[24/6] rounded-[32px] md:rounded-[48px] relative overflow-hidden flex items-center px-8 md:px-16 mb-16 shadow-xl">
-             <div className={`absolute inset-0 transition-colors duration-500 ${isDarkMode ? 'bg-[#2A2438]' : 'bg-[#E5D1F8]'}`}>
-                <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[150%] bg-purple-600/20 blur-[120px] rounded-full animate-pulse"></div>
-                <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[140%] bg-green-500/10 blur-[100px] rounded-full"></div>
-             </div>
-             
-             <div className="relative z-10 space-y-2">
-               <h2 className={`text-[10px] md:text-xs font-black uppercase tracking-[0.5em] ${isDarkMode ? 'text-purple-300' : 'text-purple-800'}`}>
-                  {getGreeting()}
-               </h2>
-               <h2 className={`text-4xl sm:text-6xl md:text-7xl font-black tracking-tighter drop-shadow-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                 {user ? `Welcome, ${user.firstName}!` : 'Welcome to GRIDS!'}
-               </h2>
-             </div>
-          </div>
-        </>
-      )}
+      </div>
 
-      {!isSearching && (
-        <div className="w-full max-w-6xl space-y-20 mb-20">
-          {/* Quick Access */}
-          <div className="space-y-8">
-            <div className="flex items-center justify-between px-4">
-              <h3 className="text-2xl md:text-4xl font-black uppercase tracking-tighter text-purple-600">Quick Access</h3>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {/* GAD Indicators */}
-              <div 
-                onClick={() => navigate('/gad-data')}
-                className={`p-8 md:p-10 rounded-[40px] md:rounded-[48px] border-2 flex flex-col items-start gap-6 group shadow-sm transition-all hover:shadow-2xl cursor-pointer
-                  ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-purple-950/10' : 'bg-[#f8f5ff] border-purple-50'}`}
-              >
-                <div className={`w-14 h-14 md:w-16 md:h-16 rounded-[20px] md:rounded-[24px] flex items-center justify-center shadow-md transition-all group-hover:scale-110
-                  ${isDarkMode ? 'bg-[#2A2438] text-purple-400' : 'bg-white text-purple-600'}`}>
-                  <PieChart className="w-8 h-8 md:w-9 md:h-9" strokeWidth={2.5} />
-                </div>
-                <div className="space-y-3">
-                  <h4 className={`text-xl md:text-2xl font-black uppercase tracking-tighter leading-tight ${textClass}`}>GAD Indicators</h4>
-                  <p className={`text-sm font-medium leading-relaxed text-gray-500`}>Access 51 core Gender and Development indicators for Baguio City.</p>
-                  <div className="inline-flex items-center gap-2 text-[10px] font-black text-purple-600 uppercase tracking-widest mt-4 group/link">
-                    View Indicators <ChevronRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </div>
-
-              {/* CBMS Data Hub */}
-              <div 
-                onClick={() => navigate('/cbms')}
-                className={`p-8 md:p-10 rounded-[40px] md:rounded-[48px] border-2 flex flex-col items-start gap-6 group shadow-sm transition-all hover:shadow-2xl cursor-pointer
-                  ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-blue-950/10' : 'bg-[#f0f7ff] border-blue-50'}`}
-              >
-                <div className={`w-14 h-14 md:w-16 md:h-16 rounded-[20px] md:rounded-[24px] flex items-center justify-center shadow-md transition-all group-hover:scale-110
-                  ${isDarkMode ? 'bg-[#2A2438] text-blue-400' : 'bg-white text-blue-600'}`}>
-                  <Database className="w-8 h-8 md:w-9 md:h-9" strokeWidth={2.5} />
-                </div>
-                <div className="space-y-3">
-                  <h4 className={`text-xl md:text-2xl font-black uppercase tracking-tighter leading-tight ${textClass}`}>CBMS Data Hub</h4>
-                  <p className={`text-sm font-medium leading-relaxed text-gray-500`}>Official 2021 Community-Based Monitoring System data reports and records.</p>
-                  <div className="inline-flex items-center gap-2 text-[10px] font-black text-blue-600 uppercase tracking-widest mt-4 group/link">
-                    Explore Data <ChevronRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Policies */}
-              <div 
-                onClick={() => navigate('/policy')}
-                className={`p-8 md:p-10 rounded-[40px] md:rounded-[48px] border-2 flex flex-col items-start gap-6 group shadow-sm transition-all hover:shadow-2xl cursor-pointer
-                  ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-purple-950/10' : 'bg-[#f8f5ff] border-purple-50'}`}
-              >
-                <div className={`w-14 h-14 md:w-16 md:h-16 rounded-[20px] md:rounded-[24px] flex items-center justify-center shadow-md transition-all group-hover:scale-110
-                  ${isDarkMode ? 'bg-[#2A2438] text-purple-400' : 'bg-white text-purple-600'}`}>
-                  <BookOpen className="w-8 h-8 md:w-9 md:h-9" strokeWidth={2.5} />
-                </div>
-                <div className="space-y-3">
-                  <h4 className={`text-xl md:text-2xl font-black uppercase tracking-tighter leading-tight ${textClass}`}>Policies</h4>
-                  <p className={`text-sm font-medium leading-relaxed text-gray-500`}>Review official city ordinances and national GAD mandates like CEDAW and Magna Carta.</p>
-                  <div className="inline-flex items-center gap-2 text-[10px] font-black text-purple-600 uppercase tracking-widest mt-4 group/link">
-                    Explore Policies <ChevronRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </div>
-
-              {/* GAD Programs */}
-              <div 
-                onClick={() => navigate('/programs')}
-                className={`p-8 md:p-10 rounded-[40px] md:rounded-[48px] border-2 flex flex-col items-start gap-6 group shadow-sm transition-all hover:shadow-2xl cursor-pointer
-                  ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-orange-950/10' : 'bg-[#fff9f0] border-orange-50'}`}
-              >
-                <div className={`w-14 h-14 md:w-16 md:h-16 rounded-[20px] md:rounded-[24px] flex items-center justify-center shadow-md transition-all group-hover:scale-110
-                  ${isDarkMode ? 'bg-[#2A2438] text-orange-400' : 'bg-white text-orange-600'}`}>
-                  <Sparkles className="w-8 h-8 md:w-9 md:h-9" strokeWidth={2.5} />
-                </div>
-                <div className="space-y-3">
-                  <h4 className={`text-xl md:text-2xl font-black uppercase tracking-tighter leading-tight ${textClass}`}>GAD Programs</h4>
-                  <p className={`text-sm font-medium leading-relaxed text-gray-500`}>Explore city-wide social welfare, child protection, and family development initiatives.</p>
-                  <div className="inline-flex items-center gap-2 text-[10px] font-black text-orange-600 uppercase tracking-widest mt-4 group/link">
-                    View Programs <ChevronRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </div>
-
-              {/* People */}
-              <div 
-                onClick={() => navigate('/members')}
-                className={`p-8 md:p-10 rounded-[40px] md:rounded-[48px] border-2 flex flex-col items-start gap-6 group shadow-sm transition-all hover:shadow-2xl cursor-pointer
-                  ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-green-950/10' : 'bg-[#f0fff4] border-green-50'}`}
-              >
-                <div className={`w-14 h-14 md:w-16 md:h-16 rounded-[20px] md:rounded-[24px] flex items-center justify-center shadow-md transition-all group-hover:scale-110
-                  ${isDarkMode ? 'bg-[#2A2438] text-green-400' : 'bg-white text-green-600'}`}>
-                  <Users className="w-8 h-8 md:w-9 md:h-9" strokeWidth={2.5} />
-                </div>
-                <div className="space-y-3">
-                  <h4 className={`text-xl md:text-2xl font-black uppercase tracking-tighter leading-tight ${textClass}`}>People</h4>
-                  <p className={`text-sm font-medium leading-relaxed text-gray-500`}>Connect with dedicated Baguio City GFPS focal members and departmental leads.</p>
-                  <div className="inline-flex items-center gap-2 text-[10px] font-black text-green-600 uppercase tracking-widest mt-4 group/link">
-                    View Focal Points <ChevronRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* News & Announcements */}
-          <div className="space-y-8">
-            <div className="flex items-center justify-between px-4">
-              <h3 className="text-2xl md:text-4xl font-black uppercase tracking-tighter text-blue-600">Latest Updates</h3>
-            </div>
-            <div className="grid grid-cols-1 gap-6">
-              <div className={`p-8 md:p-10 rounded-[40px] md:rounded-[48px] border-2 flex flex-col md:flex-row items-start md:items-center gap-8 group shadow-sm transition-all hover:shadow-2xl cursor-pointer
-                ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-purple-950/10' : 'bg-[#f8f5ff] border-purple-50'}`}>
-                <div className={`w-16 h-16 md:w-20 md:h-20 rounded-[24px] md:rounded-[28px] flex items-center justify-center shadow-md transition-all group-hover:scale-110 shrink-0
-                  ${isDarkMode ? 'bg-[#2A2438] text-purple-400' : 'bg-white text-purple-600'}`}>
-                  <CalendarIcon className="w-10 h-10 md:w-12 md:h-12" strokeWidth={2.5} />
-                </div>
-                <div className="space-y-2 flex-1">
-                  <span className="text-[10px] font-black text-purple-600 uppercase tracking-[0.2em]">Event • March 2026</span>
-                  <h4 className={`text-xl md:text-3xl font-black uppercase tracking-tighter leading-tight ${textClass}`}>National Women's Month Celebration</h4>
-                  <p className={`text-sm md:text-lg font-medium leading-relaxed text-gray-500`}>Join us for the 2026 Women's Month kick-off ceremony at Baguio City Hall. Empowering women, building a better future.</p>
-                </div>
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all shrink-0
-                  ${isDarkMode ? 'bg-white/5 text-gray-500 group-hover:text-purple-400' : 'bg-white text-gray-300 group-hover:bg-purple-600 group-hover:text-white'}`}>
-                  <ArrowRight size={24} strokeWidth={3} />
-                </div>
-              </div>
-
-              <div className={`p-8 md:p-10 rounded-[40px] md:rounded-[48px] border-2 flex flex-col md:flex-row items-start md:items-center gap-8 group shadow-sm transition-all hover:shadow-2xl cursor-pointer
-                ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-blue-950/10' : 'bg-[#f0f7ff] border-blue-50'}`}>
-                <div className={`w-16 h-16 md:w-20 md:h-20 rounded-[24px] md:rounded-[28px] flex items-center justify-center shadow-md transition-all group-hover:scale-110 shrink-0
-                  ${isDarkMode ? 'bg-[#2A2438] text-blue-400' : 'bg-white text-blue-600'}`}>
-                  <Info className="w-10 h-10 md:w-12 md:h-12" strokeWidth={2.5} />
-                </div>
-                <div className="space-y-2 flex-1">
-                  <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em]">Announcement</span>
-                  <h4 className={`text-xl md:text-3xl font-black uppercase tracking-tighter leading-tight ${textClass}`}>New CBMS Data Released</h4>
-                  <p className={`text-sm md:text-lg font-medium leading-relaxed text-gray-500`}>The 2021 Pilot CBMS Section Q (WASH) data is now available in the Data Hub for public access and analysis.</p>
-                </div>
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all shrink-0
-                  ${isDarkMode ? 'bg-white/5 text-gray-500 group-hover:text-blue-400' : 'bg-white text-gray-300 group-hover:bg-blue-600 group-hover:text-white'}`}>
-                  <ArrowRight size={24} strokeWidth={3} />
-                </div>
-              </div>
-
-              <div className={`p-8 md:p-10 rounded-[40px] md:rounded-[48px] border-2 flex flex-col md:flex-row items-start md:items-center gap-8 group shadow-sm transition-all hover:shadow-2xl cursor-pointer
-                ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-green-950/10' : 'bg-[#f0fff4] border-green-50'}`}>
-                <div className={`w-16 h-16 md:w-20 md:h-20 rounded-[24px] md:rounded-[28px] flex items-center justify-center shadow-md transition-all group-hover:scale-110 shrink-0
-                  ${isDarkMode ? 'bg-[#2A2438] text-green-400' : 'bg-white text-green-600'}`}>
-                  <Award className="w-10 h-10 md:w-12 md:h-12" strokeWidth={2.5} />
-                </div>
-                <div className="space-y-2 flex-1">
-                  <span className="text-[10px] font-black text-green-600 uppercase tracking-[0.2em]">News</span>
-                  <h4 className={`text-xl md:text-3xl font-black uppercase tracking-tighter leading-tight ${textClass}`}>SIGED Awards 2026 Nominations</h4>
-                  <p className={`text-sm md:text-lg font-medium leading-relaxed text-gray-500`}>Nominations for the Sustaining Initiatives on Gender Equality are now open. Recognize excellence in GAD implementation.</p>
-                </div>
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all shrink-0
-                  ${isDarkMode ? 'bg-white/5 text-gray-500 group-hover:text-green-400' : 'bg-white text-gray-300 group-hover:bg-green-600 group-hover:text-white'}`}>
-                  <ArrowRight size={24} strokeWidth={3} />
-                </div>
-              </div>
-            </div>
-            
-            <button className="w-full py-6 rounded-[32px] border-2 border-dashed border-gray-200 dark:border-white/10 text-xs font-black uppercase tracking-[0.3em] text-gray-400 hover:text-purple-600 hover:border-purple-600/50 transition-all">
-              View All Updates & Announcements
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div className="w-full flex-1 transition-all duration-500">
+      <div className="w-full min-h-[400px] transition-all duration-500">
         {isSearching ? (
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-700 space-y-8">
             <div className="flex flex-col md:flex-row md:items-end justify-between px-4 gap-4">
@@ -379,7 +203,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, isDarkMode = false }) => {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 pb-12">
+            <div className="grid grid-cols-1 gap-3 pb-20">
               {searchResults.length > 0 ? searchResults.map((result) => (
                 <button 
                   key={result.id} 
@@ -409,9 +233,51 @@ const Dashboard: React.FC<DashboardProps> = ({ user, isDarkMode = false }) => {
               )}
             </div>
           </div>
-        ) : null}
+        ) : (
+          <div className="space-y-16 md:space-y-24 pb-20">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+              <div className={`p-8 md:p-12 rounded-[40px] md:rounded-[56px] border-2 flex flex-col items-start gap-6 group shadow-sm transition-all hover:shadow-2xl
+                ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-purple-950/10' : 'bg-[#f8f5ff] border-purple-50'}`}>
+                <div className={`w-14 h-14 md:w-20 md:h-20 rounded-[20px] md:rounded-[28px] flex items-center justify-center shadow-md
+                  ${isDarkMode ? 'bg-[#2A2438] text-purple-400' : 'bg-white text-purple-600'}`}>
+                  <BookOpen className="w-8 h-8 md:w-10 md:h-10" strokeWidth={2.5} />
+                </div>
+                <div className="space-y-3">
+                  <h4 className={`text-2xl md:text-4xl font-black uppercase tracking-tighter leading-tight ${textClass}`}>Policies</h4>
+                  <p className={`text-sm md:text-lg font-medium leading-relaxed text-gray-500`}>Review official city ordinances and national GAD mandates like CEDAW and Magna Carta.</p>
+                  <Link to="/policy" className="inline-flex items-center gap-2 text-[10px] font-black text-purple-600 uppercase tracking-widest mt-4 group/link">
+                    Explore Policies <ChevronRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+              </div>
+
+              <div className={`p-8 md:p-12 rounded-[40px] md:rounded-[56px] border-2 flex flex-col items-start gap-6 group shadow-sm transition-all hover:shadow-2xl
+                ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-green-900/10' : 'bg-[#f0fff4] border-green-50'}`}>
+                <div className={`w-14 h-14 md:w-20 md:h-20 rounded-[20px] md:rounded-[28px] flex items-center justify-center shadow-md
+                  ${isDarkMode ? 'bg-[#2A2438] text-green-400' : 'bg-white text-green-600'}`}>
+                  <Users className="w-8 h-8 md:w-10 md:h-10" strokeWidth={2.5} />
+                </div>
+                <div className="space-y-3">
+                  <h4 className={`text-2xl md:text-4xl font-black uppercase tracking-tighter leading-tight ${textClass}`}>People</h4>
+                  <p className={`text-sm md:text-lg font-medium leading-relaxed text-gray-500`}>Connect with dedicated Baguio City GFPS focal members and departmental leads.</p>
+                  <Link to="/members" className="inline-flex items-center gap-2 text-[10px] font-black text-green-600 uppercase tracking-widest mt-4 group/link">
+                    View Focal Points <ChevronRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </PageLayout>
+
+      <footer className="w-full flex flex-col items-center pt-16 pb-8 border-t border-gray-100 dark:border-white/5">
+        <p className={`text-[9px] font-black uppercase tracking-[0.6em] text-center leading-loose px-6 ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+          Copyright © City Government of Baguio<br />
+          City Planning Development Service Office – CBMS<br />
+          Developed by: Charles S. Chantioco
+        </p>
+      </footer>
+    </div>
   );
 };
 

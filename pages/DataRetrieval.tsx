@@ -1,8 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { CloudDownload, Eye, Search, Filter, Database, FileSpreadsheet, Building2, User as UserIcon, Clock } from 'lucide-react';
 import { Submission } from '../types';
 import { Link } from 'react-router-dom';
-import PageLayout from '../components/PageLayout';
 
 const DataRetrieval: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
   const [approvedData, setApprovedData] = useState<Submission[]>([]);
@@ -43,43 +43,45 @@ const DataRetrieval: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false 
   const cardBgClass = isDarkMode ? 'bg-[#1A1625]' : 'bg-white';
 
   return (
-    <PageLayout
-      isDarkMode={isDarkMode}
-      title="Data Retrieval"
-      subtitle="Registry Vault Access"
-      headerActions={
-        <div className="flex flex-col md:flex-row gap-4 w-full max-w-2xl">
-          <div className="flex-1 relative group">
-            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors">
-              <Search size={20} strokeWidth={3} />
-            </div>
-            <input 
-              type="text" 
-              placeholder="Search approved datasets..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full pl-14 pr-6 py-4 rounded-[24px] border shadow-sm focus:outline-none focus:ring-4 focus:ring-purple-600/5 transition-all text-xs font-bold
-                ${isDarkMode ? 'bg-[#2A2438] border-white/5 text-white placeholder:text-gray-600' : 'bg-white border-purple-50 text-gray-900 placeholder:text-gray-300'}`}
-            />
-          </div>
-          <div className="relative">
-            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400">
-              <Filter size={18} strokeWidth={3} />
-            </div>
-            <select 
-              value={filterOffice}
-              onChange={(e) => setFilterOffice(e.target.value)}
-              className={`pl-14 pr-10 py-4 rounded-[24px] border shadow-sm focus:outline-none focus:ring-4 focus:ring-purple-600/5 transition-all text-xs font-black uppercase appearance-none cursor-pointer
-                ${isDarkMode ? 'bg-[#2A2438] border-white/5 text-white' : 'bg-white border-purple-50 text-gray-900'}`}
-            >
-              <option value="All">All Offices</option>
-              {offices.map(o => <option key={o} value={o}>{o}</option>)}
-            </select>
-          </div>
-        </div>
-      }
-    >
-      <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 mb-8">
+    <div className="p-8 lg:p-12 animate-in fade-in duration-700 relative min-h-full">
+      {/* Standardized Header */}
+      <div className="mb-16 text-center lg:text-left">
+        <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>Data Retrieval</h1>
+        <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Registry Vault Access</p>
+        <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto lg:mx-0"></div>
+      </div>
+
+      <div className="mb-10 flex flex-col md:flex-row gap-4 w-full max-w-2xl mx-auto lg:mx-0">
+           <div className="flex-1 relative group">
+              <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors">
+                <Search size={20} strokeWidth={3} />
+              </div>
+              <input 
+                type="text" 
+                placeholder="Search approved datasets..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className={`w-full pl-14 pr-6 py-4 rounded-[24px] border shadow-sm focus:outline-none focus:ring-4 focus:ring-purple-600/5 transition-all text-xs font-bold
+                  ${isDarkMode ? 'bg-[#2A2438] border-white/5 text-white placeholder:text-gray-600' : 'bg-white border-purple-50 text-gray-900 placeholder:text-gray-300'}`}
+              />
+           </div>
+           <div className="relative">
+              <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400">
+                <Filter size={18} strokeWidth={3} />
+              </div>
+              <select 
+                value={filterOffice}
+                onChange={(e) => setFilterOffice(e.target.value)}
+                className={`pl-14 pr-10 py-4 rounded-[24px] border shadow-sm focus:outline-none focus:ring-4 focus:ring-purple-600/5 transition-all text-xs font-black uppercase appearance-none cursor-pointer
+                  ${isDarkMode ? 'bg-[#2A2438] border-white/5 text-white' : 'bg-white border-purple-50 text-gray-900'}`}
+              >
+                <option value="All">All Offices</option>
+                {offices.map(o => <option key={o} value={o}>{o}</option>)}
+              </select>
+           </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 mb-20">
         {filteredData.map((d) => (
           <div key={d.id} className={`${cardBgClass} rounded-[40px] p-8 border shadow-sm transition-all hover:shadow-2xl flex flex-col group ${isDarkMode ? 'border-white/5' : 'border-purple-50'}`}>
             <div className="flex items-start justify-between mb-6">
@@ -146,7 +148,14 @@ const DataRetrieval: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false 
           </div>
         )}
       </div>
-    </PageLayout>
+
+      <footer className="mt-auto py-10 flex flex-col items-center">
+        <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] text-center leading-loose">
+          Copyright © City Government of Baguio<br />
+          City Planning, Development, and Sustainability Office – CBMS Division
+        </p>
+      </footer>
+    </div>
   );
 };
 

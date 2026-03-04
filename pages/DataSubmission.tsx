@@ -1,11 +1,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, Trash2, CheckCircle2, Download, FileText, Loader2, X, Plus, History, Clock, User as UserIcon } from 'lucide-react';
+import { Upload, Trash2, CheckCircle2, Download, FileText, Loader2, X, Plus, History, Clock, User as UserIcon, ArrowLeft } from 'lucide-react';
 import { User, Submission, Notification } from '../types';
 import { useNavigate } from 'react-router-dom';
-import { recordAuditLog } from '../utils/auditLogger';
-import { CPDSOLogo } from '../components/Logo';
-import PageLayout from '../components/PageLayout';
 
 // IndexedDB Logic ...
 const DB_NAME = 'GRIDS_FileStorage';
@@ -104,10 +101,6 @@ const DataSubmission: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({
           isStoredLocally: true 
         };
         newSubmissions.push(sub);
-
-        // Record Audit Log
-        recordAuditLog(user, 'DATA_UPLOADED', `User submitted a new file: ${file.name} (${sub.fileSize})`, 'Data Submission');
-
         const notifications: Notification[] = JSON.parse(localStorage.getItem('grids_notifications') || '[]');
         const newNotif: Notification = {
           id: `subnotif-${Date.now()}`,
@@ -138,10 +131,6 @@ const DataSubmission: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({
   const removePendingFile = (index: number) => setPendingFiles(prev => prev.filter((_, i) => i !== index));
 
   const handleDeleteRecord = async (id: string) => {
-    const target = officeHistory.find(s => s.id === id);
-    if (target) {
-      recordAuditLog(user, 'DATA_DELETED', `User removed submission record: ${target.formName}`, 'Data Submission');
-    }
     await deleteFileFromDB(id);
     const existing: Submission[] = JSON.parse(localStorage.getItem('grids_submissions') || '[]');
     const filtered = existing.filter((s: Submission) => s.id !== id);
@@ -154,12 +143,18 @@ const DataSubmission: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({
   const innerBgClass = isDarkMode ? 'bg-[#2A2438]' : 'bg-[#FDFBF2]';
 
   return (
-    <PageLayout
-      isDarkMode={isDarkMode}
-      title={view === 'history' ? 'Submission Logs' : 'Data Submission'}
-      subtitle={`Registry Office: ${user?.office || 'Authorized Personnel'}`}
-      headerActions={
-        view === 'history' ? (
+    <div className="p-8 lg:p-12 animate-in fade-in duration-700 relative min-h-full">
+      {/* Standardized Consistent Header */}
+      <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div className="text-center md:text-left">
+          <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>
+            {view === 'history' ? 'Submission Logs' : 'Data Submission'}
+          </h1>
+          <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Registry Office: {user?.office || 'Authorized Personnel'}</p>
+          <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto md:mx-0"></div>
+        </div>
+
+        {view === 'history' && (
           <button 
             onClick={() => setView('upload')}
             className="flex items-center gap-4 bg-black text-white px-10 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.3em] hover:bg-purple-600 transition-all shadow-xl active:scale-95 group"
@@ -167,12 +162,12 @@ const DataSubmission: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({
             <Plus size={20} strokeWidth={3} className="group-hover:rotate-90 transition-transform" />
             New Upload
           </button>
-        ) : undefined
-      }
-    >
+        )}
+      </div>
+
       {view === 'history' ? (
         <div className="max-w-6xl mx-auto space-y-6">
-          <div className={`${cardBgClass} rounded-[48px] shadow-2xl shadow-purple-950/5 border ${isDarkMode ? 'border-white/5' : 'border-white'} overflow-hidden flex flex-col min-h-[400px]`}>
+          <div className={`${cardBgClass} rounded-[48px] shadow-2xl shadow-purple-900/5 border ${isDarkMode ? 'border-white/5' : 'border-white'} overflow-hidden flex flex-col min-h-[600px]`}>
             <div className="p-12">
               <div className="flex items-center gap-3 mb-10">
                 <History className="text-purple-600" size={24} />
@@ -217,7 +212,7 @@ const DataSubmission: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({
           </div>
         </div>
       ) : (
-        <div className={`${innerBgClass} rounded-[48px] shadow-2xl border ${isDarkMode ? 'border-white/5' : 'border-white'} overflow-hidden relative flex flex-col min-h-[500px]`}>
+        <div className={`${innerBgClass} rounded-[48px] shadow-2xl border ${isDarkMode ? 'border-white/5' : 'border-white'} overflow-hidden relative flex flex-col min-h-[700px]`}>
           <div className="p-12 pb-8 flex flex-col flex-1">
             <h2 className={`text-4xl font-black uppercase mb-8 ${textClass}`}>Select Files</h2>
             <div 
@@ -248,7 +243,13 @@ const DataSubmission: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({
           </div>
         </div>
       )}
-    </PageLayout>
+
+      <footer className="mt-20 w-full flex flex-col items-center">
+        <p className={`text-[10px] font-black uppercase tracking-[0.3em] text-center leading-relaxed ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+          Copyright © City Government of Baguio<br />CPDSO – CBMS Division
+        </p>
+      </footer>
+    </div>
   );
 };
 

@@ -1,7 +1,6 @@
+
 import React, { useState } from 'react';
 import { ChevronRight, ArrowLeft, Search, ShieldCheck, HelpCircle, FileText, UserCircle, Users, Layout, BookOpen, UserCheck, ShieldAlert, Monitor, ClipboardList, Info } from 'lucide-react';
-import { CPDSOLogo } from '../components/Logo';
-import PageLayout from '../components/PageLayout';
 
 type HelpCategory = 'ui' | 'policy' | 'citizens' | 'staff' | null;
 
@@ -144,16 +143,19 @@ const Help: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
             <li>Click Submit</li>
           </ul>
         } />
-        <QABlock num={3} q="What if my data is rejected?" a="Check the remarks from the reviewer, correct the data, and resubmit through the same module." />
-        <QABlock num={4} q="How often should data be submitted?" a="At a minimum, yearly, or as required in the guidelines for your office or indicator." />
+        <QABlock num={3} q="I am a Data Provider. What is my main task in GRIDS?" a="Check the remarks from the reviewer, correct the data, and resubmit through the same module." />
+        <QABlock num={4} q="I am a Data Provider. What is my main task in GRIDS?" a="At a minimum, yearly, or as required in the guidelines for your office or indicator." />
 
         <SectionDivider />
 
         <SectionHeader title="B. For Data Reviewers (GFPS Focals / Department Heads)" />
-        <QABlock num={5} q="What is my role as a Data Reviewer?" a="You validate and approve or deny submitted data from offices under your scope, ensuring accuracy, completeness, and alignment with GAD standards." />
-        
+        <QABlock num={1} q="What is my role as a Data Reviewer?" a="You validate and approve or deny submitted data from offices under your scope, ensuring accuracy, completeness, and alignment with GAD standards." />
+        <QABlock num={4} q="How do I log in?" a="Go to the GRIDS website, click Login, and enter your username and password." />
+        <QABlock num={5} q="What if I forget my password?" a="Use the Forgot Password option or contact the GRIDS administrator for assistance." />
+
         <SectionDivider />
 
+        {/* Content for Q6-Q15 as shown in Image 3 matches UI categories */}
         <SectionHeader title="Searching & Viewing Data" />
         <QABlock num={6} q="How do I search for data?" a="Use the Search bar, type a keyword (e.g., 'education', 'transport', 'employment'), and open a result to view details." />
         <QABlock num={7} q="Can I download the data?" a="Yes. Public users can download anonymized and aggregated datasets and reports." />
@@ -278,22 +280,21 @@ const Help: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
   );
 
   return (
-    <PageLayout
-      isDarkMode={isDarkMode}
-      title="Help - FAQs"
-      subtitle="Community Support Hub"
-    >
+    <div className="max-w-screen-2xl mx-auto p-4 lg:p-12 animate-in fade-in duration-700 relative min-h-screen">
+      {/* Standardized Header */}
+      <div className="mb-16 text-center lg:text-left">
+        <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${headingClass}`}>Help - FAQs</h1>
+        <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Community Support Hub</p>
+        <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto lg:mx-0"></div>
+      </div>
+
       <div className={`rounded-[64px] p-8 md:p-16 shadow-2xl transition-colors duration-500 border ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-purple-950/20' : 'bg-[#FFFBF5] border-purple-50 shadow-purple-900/5'} mb-20`}>
         {selectedCategory && (
           <button 
             onClick={() => setSelectedCategory(null)} 
-            className={`mb-16 flex items-center justify-center gap-3 px-8 py-4 rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all z-10 border
-              ${isDarkMode 
-                ? 'bg-white text-black border-white/20' 
-                : 'bg-gray-900 text-white border-white/10'}`}
+            className={`mb-16 flex items-center gap-3 border px-8 py-4 rounded-full font-black text-xs uppercase tracking-widest transition-all shadow-md active:scale-95 ${isDarkMode ? 'bg-[#2A2438] border-white/10 text-white hover:bg-white hover:text-black' : 'bg-white border-gray-100 text-gray-900 hover:bg-black hover:text-white'}`}
           >
-            <ArrowLeft size={18} strokeWidth={3} />
-            <span className="font-black text-[10px] uppercase tracking-[0.2em]">Back to Categories</span>
+            <ArrowLeft size={18} strokeWidth={3} /> Back to FAQ categories
           </button>
         )}
 
@@ -340,7 +341,7 @@ const Help: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
           </div>
         )}
       </div>
-    </PageLayout>
+    </div>
   );
 };
 

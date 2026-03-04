@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { X, Printer, Settings, Share2, Download, Check, Copy, Info, Calendar, FileText, User, Loader2, FileSpreadsheet, AlertCircle, ArrowLeft } from 'lucide-react';
+import { X, Printer, Settings, Share2, Download, Check, Copy, Info, Calendar, FileText, User, Loader2, FileSpreadsheet, AlertCircle } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 // IndexedDB Helper for file storage
@@ -149,10 +148,10 @@ const DataViewer: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) 
         <div className="h-16 bg-[#2d2d2d] flex items-center justify-between px-6 border-b border-white/5 print:hidden">
           <div className="flex items-center gap-6">
             <button 
-              onClick={() => navigate('/data-retrieval')} 
+              onClick={() => navigate(-1)} 
               className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-all active:scale-90"
             >
-              <ArrowLeft size={22} />
+              <X size={22} />
             </button>
             <div className="flex items-center gap-3">
               <div className={`w-3 h-3 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)] ${storedBinary ? 'bg-purple-500' : 'bg-green-500'}`}></div>
@@ -221,7 +220,7 @@ const DataViewer: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) 
               <tr>
                 <td className="bg-gray-100 border border-gray-200 text-center text-[10px] font-bold text-gray-400">1</td>
                 <td colSpan={16} className="border border-gray-200 p-6 bg-gray-50/30">
-                  <h2 className="font-black text-xl text-gray-900 uppercase tracking-tighter">Table 1. Sex Distribution of Household Members per Barangay</h2>
+                  <h2 className="font-black text-xl text-gray-900 uppercase tracking-tighter italic">Table 1. Sex Distribution of Household Members per Barangay</h2>
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Source: 2024 Household Census – CPDSO</p>
                 </td>
               </tr>

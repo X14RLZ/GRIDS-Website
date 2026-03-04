@@ -3,8 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Check, X, Eye, AlertCircle, Save, Loader2 } from 'lucide-react';
 import { Submission, User, Notification } from '../types';
 import { Link } from 'react-router-dom';
-import { recordAuditLog } from '../utils/auditLogger';
-import PageLayout from '../components/PageLayout';
 
 const DataApproval: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({ user, isDarkMode = false }) => {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
@@ -51,9 +49,6 @@ const DataApproval: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({ u
 
       const targetSub = updated.find(s => s.id === id);
       if (targetSub) {
-        // Record Audit Log
-        recordAuditLog(user, `DATA_${status.toUpperCase()}`, `Reviewer ${reviewerName} ${status.toLowerCase()} submission: ${targetSub.formName}. ${status === 'Denied' ? `Remarks: ${remarks}` : ''}`, 'Data Approval');
-
         const notifications: Notification[] = JSON.parse(localStorage.getItem('grids_notifications') || '[]');
         const newNotif: Notification = {
           id: `resnotif-${Date.now()}`,
@@ -79,12 +74,15 @@ const DataApproval: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({ u
   const borderClass = isDarkMode ? 'border-white/5' : 'border-purple-50';
 
   return (
-    <PageLayout
-      isDarkMode={isDarkMode}
-      title="Data Approval"
-      subtitle="Registry Review Portal"
-    >
-      <div className={`${cardBgClass} rounded-[32px] md:rounded-[48px] p-4 md:p-12 shadow-2xl border ${borderClass} overflow-hidden mb-8 md:mb-12`}>
+    <div className="p-4 lg:p-8 animate-in fade-in duration-500 relative min-h-full">
+      {/* Standardized Header */}
+      <div className="mb-16 text-center lg:text-left">
+        <h1 className={`text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none ${textClass}`}>Data Approval</h1>
+        <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-3">Registry Review Portal</p>
+        <div className="h-1.5 w-32 bg-purple-600 rounded-full mt-6 mx-auto lg:mx-0"></div>
+      </div>
+
+      <div className={`${cardBgClass} rounded-[32px] md:rounded-[48px] p-4 md:p-12 shadow-2xl border ${borderClass} overflow-hidden mb-20 md:mb-32`}>
         <div className="table-container custom-scrollbar">
           <table className="w-full text-left table-auto border-collapse min-w-[700px]">
             <thead className={`text-[9px] md:text-[10px] font-black ${isDarkMode ? 'text-purple-400' : 'text-gray-400'} uppercase tracking-[0.2em] border-b ${isDarkMode ? 'border-white/5' : 'border-gray-50'}`}>
@@ -205,7 +203,7 @@ const DataApproval: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({ u
           </div>
         </div>
       )}
-    </PageLayout>
+    </div>
   );
 };
 

@@ -13,25 +13,6 @@
   <meta name="keywords" content="Baguio City, GRIDS, GAD, Gender and Development, CBMS, Data Analysis, Gender Equality, CPDSO, Philippines Statistics, Gender Planning Baguio, Local Government Data, GAD Indicators, Magna Carta of Women">
   <meta name="author" content="City Government of Baguio - CPDSO">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://grids.baguio.gov.ph/">
-  
-  <!-- Structured Data (JSON-LD) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "GovernmentOrganization",
-    "name": "GRIDS Baguio City",
-    "url": "https://grids.baguio.gov.ph/",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Baguio_City_Seal.png/1200px-Baguio_City_Seal.png",
-    "description": "Gender-Responsive Integrated Database System for Baguio City.",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Baguio City",
-      "addressRegion": "Benguet",
-      "addressCountry": "PH"
-    }
-  }
-  </script>
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -53,13 +34,6 @@
     /* 1. BODY FONT: Inter - Optimized for UI data legibility */
     * {
       font-family: 'Inter', sans-serif;
-      box-sizing: border-box;
-    }
-
-    html, body, #root {
-      height: 100%;
-      margin: 0;
-      padding: 0;
     }
 
     body {
@@ -68,8 +42,6 @@
       scroll-behavior: smooth;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
-      /* PREVENT LAYOUT SHIFT WHEN SCROLLBAR APPEARS */
-      scrollbar-gutter: stable;
     }
     
     /* 2. HEADER FONT: Poppins - Bold geometric authority */
@@ -144,24 +116,15 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-
-    /* STABLE PAGE WRAPPER */
-    .page-wrapper {
-      display: flex;
-      flex-direction: column;
-      min-height: 100%;
-      width: 100%;
-      position: relative;
-    }
   </style>
   <script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@^19.2.4",
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.463.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
     "@google/genai": "https://esm.sh/@google/genai@^1.41.0"
   }
 }
