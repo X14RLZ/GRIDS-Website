@@ -4,87 +4,69 @@ import { Link } from 'react-router-dom';
 
 /**
  * Logo component representing the GRIDS (Gender-Responsive Integrated Database System)
- * visual identity.
+ * visual identity - a leaf with a tree-branch structure, divided into purple and green halves.
  */
-export const Logo: React.FC<{ size?: 'sm' | 'md' | 'lg', isDarkMode?: boolean }> = ({ size = 'md', isDarkMode = false }) => {
-  const logoSrc = "https://trello.com/1/cards/698d1c8d17be3891f45d9727/attachments/698d1da4c2b23845063374b0/download/GRIDS_LOGO_(No_BG).png";
-  
-  const height = size === 'sm' ? 'h-12' : size === 'lg' ? 'h-32' : 'h-20';
-  const isSmall = size === 'sm';
+export const Logo: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 'md' }) => {
+  const scale = size === 'sm' ? 0.5 : size === 'lg' ? 1.5 : 1;
+  const logoWidth = 120 * scale;
+  const logoHeight = 150 * scale;
   
   return (
     <Link 
       to="/" 
-      className="flex flex-col items-center justify-center cursor-pointer no-underline group"
+      className="flex flex-col items-center justify-center transition-all duration-300 hover:scale-105 cursor-pointer no-underline group"
     >
-      <img 
-        src={logoSrc} 
-        alt="GRIDS Logo" 
-        className={`${height} object-contain drop-shadow-md`}
-        referrerPolicy="no-referrer"
-      />
+      <svg 
+        width={logoWidth} 
+        height={logoHeight} 
+        viewBox="0 0 200 250" 
+        fill="none" 
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Leaf Shape Base */}
+        <path d="M100 20C40 20 10 80 10 140C10 200 100 240 100 240V20Z" fill="#8B44AF" /> {/* Purple Left */}
+        <path d="M100 20C160 20 190 80 190 140C190 200 100 240 100 240V20Z" fill="#5D921C" /> {/* Green Right */}
+        
+        {/* Tree Branch Structure - Center Trunk */}
+        <path d="M100 50V210" stroke="white" strokeWidth="8" strokeLinecap="round" />
+        
+        {/* Left Branches */}
+        <path d="M100 80L50 40" stroke="white" strokeWidth="6" strokeLinecap="round" />
+        <path d="M100 120L40 90" stroke="white" strokeWidth="6" strokeLinecap="round" />
+        <path d="M100 160L30 140" stroke="white" strokeWidth="6" strokeLinecap="round" />
+        <path d="M50 40V30" stroke="white" strokeWidth="4" strokeLinecap="round" />
+        
+        {/* Right Branches */}
+        <path d="M100 80L150 40" stroke="white" strokeWidth="6" strokeLinecap="round" />
+        <path d="M100 120L160 90" stroke="white" strokeWidth="6" strokeLinecap="round" />
+        <path d="M100 160L170 140" stroke="white" strokeWidth="6" strokeLinecap="round" />
+        <path d="M150 40V30" stroke="white" strokeWidth="4" strokeLinecap="round" />
+      </svg>
       
-      <div className={`mt-2 text-center overflow-hidden ${isSmall ? 'h-0 opacity-0' : 'h-auto opacity-100'}`}>
-        <h1 className={`font-black tracking-tighter leading-none ${size === 'lg' ? 'text-5xl' : 'text-4xl'} ${isDarkMode ? 'text-white' : 'text-black'}`}>GRIDS</h1>
-        <div className={`font-bold tracking-tight mt-1 ${size === 'lg' ? 'text-xl' : 'text-[12px]'}`}>
-          <span className="text-[#8B44AF]">it</span> <span className="text-[#5D921C]">connects</span>
+      {size !== 'sm' && (
+        <div className="mt-1 text-center">
+          <h1 className={`font-bold text-black dark:text-white tracking-tighter leading-none ${size === 'lg' ? 'text-4xl' : 'text-2xl'}`}>GRIDS</h1>
+          <div className={`font-semibold tracking-tight ${size === 'lg' ? 'text-lg' : 'text-[10px]'}`}>
+            <span className="text-[#8B44AF]">it</span> <span className="text-[#5D921C]">connects</span>
+          </div>
         </div>
-      </div>
+      )}
     </Link>
   );
 };
 
 /**
  * BaguioLogo component used in the Header, displaying the Baguio City Seal.
+ * Updated to be larger and more prominent to match the reference.
  */
-export const BaguioLogo: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 'md' }) => {
-  const height = size === 'sm' ? 'h-8' : size === 'lg' ? 'h-16' : 'h-10';
-  return (
-    <div className="flex items-center group cursor-pointer">
-      <div className="relative">
-        <img 
-          src="https://new.baguio.gov.ph/assets/baguio-logo.676e0ef7.png" 
-          alt="Baguio Seal" 
-          className={`${height} object-contain relative z-10 drop-shadow-sm`} 
-          referrerPolicy="no-referrer"
-        />
-      </div>
-    </div>
-  );
-};
-
-/**
- * CPDSOLogo component displaying the CPDSO logo.
- */
-export const CPDSOLogo: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 'md' }) => {
-  const height = size === 'sm' ? 'h-8' : size === 'lg' ? 'h-16' : 'h-10';
-  return (
-    <div className="flex items-center group cursor-pointer">
-      <div className="relative">
-        <img 
-          src="https://new.baguio.gov.ph/api/preview_image/aZVBzyEdJJsvIxfn_image.png" 
-          alt="CPDSO Logo" 
-          className={`${height} object-contain relative z-10 drop-shadow-sm group-hover:scale-110 transition-transform duration-300`} 
-          referrerPolicy="no-referrer"
-        />
-      </div>
-    </div>
-  );
-};
-
-/**
- * LogoWithMotto component displaying the GRIDS logo with its motto.
- */
-export const LogoWithMotto: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 'md' }) => {
-  const height = size === 'sm' ? 'h-16' : size === 'lg' ? 'h-48' : 'h-32';
-  return (
-    <div className="flex flex-col items-center justify-center transition-all duration-300 hover:scale-105 cursor-pointer no-underline group">
+export const BaguioLogo: React.FC = () => (
+  <div className="flex items-center group cursor-pointer">
+    <div className="relative">
       <img 
-        src="https://trello.com/1/cards/698d1c8d17be3891f45d9727/attachments/698d1da2af3b332bd7d25335/download/GRIDS_LOGO-MOTTO_V1.png" 
-        alt="GRIDS Logo with Motto" 
-        className={`${height} object-contain drop-shadow-md`}
-        referrerPolicy="no-referrer"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Baguio_City_Seal.png/1200px-Baguio_City_Seal.png" 
+        alt="Baguio Seal" 
+        className="h-12 w-12 object-contain relative z-10 drop-shadow-md group-hover:scale-110 transition-transform duration-300" 
       />
     </div>
-  );
-};
+  </div>
+);
