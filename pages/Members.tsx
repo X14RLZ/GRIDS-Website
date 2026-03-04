@@ -1,61 +1,232 @@
 
-import React, { useState } from 'react';
-import { Search, ArrowUpDown, LayoutGrid, List, Mail, Phone, Building2, Eye, ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Eye, Search, X, Mail, Building2, ShieldCheck, Database, UserCheck, Phone, Calendar, Facebook } from 'lucide-react';
+import { CPDSOLogo } from '../components/Logo';
+import PageLayout from '../components/PageLayout';
 
-const Members: React.FC = () => {
-  const navigate = useNavigate();
+interface Member {
+  id: string;
+  name: string;
+  role: string;
+  dept: string;
+  status: 'Active' | 'Pending' | 'Suspended';
+  email: string;
+  phone: string;
+  joined: string;
+  birthdate: string;
+  facebook?: string;
+  isSeeded: boolean;
+}
+
+const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const isFromSearch = localStorage.getItem('grids_is_searching') === 'true';
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const [dynamicMembers, setDynamicMembers] = useState<Member[]>([]);
 
-  const members = [
-    { id: 'gfps001', name: 'John Doe', role: 'DATA REVIEWER', dept: 'CMO', status: 'Active', email: 'cpdso.johndoe@gmail.com', phone: '+63 1234567890', joined: '29 Oct, 2020' },
-    { id: 'gfps021', name: 'John Doe', role: 'DATA PROVIDER', dept: 'CEPMO', status: 'Inactive', email: 'cpdso.johndoe@gmail.com', phone: '+63 1234567890', joined: '29 Oct, 2020' },
-    { id: 'gfps013', name: 'John Doe', role: 'ADMINISTRATOR', dept: 'CPDSO', status: 'Active', email: 'cpdso.johndoe@gmail.com', phone: '+63 1234567890', joined: '29 Oct, 2020' },
-  ];
+  useEffect(() => {
+    const loadSystemUsers = () => {
+      const storedUsers = JSON.parse(localStorage.getItem('grids_users') || '[]');
+      const allMembers: Member[] = storedUsers
+        .filter((u: any) => u.email === 'cbmscharles@gmail.com' || u.status === 'Active')
+        .map((u: any) => {
+          const isSeeded = u.email === 'cbmscharles@gmail.com';
+          return {
+            id: u.userId || `sys-${u.email}`,
+            name: `${u.firstName} ${u.lastName}`,
+            role: u.role.toUpperCase(),
+            dept: u.office || 'N/A',
+            status: u.status || (u.isActive ? 'Active' : 'Suspended'),
+            email: u.email,
+            phone: u.contactInfo || u.phone || 'Contact Office',
+            birthdate: u.birthdate || 'Unspecified',
+            facebook: u.facebook || '',
+            joined: u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'System Default',
+            isSeeded: isSeeded
+          };
+        });
+      setDynamicMembers(allMembers);
+    };
 
-  const filteredMembers = members.filter(m => 
-    m.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    loadSystemUsers();
+    window.addEventListener('storage', loadSystemUsers);
+    return () => window.removeEventListener('storage', loadSystemUsers);
+  }, []);
+
+  const filteredMembers = dynamicMembers.filter(m => 
+    m.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     m.dept.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const groupedMembers = filteredMembers.reduce((acc, member) => {
+    const deptKey = member.dept || 'UNCATEGORIZED';
+    if (!acc[deptKey]) acc[deptKey] = [];
+    acc[deptKey].push(member);
+    return acc;
+  }, {} as Record<string, Member[]>);
+
+  const departments = Object.keys(groupedMembers).sort();
+
+  const textClass = isDarkMode ? 'text-white' : 'text-gray-900';
+
   return (
-    <div className="max-w-screen-2xl mx-auto p-4 relative min-h-full">
-      <div className="mb-12">
-        <h1 className="text-4xl font-black text-gray-900 mb-2 uppercase tracking-tight">GFPS Members</h1>
-        <div className="h-1.5 w-32 bg-purple-600 rounded-full"></div>
+    <PageLayout
+      isDarkMode={isDarkMode}
+      title="People"
+      subtitle="Verified Database Personnel Registry"
+      headerActions={
+        <div className="w-full max-w-xl relative group mx-auto lg:mx-0 lg:mb-1">
+          <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors">
+            <Search size={22} strokeWidth={3} />
+          </div>
+          <input 
+            type="text" 
+            placeholder="Search directory by name or office..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={`w-full pl-16 pr-8 py-5 rounded-[28px] border shadow-[0_10px_40px_rgba(0,0,0,0.03)] focus:outline-none focus:ring-8 focus:ring-purple-600/5 transition-all text-sm font-bold
+              ${isDarkMode ? 'bg-[#2A2438] border-white/10 text-white placeholder:text-gray-600' : 'bg-white border-purple-50 text-gray-900 placeholder:text-gray-300'}`}
+          />
+        </div>
+      }
+    >
+      <div className="space-y-12 mb-12">
+        {departments.length > 0 ? departments.map((dept) => (
+          <div key={dept} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex items-center gap-6 mb-6">
+              <h2 className={`text-4xl font-black uppercase tracking-tighter ${textClass}`}>{dept}</h2>
+              <div className={`h-px flex-1 ${isDarkMode ? 'bg-white/5' : 'bg-gray-100'}`}></div>
+              <span className={`text-[10px] font-black uppercase tracking-widest text-purple-600`}>{groupedMembers[dept].length} Verified Personnel</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {groupedMembers[dept].map((m) => (
+                <div key={m.id} className={`rounded-[48px] p-10 shadow-sm card-hover transition-all duration-500 relative overflow-hidden group border
+                  ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-purple-950/20' : 'bg-white border-purple-50 shadow-purple-900/5'}`}>
+                  
+                  <div className={`absolute top-6 right-6 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-sm
+                    ${m.isSeeded ? 'bg-purple-600 text-white' : 'bg-green-50 text-green-600 border border-green-100'}`}>
+                    {m.isSeeded ? <ShieldCheck size={10} /> : <UserCheck size={10} />}
+                    {m.isSeeded ? 'Primary Admin' : 'Registry Active'}
+                  </div>
+
+                  <div className="flex flex-col items-center mb-10 pt-4">
+                    <div className="relative mb-8">
+                      <div className={`w-36 h-36 rounded-full border-[8px] shadow-xl overflow-hidden ring-8 transition-all
+                        ${isDarkMode ? 'bg-[#2A2438] border-[#2A2438] ring-white/5 group-hover:ring-purple-900' : 'bg-white border-white ring-purple-50/30 group-hover:ring-purple-100'}`}>
+                        <img 
+                          src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${m.id}`} 
+                          alt={m.name} 
+                          className={`w-full h-full object-cover ${isDarkMode ? 'bg-black/20' : 'bg-[#fdfaff]'}`} 
+                        />
+                      </div>
+                    </div>
+                    <h4 className={`text-3xl font-black uppercase tracking-tighter mb-1 text-center leading-none ${textClass}`}>{m.name}</h4>
+                    <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.3em]">{m.role}</p>
+                  </div>
+                  
+                  <div className={`flex justify-between items-center pt-8 border-t ${isDarkMode ? 'border-white/5' : 'border-purple-50'}`}>
+                    <div className="flex flex-col">
+                      <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Database status</span>
+                      <span className="text-[11px] font-black uppercase text-green-500">Verified</span>
+                    </div>
+                    <button 
+                      onClick={() => setSelectedMember(m)}
+                      className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-sm active:scale-95 flex items-center gap-2 group/btn
+                        ${isDarkMode ? 'bg-white text-black hover:bg-purple-600 hover:text-white' : 'bg-gray-50 text-gray-900 hover:bg-black hover:text-white'}`}
+                    >
+                      Details 
+                      <Eye size={14} className="group-hover/btn:scale-125 transition-transform" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )) : (
+          <div className="py-40 text-center flex flex-col items-center opacity-30">
+            <Search size={64} className="text-gray-300 mb-6" />
+            <h3 className={`text-3xl font-black uppercase tracking-tighter ${textClass}`}>Registry Empty</h3>
+            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mt-2">Only approved registered accounts are reflected here.</p>
+          </div>
+        )}
       </div>
 
-      <div className="bg-white rounded-[48px] p-12 shadow-2xl shadow-purple-950/5 border border-purple-50 mb-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredMembers.map((m, idx) => (
-            <div key={idx} className="bg-[#fdfaff] border border-purple-100 rounded-[40px] p-10 shadow-sm hover:shadow-xl transition-all duration-500 relative overflow-hidden group hover:-translate-y-2">
-              <div className="flex flex-col items-center mb-8 pt-4">
-                <div className="w-32 h-32 bg-white rounded-full border-[6px] border-white shadow-xl overflow-hidden mb-6 ring-8 ring-purple-50/30 group-hover:ring-purple-100 transition-all">
-                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${m.id}`} alt="avatar" className="w-full h-full bg-purple-50" />
+      {selectedMember && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setSelectedMember(null)}></div>
+          <div className={`relative w-full max-w-3xl rounded-[56px] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border
+            ${isDarkMode ? 'bg-[#1A1625] border-white/10' : 'bg-white border-white'}`}>
+            <div className="flex flex-col md:flex-row">
+              <div className={`w-full md:w-5/12 p-12 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r transition-colors
+                ${isDarkMode ? 'bg-[#2A2438] border-white/5' : 'bg-white/50 border-gray-100'}`}>
+                <div className={`w-48 h-48 rounded-[56px] shadow-2xl overflow-hidden border-[10px] mb-8 ${isDarkMode ? 'bg-black/20 border-white/5' : 'bg-white border-white'}`}>
+                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedMember.id}`} alt={selectedMember.name} className="w-full h-full object-cover" />
                 </div>
-                <h4 className="text-3xl font-black text-gray-900 uppercase tracking-tighter mb-1">{m.name}</h4>
-                <p className="text-xs font-black text-purple-400 uppercase tracking-[0.2em]">{m.role}</p>
+                <h3 className={`text-3xl font-black uppercase tracking-tighter mb-1 text-center ${textClass}`}>{selectedMember.name}</h3>
+                <span className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mb-6">{selectedMember.role}</span>
+                <div className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${isDarkMode ? 'bg-white/5 border-white/10 text-gray-400' : 'bg-gray-50 border-gray-100 text-gray-500'}`}>
+                  Joined: {selectedMember.joined}
+                </div>
               </div>
-              <div className="flex justify-between items-center text-[11px] font-black text-gray-400 uppercase tracking-widest pt-6 border-t border-purple-50/50">
-                <span>Joined at <span className="text-gray-900">{m.joined}</span></span>
-                <button className="text-purple-600 hover:text-purple-800 transition-all font-black flex items-center gap-1 group/btn">View details <Eye size={14} className="group-hover/btn:translate-x-1 transition-transform" /></button>
+              <div className="flex-1 p-10 md:p-12 flex flex-col gap-6">
+                <div className="flex items-center justify-between">
+                  <h4 className={`text-xl font-black uppercase tracking-tight ${textClass}`}>Information Page</h4>
+                  <button onClick={() => setSelectedMember(null)} className="p-2 text-gray-400 hover:text-white transition-colors"><X size={24} /></button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="flex items-center gap-4 group">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm bg-purple-50 text-purple-600"><Building2 size={18} /></div>
+                    <div>
+                      <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Office</p>
+                      <p className={`text-xs font-black uppercase ${textClass}`}>{selectedMember.dept}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 group">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm bg-purple-50 text-purple-600"><Mail size={18} /></div>
+                    <div>
+                      <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Email Address</p>
+                      <p className={`text-xs font-bold ${textClass}`}>{selectedMember.email}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 group">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm bg-purple-50 text-purple-600"><Phone size={18} /></div>
+                    <div>
+                      <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Phone Number</p>
+                      <p className={`text-xs font-bold ${textClass}`}>{selectedMember.phone}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 group">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm bg-purple-50 text-purple-600"><Calendar size={18} /></div>
+                    <div>
+                      <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Birthdate</p>
+                      <p className={`text-xs font-bold ${textClass}`}>{selectedMember.birthdate}</p>
+                    </div>
+                  </div>
+                  {selectedMember.facebook && (
+                    <div className="flex items-center gap-4 group sm:col-span-2">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm bg-blue-50 text-blue-600"><Facebook size={18} /></div>
+                      <div>
+                        <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Social Connection</p>
+                        <a href={`https://${selectedMember.facebook.replace('https://', '')}`} target="_blank" rel="noopener noreferrer" className={`text-xs font-bold text-blue-600 hover:underline truncate block max-w-[200px]`}>
+                          {selectedMember.facebook}
+                        </a>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-4 p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                   <div className="flex items-center gap-3">
+                     <ShieldCheck size={16} className="text-green-500" />
+                     <p className="text-[9px] font-black uppercase tracking-widest text-gray-400">Registry ID: <span className="text-purple-600 font-mono">{selectedMember.id}</span></p>
+                   </div>
+                </div>
+                <button onClick={() => setSelectedMember(null)} className="w-full py-4 bg-black text-white rounded-[24px] font-black text-[11px] uppercase tracking-[0.3em] transition-all shadow-xl active:scale-95">Close Directory</button>
               </div>
             </div>
-          ))}
+          </div>
         </div>
-      </div>
-
-      <button 
-        onClick={() => navigate(-1)}
-        className="fixed bottom-10 right-10 flex items-center gap-4 px-8 py-5 bg-black text-white rounded-full shadow-[0_30px_60px_rgba(0,0,0,0.4)] hover:scale-110 hover:-translate-y-1 active:scale-95 transition-all z-50 group border border-white/10"
-      >
-        <ArrowLeft size={24} className="group-hover:-translate-x-2 transition-transform duration-300" />
-        <span className="hidden md:inline font-black text-xs uppercase tracking-[0.2em]">
-          {isFromSearch ? "Search Results" : "Previous Page"}
-        </span>
-      </button>
-    </div>
+      )}
+    </PageLayout>
   );
 };
 
