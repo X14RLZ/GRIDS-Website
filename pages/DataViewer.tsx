@@ -1,7 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
-import { X, Printer, Settings, Share2, Download, Check, Copy, Info, Calendar, FileText, User, Loader2, FileSpreadsheet, AlertCircle, ArrowLeft } from 'lucide-react';
+import { X, Printer, Settings, Share2, Download, Check, Copy, Info, Calendar, FileText, User as UserIcon, Loader2, FileSpreadsheet, AlertCircle, ArrowLeft } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { User } from '../types';
+import { recordAuditLog } from '../utils/auditLogger';
 
 // IndexedDB Helper for file storage
 const DB_NAME = 'GRIDS_FileStorage';
@@ -27,7 +29,7 @@ const getFileFromDB = async (id: string): Promise<any> => {
 };
 
 // Fix: Added isDarkMode to props to resolve TypeScript error in App.tsx
-const DataViewer: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
+const DataViewer: React.FC<{ user: User | null; isDarkMode?: boolean }> = ({ user, isDarkMode = false }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   
@@ -66,6 +68,9 @@ const DataViewer: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) 
       if (foundMetadata) {
         setFileData(foundMetadata);
         
+        // Log Preview
+        recordAuditLog(user, 'DATA_PREVIEW', `User opened secure preview for: ${foundMetadata.formName}`, 'Data Viewer');
+
         // 3. Try to fetch actual binary from IndexedDB if it's a real user upload
         if (id) {
           try {
@@ -94,16 +99,19 @@ const DataViewer: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) 
   }, [id]);
 
   const handlePrint = () => {
+    recordAuditLog(user, 'DATA_PRINT', `User initiated print for: ${fileData?.formName}`, 'Data Viewer');
     window.print();
   };
 
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
+    recordAuditLog(user, 'DATA_SHARE', `User copied sharing link for: ${fileData?.formName}`, 'Data Viewer');
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleDownload = () => {
+    recordAuditLog(user, 'DATA_DOWNLOAD', `User downloaded file via viewer: ${fileData?.formName}`, 'Data Viewer');
     if (storedBinary) {
       // Real file download from IndexedDB
       const link = document.createElement('a');

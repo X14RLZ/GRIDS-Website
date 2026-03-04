@@ -176,7 +176,7 @@ const AppContent: React.FC<{
                  <Route path="/cbms" element={<CBMS isDarkMode={isDarkMode} />} />
                  <Route path="/data-submission" element={<DataSubmission user={user} isDarkMode={isDarkMode} />} />
                  <Route path="/data-approval" element={<DataApproval user={user} isDarkMode={isDarkMode} />} />
-                 <Route path="/data-retrieval" element={isAnalyzer ? <DataRetrieval isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
+                 <Route path="/data-retrieval" element={isAnalyzer ? <DataRetrieval user={user} isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
                  <Route path="/user-management" element={isAdmin ? <UserManagement isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
                  <Route path="/audit-trail" element={isAdmin ? <AuditTrail isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
                  <Route path="/about" element={<About isDarkMode={isDarkMode} />} />
@@ -185,7 +185,7 @@ const AppContent: React.FC<{
                  <Route path="/profile" element={user ? <Profile user={user} onUpdateUser={onUpdateUser} isDarkMode={isDarkMode} /> : <Navigate to="/login" />} />
                  <Route path="/members" element={<Members isDarkMode={isDarkMode} />} />
                  <Route path="/programs" element={<Programs isDarkMode={isDarkMode} />} />
-                 <Route path="/view/:id" element={<DataViewer isDarkMode={isDarkMode} />} />
+                 <Route path="/view/:id" element={<DataViewer user={user} isDarkMode={isDarkMode} />} />
                  <Route path="/contact" element={<ContactUs isDarkMode={isDarkMode} />} />
                  <Route path="/help" element={<Help isDarkMode={isDarkMode} />} />
                  <Route path="*" element={<Navigate to="/" replace />} />

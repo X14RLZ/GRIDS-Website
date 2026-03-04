@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { CloudDownload, Eye, Search, Filter, Database, FileSpreadsheet, Building2, User as UserIcon, Clock } from 'lucide-react';
-import { Submission } from '../types';
+import { Submission, User } from '../types';
 import { Link } from 'react-router-dom';
 import PageLayout from '../components/PageLayout';
+import { recordAuditLog } from '../utils/auditLogger';
 
-const DataRetrieval: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
+const DataRetrieval: React.FC<{ user: User | null; isDarkMode?: boolean }> = ({ user, isDarkMode = false }) => {
   const [approvedData, setApprovedData] = useState<Submission[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterOffice, setFilterOffice] = useState('All');
@@ -36,6 +37,10 @@ const DataRetrieval: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false 
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    
+    // Audit Log
+    recordAuditLog(user, 'DATA_DOWNLOAD', `User downloaded dataset: ${formName}`, 'Data Retrieval');
+    
     alert(`Downloading ${formName}... Dataset successfully retrieved from GRIDS vault.`);
   };
 
