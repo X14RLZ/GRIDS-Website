@@ -263,19 +263,227 @@ const App: React.FC = () => {
       phone: '442-3939',
       contactInfo: '442-3939',
       status: 'Active',
+      photoUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=u_admin_1&top[]=shortHair&top[]=shavedSides&top[]=frizzle&top[]=dreads&facialHairProbability=50`,
+      facebook: 'facebook.com/charles.admin',
       createdAt: new Date('2025-01-01').toISOString()
     };
+
+    // DUMMY USERS (Male)
+    const dummyUsers = [
+      {
+        userId: 'u_dummy_1',
+        username: 'juan_delacruz',
+        email: 'juan.delacruz@baguio.gov.ph',
+        firstName: 'Juan',
+        lastName: 'Dela Cruz',
+        role: 'Data Provider',
+        office: 'City Social Welfare and Development Office (CSWDO)',
+        phone: '442-1234',
+        contactInfo: '442-1234',
+        status: 'Active',
+        photoUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=u_dummy_1&top[]=shortHair&top[]=shavedSides&top[]=frizzle&top[]=dreads&facialHairProbability=50`,
+        facebook: 'facebook.com/juan.delacruz',
+        createdAt: new Date('2025-02-15').toISOString()
+      },
+      {
+        userId: 'u_dummy_2',
+        username: 'ricardo_dalisay',
+        email: 'ricardo.dalisay@baguio.gov.ph',
+        firstName: 'Ricardo',
+        lastName: 'Dalisay',
+        role: 'Data Reviewer',
+        office: 'Baguio City Police Office (BCPO)',
+        phone: '442-5678',
+        contactInfo: '442-5678',
+        status: 'Active',
+        photoUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=u_dummy_2&top[]=shortHair&top[]=shavedSides&top[]=frizzle&top[]=dreads&facialHairProbability=50`,
+        facebook: 'facebook.com/ricardo.dalisay',
+        createdAt: new Date('2025-03-01').toISOString()
+      },
+      {
+        userId: 'u_dummy_3',
+        username: 'pedro_penduko',
+        email: 'pedro.penduko@baguio.gov.ph',
+        firstName: 'Pedro',
+        lastName: 'Penduko',
+        role: 'Data Analyst',
+        office: 'City Health Services Office (CHSO)',
+        phone: '442-9012',
+        contactInfo: '442-9012',
+        status: 'Active',
+        photoUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=u_dummy_3&top[]=shortHair&top[]=shavedSides&top[]=frizzle&top[]=dreads&facialHairProbability=50`,
+        facebook: 'facebook.com/pedro.penduko',
+        createdAt: new Date('2025-04-10').toISOString()
+      },
+      {
+        userId: 'u_dummy_4',
+        username: 'victor_magtanggol',
+        email: 'victor.magtanggol@baguio.gov.ph',
+        firstName: 'Victor',
+        lastName: 'Magtanggol',
+        role: 'Data Provider',
+        office: 'City Disaster Risk Reduction and Management Office (CDRRMO)',
+        phone: '442-3456',
+        contactInfo: '442-3456',
+        status: 'Active',
+        photoUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=u_dummy_4&top[]=shortHair&top[]=shavedSides&top[]=frizzle&top[]=dreads&facialHairProbability=50`,
+        facebook: 'facebook.com/victor.magtanggol',
+        createdAt: new Date('2025-05-20').toISOString()
+      },
+      {
+        userId: 'u_dummy_5',
+        username: 'mateo_do',
+        email: 'mateo.do@baguio.gov.ph',
+        firstName: 'Mateo',
+        lastName: 'Do',
+        role: 'Data Reviewer',
+        office: 'City Human Resource Management Office (CHRMO)',
+        phone: '442-7890',
+        contactInfo: '442-7890',
+        status: 'Active',
+        photoUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=u_dummy_5&top[]=shortHair&top[]=shavedSides&top[]=frizzle&top[]=dreads&facialHairProbability=50`,
+        facebook: 'facebook.com/mateo.do',
+        createdAt: new Date('2025-06-05').toISOString()
+      },
+      {
+        userId: 'u_dummy_6',
+        username: 'jose_rizal',
+        email: 'jose.rizal@baguio.gov.ph',
+        firstName: 'Jose',
+        lastName: 'Rizal',
+        role: 'Data Analyst',
+        office: 'City Planning, Development and Sustainability Office (CPDSO)',
+        phone: '442-1111',
+        contactInfo: '442-1111',
+        status: 'Active',
+        photoUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=u_dummy_6&top[]=shortHair&top[]=shavedSides&top[]=frizzle&top[]=dreads&facialHairProbability=50`,
+        facebook: 'facebook.com/jose.rizal',
+        createdAt: new Date('2025-07-15').toISOString()
+      },
+      {
+        userId: 'u_dummy_7',
+        username: 'andres_bonifacio',
+        email: 'andres.bonifacio@baguio.gov.ph',
+        firstName: 'Andres',
+        lastName: 'Bonifacio',
+        role: 'Data Provider',
+        office: 'Public Employment and Services Office (PESO)',
+        phone: '442-2222',
+        contactInfo: '442-2222',
+        status: 'Active',
+        photoUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=u_dummy_7&top[]=shortHair&top[]=shavedSides&top[]=frizzle&top[]=dreads&facialHairProbability=50`,
+        facebook: 'facebook.com/andres.bonifacio',
+        createdAt: new Date('2025-08-25').toISOString()
+      },
+      {
+        userId: 'u_dummy_8',
+        username: 'emilio_aguinaldo',
+        email: 'emilio.aguinaldo@baguio.gov.ph',
+        firstName: 'Emilio',
+        lastName: 'Aguinaldo',
+        role: 'Data Reviewer',
+        office: 'City Mayor\'s Office (CMO)',
+        phone: '442-3333',
+        contactInfo: '442-3333',
+        status: 'Active',
+        photoUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=u_dummy_8&top[]=shortHair&top[]=shavedSides&top[]=frizzle&top[]=dreads&facialHairProbability=50`,
+        facebook: 'facebook.com/emilio.aguinaldo',
+        createdAt: new Date('2025-09-30').toISOString()
+      },
+      {
+        userId: 'u_dummy_9',
+        username: 'antonio_luna',
+        email: 'antonio.luna@baguio.gov.ph',
+        firstName: 'Antonio',
+        lastName: 'Luna',
+        role: 'Data Analyst',
+        office: 'City Engineering Office (CEO)',
+        phone: '442-4444',
+        contactInfo: '442-4444',
+        status: 'Active',
+        photoUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=u_dummy_9&top[]=shortHair&top[]=shavedSides&top[]=frizzle&top[]=dreads&facialHairProbability=50`,
+        facebook: 'facebook.com/antonio.luna',
+        createdAt: new Date('2025-10-10').toISOString()
+      },
+      {
+        userId: 'u_dummy_10',
+        username: 'apolinario_mabini',
+        email: 'apolinario.mabini@baguio.gov.ph',
+        firstName: 'Apolinario',
+        lastName: 'Mabini',
+        role: 'Data Provider',
+        office: 'City Legal Office (CLO)',
+        phone: '442-5555',
+        contactInfo: '442-5555',
+        status: 'Active',
+        photoUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=u_dummy_10&top[]=shortHair&top[]=shavedSides&top[]=frizzle&top[]=dreads&facialHairProbability=50`,
+        facebook: 'facebook.com/apolinario.mabini',
+        createdAt: new Date('2025-11-20').toISOString()
+      },
+      {
+        userId: 'u_dummy_11',
+        username: 'marcelo_delpilar',
+        email: 'marcelo.delpilar@baguio.gov.ph',
+        firstName: 'Marcelo',
+        lastName: 'Del Pilar',
+        role: 'Data Reviewer',
+        office: 'City Budget Office (CBO)',
+        phone: '442-6666',
+        contactInfo: '442-6666',
+        status: 'Active',
+        photoUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=u_dummy_11&top[]=shortHair&top[]=shavedSides&top[]=frizzle&top[]=dreads&facialHairProbability=50`,
+        facebook: 'facebook.com/marcelo.delpilar',
+        createdAt: new Date('2025-12-01').toISOString()
+      },
+      {
+        userId: 'u_dummy_12',
+        username: 'graciano_lopezjaena',
+        email: 'graciano.lopezjaena@baguio.gov.ph',
+        firstName: 'Graciano',
+        lastName: 'Lopez Jaena',
+        role: 'Data Analyst',
+        office: 'City Treasury Office (CTO)',
+        phone: '442-7777',
+        contactInfo: '442-7777',
+        status: 'Active',
+        photoUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=u_dummy_12&top[]=shortHair&top[]=shavedSides&top[]=frizzle&top[]=dreads&facialHairProbability=50`,
+        facebook: 'facebook.com/graciano.lopezjaena',
+        createdAt: new Date('2026-01-10').toISOString()
+      },
+      {
+        userId: 'u_dummy_13',
+        username: 'juan_luna',
+        email: 'juan.luna@baguio.gov.ph',
+        firstName: 'Juan',
+        lastName: 'Luna',
+        role: 'Data Provider',
+        office: 'City Environment and Parks Management Office (CEPMO)',
+        phone: '442-8888',
+        contactInfo: '442-8888',
+        status: 'Active',
+        photoUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=u_dummy_13&top[]=shortHair&top[]=shavedSides&top[]=frizzle&top[]=dreads&facialHairProbability=50`,
+        facebook: 'facebook.com/juan.luna',
+        createdAt: new Date('2026-02-20').toISOString()
+      }
+    ];
 
     // FILTER RULE: Only keep your admin account and actual registered users
     // This removes other "pre-seeded" people while allowing registration persistence
     userList = userList.filter((u: any) => 
-      u.email === 'cbmscharles@gmail.com' || u.userId.startsWith('u_reg_')
+      u.email === 'cbmscharles@gmail.com' || u.userId.startsWith('u_reg_') || u.userId.startsWith('u_dummy_')
     );
 
     // Ensure Admin is always there
     if (!userList.some((u: any) => u.email === primaryAdmin.email)) {
       userList.unshift(primaryAdmin);
     }
+
+    // Add dummy users if they don't exist
+    dummyUsers.forEach(dummy => {
+      if (!userList.some((u: any) => u.userId === dummy.userId)) {
+        userList.push(dummy);
+      }
+    });
 
     localStorage.setItem('grids_users', JSON.stringify(userList));
 

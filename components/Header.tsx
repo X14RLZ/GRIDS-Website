@@ -103,9 +103,17 @@ const Header: React.FC<HeaderProps> = ({
           onClick={() => user ? navigate('/profile') : onLoginClick?.()}
           className={`flex items-center gap-2 group md:px-4 py-1.5 rounded-full transition-all ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-white/50'}`}
         >
-          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full border-2 flex items-center justify-center transition-all 
+          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full border-2 flex items-center justify-center transition-all overflow-hidden
             ${isDarkMode ? 'border-white/20 text-white' : 'border-gray-900 text-gray-900 group-hover:bg-gray-900 group-hover:text-white'}`}>
-            <UserIcon className="w-4 h-4 md:w-5 h-5" />
+            {user?.photoUrl ? (
+              <img 
+                src={user.photoUrl} 
+                alt="Profile" 
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <UserIcon className="w-4 h-4 md:w-5 h-5" />
+            )}
           </div>
           <span className={`text-[10px] md:text-sm font-bold ${textClass} hidden sm:block`}>
             {user ? `${user.firstName}` : 'Login'}

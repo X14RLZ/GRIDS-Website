@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Eye, Search, X, Mail, Building2, ShieldCheck, Database, UserCheck, Phone, Calendar, Facebook } from 'lucide-react';
+import { Eye, Search, X, Mail, Building2, ShieldCheck, Database, UserCheck, Phone, Calendar, Facebook, User as UserIcon } from 'lucide-react';
 import { CPDSOLogo } from '../components/Logo';
 import PageLayout from '../components/PageLayout';
 
@@ -15,6 +15,7 @@ interface Member {
   joined: string;
   birthdate: string;
   facebook?: string;
+  photoUrl?: string;
   isSeeded: boolean;
 }
 
@@ -40,6 +41,7 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
             phone: u.contactInfo || u.phone || 'Contact Office',
             birthdate: u.birthdate || 'Unspecified',
             facebook: u.facebook || '',
+            photoUrl: u.photoUrl || '',
             joined: u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'System Default',
             isSeeded: isSeeded
           };
@@ -111,17 +113,21 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
 
                   <div className="flex flex-col items-center mb-10 pt-4">
                     <div className="relative mb-8">
-                      <div className={`w-36 h-36 rounded-full border-[8px] shadow-xl overflow-hidden ring-8 transition-all
+                      <div className={`w-36 h-36 rounded-full border-[8px] shadow-xl overflow-hidden ring-8 transition-all flex items-center justify-center
                         ${isDarkMode ? 'bg-[#2A2438] border-[#2A2438] ring-white/5 group-hover:ring-purple-900' : 'bg-white border-white ring-purple-50/30 group-hover:ring-purple-100'}`}>
-                        <img 
-                          src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${m.id}`} 
-                          alt={m.name} 
-                          className={`w-full h-full object-cover ${isDarkMode ? 'bg-black/20' : 'bg-[#fdfaff]'}`} 
-                        />
+                        {m.photoUrl ? (
+                          <img 
+                            src={m.photoUrl} 
+                            alt={m.name} 
+                            className={`w-full h-full object-cover ${isDarkMode ? 'bg-black/20' : 'bg-[#fdfaff]'}`} 
+                          />
+                        ) : (
+                          <UserIcon size={64} className={isDarkMode ? 'text-purple-400' : 'text-gray-300'} />
+                        )}
                       </div>
                     </div>
                     <h4 className={`text-3xl font-black uppercase tracking-tighter mb-1 text-center leading-none ${textClass}`}>{m.name}</h4>
-                    <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.3em]">{m.role}</p>
+                    <p className="text-[10px] font-black text-purple-600 uppercase tracking-[0.3em] mb-4">{m.role}</p>
                   </div>
                   
                   <div className={`flex justify-between items-center pt-8 border-t ${isDarkMode ? 'border-white/5' : 'border-purple-50'}`}>
@@ -159,8 +165,12 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
             <div className="flex flex-col md:flex-row">
               <div className={`w-full md:w-5/12 p-12 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r transition-colors
                 ${isDarkMode ? 'bg-[#2A2438] border-white/5' : 'bg-white/50 border-gray-100'}`}>
-                <div className={`w-48 h-48 rounded-[56px] shadow-2xl overflow-hidden border-[10px] mb-8 ${isDarkMode ? 'bg-black/20 border-white/5' : 'bg-white border-white'}`}>
-                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedMember.id}`} alt={selectedMember.name} className="w-full h-full object-cover" />
+                <div className={`w-48 h-48 rounded-[56px] shadow-2xl overflow-hidden border-[10px] mb-8 flex items-center justify-center ${isDarkMode ? 'bg-black/20 border-white/5' : 'bg-white border-white'}`}>
+                  {selectedMember.photoUrl ? (
+                    <img src={selectedMember.photoUrl} alt={selectedMember.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <UserIcon size={80} className={isDarkMode ? 'text-purple-400' : 'text-gray-300'} />
+                  )}
                 </div>
                 <h3 className={`text-3xl font-black uppercase tracking-tighter mb-1 text-center ${textClass}`}>{selectedMember.name}</h3>
                 <span className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mb-6">{selectedMember.role}</span>
@@ -220,7 +230,30 @@ const Members: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
                      <p className="text-[9px] font-black uppercase tracking-widest text-gray-400">Registry ID: <span className="text-purple-600 font-mono">{selectedMember.id}</span></p>
                    </div>
                 </div>
-                <button onClick={() => setSelectedMember(null)} className="w-full py-4 bg-black text-white rounded-[24px] font-black text-[11px] uppercase tracking-[0.3em] transition-all shadow-xl active:scale-95">Close Directory</button>
+
+                {selectedMember.facebook ? (
+                  <div className="mt-2">
+                    <a 
+                      href={`https://${selectedMember.facebook.replace('https://', '')}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="w-full py-4 bg-blue-600 text-white rounded-[24px] font-black text-[11px] uppercase tracking-[0.3em] transition-all shadow-xl hover:bg-blue-700 active:scale-95 flex items-center justify-center gap-3"
+                    >
+                      <Facebook size={18} /> Visit FB Profile
+                    </a>
+                  </div>
+                ) : (
+                  <div className="mt-2">
+                    <div className={`w-full py-4 rounded-[24px] font-black text-[11px] uppercase tracking-[0.3em] flex items-center justify-center gap-3 opacity-50 cursor-not-allowed
+                      ${isDarkMode ? 'bg-white/5 text-gray-500' : 'bg-gray-100 text-gray-400'}`}>
+                      <Facebook size={18} className="opacity-30" /> No FB Linked
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-4">
+                  <button onClick={() => setSelectedMember(null)} className="w-full py-4 bg-black text-white rounded-[24px] font-black text-[11px] uppercase tracking-[0.3em] transition-all shadow-xl active:scale-95">Close Directory</button>
+                </div>
               </div>
             </div>
           </div>

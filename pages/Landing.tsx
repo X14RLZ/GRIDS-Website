@@ -121,6 +121,7 @@ const Landing: React.FC<{ onLogin: (user: User) => void, isDarkMode?: boolean }>
         username: regData.email.split('@')[0],
         password: password, 
         passwordHash: 'PBKDF2_SIMULATED', 
+        phone: regData.phone,
         contactInfo: regData.phone, 
         isActive: true, 
         status: 'Pending', 

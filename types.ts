@@ -36,6 +36,7 @@ export interface User {
   landline?: string;
   status?: string;
   facebook?: string;
+  photoUrl?: string;
 }
 
 // Organizational Structure

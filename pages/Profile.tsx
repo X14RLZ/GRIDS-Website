@@ -68,8 +68,16 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
       <div className={`${cardBgClass} rounded-[48px] shadow-2xl border ${isDarkMode ? 'border-white/5' : 'border-purple-50'} overflow-hidden mb-20`}>
         <div className="p-10 md:p-16">
           <div className="flex flex-col items-center mb-16">
-            <div className={`w-32 h-32 rounded-full flex items-center justify-center mb-6 border-8 ${isDarkMode ? 'bg-white/5 border-white/5' : 'bg-gray-50 border-white shadow-lg'}`}>
-              <UserIcon size={64} className={isDarkMode ? 'text-purple-400' : 'text-gray-300'} />
+            <div className={`w-32 h-32 rounded-full flex items-center justify-center mb-6 border-8 overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/5' : 'bg-gray-50 border-white shadow-lg'}`}>
+              {user?.photoUrl ? (
+                <img 
+                  src={user.photoUrl} 
+                  alt="Profile" 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <UserIcon size={64} className={isDarkMode ? 'text-purple-400' : 'text-gray-300'} />
+              )}
             </div>
             <h2 className={`text-3xl font-black uppercase tracking-tight ${textClass}`}>{user?.firstName} {user?.lastName}</h2>
             <span className="text-[10px] font-black text-purple-600 uppercase tracking-[0.4em] mt-2">{user?.role}</span>
@@ -179,7 +187,7 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateUser, isDarkMode = fals
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-3 w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl hover:bg-blue-700 transition-all active:scale-95"
                   >
-                    <MessageCircle size={18} /> Open Messenger
+                    <Facebook size={18} /> Visit FB Profile
                   </a>
                 </div>
               )}
