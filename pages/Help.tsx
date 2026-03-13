@@ -1,14 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronRight, ArrowLeft, Search, ShieldCheck, HelpCircle, FileText, UserCircle, Users, Layout, BookOpen, UserCheck, ShieldAlert, Monitor, ClipboardList, Info } from 'lucide-react';
 import { CPDSOLogo } from '../components/Logo';
 import PageLayout from '../components/PageLayout';
+import { useParams, useNavigate } from 'react-router-dom';
 
 type HelpCategory = 'ui' | 'policy' | 'citizens' | 'staff' | null;
 
 const Help: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
+  const { categoryId } = useParams<{ categoryId: string }>();
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<HelpCategory>(null);
+
+  useEffect(() => {
+    if (categoryId) {
+      setSelectedCategory(categoryId as HelpCategory);
+    } else {
+      setSelectedCategory(null);
+    }
+  }, [categoryId]);
   const textClass = isDarkMode ? 'text-white' : 'text-gray-900';
   const headingClass = isDarkMode ? 'text-white' : 'text-gray-900';
+
+  const getDisplayName = (id: string) => {
+    const mapping: Record<string, string> = {
+      'ui': 'Website UI Help',
+      'policy': 'Policy Docs Help',
+      'citizens': 'General Citizens Help',
+      'staff': 'Staff & Officials Help'
+    };
+    return mapping[id] || id;
+  };
 
   const SectionDivider = () => (
     <div className={`w-3/4 mx-auto h-[3px] my-12 rounded-full transition-colors ${isDarkMode ? 'bg-white/10' : 'bg-gray-900'}`}></div>
@@ -31,7 +52,7 @@ const Help: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
 
   const HelpCategoryCard = ({ id, title, img, icon: Icon }: { id: HelpCategory, title: string, img: string, icon: any }) => (
     <button 
-      onClick={() => setSelectedCategory(id)}
+      onClick={() => navigate(`/help/${id}`)}
       className="group relative w-full h-56 rounded-[48px] overflow-hidden shadow-2xl border-4 border-white transition-all hover:scale-[1.02] active:scale-95"
     >
       <img src={img} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10s] group-hover:scale-110" alt={title} />
@@ -280,23 +301,10 @@ const Help: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
   return (
     <PageLayout
       isDarkMode={isDarkMode}
-      title="Help - FAQs"
-      subtitle="Community Support Hub"
+      title={selectedCategory ? getDisplayName(selectedCategory) : "Help - FAQs"}
+      subtitle={selectedCategory ? "Knowledge Base" : "Community Support Hub"}
     >
       <div className={`rounded-[64px] p-8 md:p-16 shadow-2xl transition-colors duration-500 border ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-purple-950/20' : 'bg-[#FFFBF5] border-purple-50 shadow-purple-900/5'} mb-20`}>
-        {selectedCategory && (
-          <button 
-            onClick={() => setSelectedCategory(null)} 
-            className={`mb-16 flex items-center justify-center gap-3 px-8 py-4 rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all z-10 border
-              ${isDarkMode 
-                ? 'bg-white text-black border-white/20' 
-                : 'bg-gray-900 text-white border-white/10'}`}
-          >
-            <ArrowLeft size={18} strokeWidth={3} />
-            <span className="font-black text-[10px] uppercase tracking-[0.2em]">Back to Categories</span>
-          </button>
-        )}
-
         {!selectedCategory ? (
           <div className="max-w-6xl mx-auto space-y-12">
             <div className="text-center mb-16">

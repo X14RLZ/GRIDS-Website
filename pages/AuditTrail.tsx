@@ -62,34 +62,6 @@ const AuditTrail: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) 
       headerActions={
         <div className="flex flex-col sm:flex-row gap-4 shrink-0">
           <button 
-            onClick={() => {
-              const headers = ['Timestamp', 'User', 'Office', 'Role', 'Module', 'Action', 'Details'];
-              const csvData = logs.map(l => [
-                l.timestamp,
-                l.userName,
-                l.office,
-                l.userRole,
-                l.module,
-                l.action,
-                l.details.replace(/,/g, ';')
-              ]);
-              const csvContent = [headers, ...csvData].map(e => e.join(",")).join("\n");
-              const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-              const link = document.createElement("a");
-              const url = URL.createObjectURL(blob);
-              link.setAttribute("href", url);
-              link.setAttribute("download", `GRIDS_Audit_Trail_${new Date().toISOString().split('T')[0]}.csv`);
-              link.style.visibility = 'hidden';
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-            }}
-            className={`px-8 py-4 rounded-2xl border flex items-center justify-center gap-3 transition-all font-black text-[10px] uppercase tracking-widest
-              ${isDarkMode ? 'bg-purple-900/20 border-purple-900/30 text-purple-400 hover:bg-purple-900/40' : 'bg-purple-50 border-purple-100 text-purple-600 hover:bg-purple-100'}`}
-          >
-            <Download size={16} /> Export CSV
-          </button>
-          <button 
             onClick={clearLogs}
             className={`px-8 py-4 rounded-2xl border flex items-center justify-center gap-3 transition-all font-black text-[10px] uppercase tracking-widest
               ${isDarkMode ? 'bg-red-900/20 border-red-900/30 text-red-400 hover:bg-red-900/40' : 'bg-red-50 border-red-100 text-red-600 hover:bg-red-100'}`}

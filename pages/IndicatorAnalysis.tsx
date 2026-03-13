@@ -258,7 +258,7 @@ const LiteracyAnalysis: React.FC<{ isDarkMode: boolean, indicatorTitle: string }
 };
 
 const IndicatorAnalysis: React.FC<{ isDarkMode: boolean }> = ({ isDarkMode = false }) => {
-  const { indicatorId } = useParams<{ indicatorId: string }>();
+  const { sectorId, indicatorId } = useParams<{ sectorId: string, indicatorId: string }>();
   const navigate = useNavigate();
   const indicator = indicatorId ? INDICATOR_MAP[indicatorId] : null;
 
@@ -266,7 +266,7 @@ const IndicatorAnalysis: React.FC<{ isDarkMode: boolean }> = ({ isDarkMode = fal
     return (
       <div className={`flex flex-col items-center justify-center h-full p-20 text-center ${isDarkMode ? 'bg-[#1A1625]' : 'bg-white'}`}>
         <h2 className={`text-4xl font-black uppercase mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Indicator Not Found</h2>
-        <button onClick={() => navigate('/gad-data')} className="text-purple-600 font-bold hover:underline">Return to Sector List</button>
+        <button onClick={() => navigate(`/gad-data/${sectorId}`)} className="text-purple-600 font-bold hover:underline">Return to Sector List</button>
       </div>
     );
   }

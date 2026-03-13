@@ -149,6 +149,20 @@ const DataSubmission: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({
     setOfficeHistory(prev => prev.filter(s => s.id !== id));
   };
 
+  const handleDownloadTemplate = () => {
+    // Create a simple CSV template that opens in Excel
+    const headers = "Indicator Name,Sector,Year,Male Count,Female Count,Total,Remarks\n";
+    const exampleRow = "Sample Indicator,Education,2024,50,50,100,Sample data entry\n";
+    const blob = new Blob([headers + exampleRow], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'GRIDS_GAD_Data_Template.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const textClass = isDarkMode ? 'text-white' : 'text-gray-900';
   const cardBgClass = isDarkMode ? 'bg-[#1A1625]' : 'bg-white';
   const innerBgClass = isDarkMode ? 'bg-[#2A2438]' : 'bg-[#FDFBF2]';
@@ -156,10 +170,10 @@ const DataSubmission: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({
   return (
     <PageLayout
       isDarkMode={isDarkMode}
-      title={view === 'history' ? 'Submission Logs' : 'Data Submission'}
+      title="Data Submission"
       subtitle={`Registry Office: ${user?.office || 'Authorized Personnel'}`}
       headerActions={
-        view === 'history' ? (
+        view === 'history' && (
           <button 
             onClick={() => setView('upload')}
             className="flex items-center gap-4 bg-black text-white px-10 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.3em] hover:bg-purple-600 transition-all shadow-xl active:scale-95 group"
@@ -167,7 +181,7 @@ const DataSubmission: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({
             <Plus size={20} strokeWidth={3} className="group-hover:rotate-90 transition-transform" />
             New Upload
           </button>
-        ) : undefined
+        )
       }
     >
       {view === 'history' ? (
@@ -199,7 +213,7 @@ const DataSubmission: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({
                         </div>
                       </div>
                       <div className="flex items-center gap-3 ml-auto">
-                        <button onClick={() => navigate(`/view/${s.id}`)} className={`px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest border transition-all ${isDarkMode ? 'bg-white/5 text-white border-white/10 hover:bg-white hover:text-black' : 'bg-white text-gray-900 border-gray-100 hover:bg-black hover:text-white'}`}>View</button>
+                        <button onClick={() => navigate(`/data-submission/view/${s.id}`)} className={`px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest border transition-all ${isDarkMode ? 'bg-white/5 text-white border-white/10 hover:bg-white hover:text-black' : 'bg-white text-gray-900 border-gray-100 hover:bg-black hover:text-white'}`}>View</button>
                         {s.submittedBy.includes(user?.firstName || '') && (
                           <button onClick={() => handleDeleteRecord(s.id)} className="p-3 text-gray-300 hover:text-red-500 transition-colors"><Trash2 size={20} /></button>
                         )}
@@ -219,7 +233,17 @@ const DataSubmission: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({
       ) : (
         <div className={`${innerBgClass} rounded-[48px] shadow-2xl border ${isDarkMode ? 'border-white/5' : 'border-white'} overflow-hidden relative flex flex-col min-h-[500px]`}>
           <div className="p-12 pb-8 flex flex-col flex-1">
-            <h2 className={`text-4xl font-black uppercase mb-8 ${textClass}`}>Select Files</h2>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+              <h2 className={`text-4xl font-black uppercase ${textClass}`}>Select Files</h2>
+              <button 
+                onClick={handleDownloadTemplate}
+                className={`flex items-center gap-4 px-8 py-4 rounded-[24px] font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95 group
+                  ${isDarkMode ? 'bg-white/5 text-purple-400 border border-white/10 hover:bg-white/10' : 'bg-purple-50 text-purple-600 border border-purple-100 hover:bg-purple-100'}`}
+              >
+                <Download size={18} strokeWidth={3} className="group-hover:translate-y-1 transition-transform" />
+                Download Excel Template
+              </button>
+            </div>
             <div 
               onClick={handleChooseFile}
               className={`w-full border-[3px] border-dashed rounded-[32px] py-14 flex flex-col items-center justify-center bg-transparent cursor-pointer transition-all mb-8

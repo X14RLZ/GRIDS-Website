@@ -1,9 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { X, Printer, Settings, Share2, Download, Check, Copy, Info, Calendar, FileText, User as UserIcon, Loader2, FileSpreadsheet, AlertCircle, ArrowLeft } from 'lucide-react';
+import { X, Printer, Settings, Share2, Download, Check, Copy, Info, Calendar, FileText, User, Loader2, FileSpreadsheet, AlertCircle, ArrowLeft } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { User } from '../types';
-import { recordAuditLog } from '../utils/auditLogger';
 
 // IndexedDB Helper for file storage
 const DB_NAME = 'GRIDS_FileStorage';
@@ -28,8 +26,8 @@ const getFileFromDB = async (id: string): Promise<any> => {
   });
 };
 
-// Fix: Added isDarkMode and user to props
-const DataViewer: React.FC<{ isDarkMode?: boolean; user: User | null }> = ({ isDarkMode = false, user }) => {
+// Fix: Added isDarkMode to props to resolve TypeScript error in App.tsx
+const DataViewer: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   
@@ -68,14 +66,6 @@ const DataViewer: React.FC<{ isDarkMode?: boolean; user: User | null }> = ({ isD
       if (foundMetadata) {
         setFileData(foundMetadata);
         
-        // Record view action
-        recordAuditLog(
-          user, 
-          'VIEW_DATA', 
-          `User viewed document: ${foundMetadata.formName} (ID: ${id})`, 
-          'Data Retrieval'
-        );
-        
         // 3. Try to fetch actual binary from IndexedDB if it's a real user upload
         if (id) {
           try {
@@ -104,34 +94,16 @@ const DataViewer: React.FC<{ isDarkMode?: boolean; user: User | null }> = ({ isD
   }, [id]);
 
   const handlePrint = () => {
-    recordAuditLog(
-      user, 
-      'PRINT_DATA', 
-      `User triggered print for document: ${fileData?.formName} (ID: ${id})`, 
-      'Data Retrieval'
-    );
     window.print();
   };
 
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
-    recordAuditLog(
-      user, 
-      'SHARE_DATA', 
-      `User copied share link for document: ${fileData?.formName} (ID: ${id})`, 
-      'Data Retrieval'
-    );
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleDownload = () => {
-    recordAuditLog(
-      user, 
-      'DOWNLOAD_DATA', 
-      `User downloaded document: ${fileData?.formName} (ID: ${id})`, 
-      'Data Retrieval'
-    );
     if (storedBinary) {
       // Real file download from IndexedDB
       const link = document.createElement('a');
@@ -386,7 +358,7 @@ const DataViewer: React.FC<{ isDarkMode?: boolean; user: User | null }> = ({ isD
               <div className="p-8 bg-[#fdfaff] border border-purple-100 rounded-3xl space-y-6">
                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                     <UserIcon size={18} className="text-purple-600" />
+                       <User size={18} className="text-purple-600" />
                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Submitted By</span>
                     </div>
                     <span className="text-xs font-black text-gray-900 uppercase">{fileData?.submittedBy?.replace('by ', '') || 'Staff'}</span>

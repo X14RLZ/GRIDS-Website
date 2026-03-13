@@ -123,7 +123,7 @@ const DataApproval: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({ u
                   </td>
                   <td className="px-4 md:px-6 py-6 md:py-8 text-right">
                     <div className="flex items-center justify-end gap-2 md:gap-3">
-                      <Link to={`/view/${s.id}`} className={`w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg md:rounded-xl transition-all shadow-sm ${isDarkMode ? 'bg-white/5 text-gray-400 hover:bg-white hover:text-black' : 'bg-gray-50 text-gray-400 hover:bg-black hover:text-white'}`} title="View File">
+                      <Link to={`/data-approval/view/${s.id}`} className={`w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg md:rounded-xl transition-all shadow-sm ${isDarkMode ? 'bg-white/5 text-gray-400 hover:bg-white hover:text-black' : 'bg-gray-50 text-gray-400 hover:bg-black hover:text-white'}`} title="View File">
                         <Eye size={16} />
                       </Link>
                       <button 

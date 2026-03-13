@@ -6,7 +6,7 @@ import {
   TrendingUp, Sprout, Layers, ShieldCheck, FileText, Download, 
   Search, ShieldAlert, Heart, Map as MapIcon, Tractor, 
   Wheat, Beef, Info, ArrowUpDown, FileSpreadsheet, FileCode,
-  ChevronUp, ChevronDown, Layout, Globe, UserCheck,
+  ChevronUp, ChevronDown, Layout, Globe, UserCheck, Plus, X,
   Activity, CloudDownload, Landmark, PieChart, Users, HelpCircle,
   Building2, Eye, Monitor, Briefcase, GraduationCap, Gavel, BookOpen,
   Target, Sparkles, MapPin, Loader2, Database, Calendar
@@ -288,18 +288,25 @@ interface SubComponentProps {
   textClass: string;
 }
 
-const MetricCard: React.FC<SubComponentProps & { title: string, value: string, subValue: string, icon: any, color: string, trend?: string }> = ({ title, value, subValue, icon: Icon, color, trend, isDarkMode, textClass }) => (
-  <div className={`p-6 rounded-[32px] border shadow-sm flex flex-col justify-between transition-all hover:shadow-md
+const MetricCard: React.FC<SubComponentProps & { title: string, value: string, subValue: string, icon: any, color: string, trend?: string, onClick?: () => void }> = ({ title, value, subValue, icon: Icon, color, trend, isDarkMode, textClass, onClick }) => (
+  <button 
+    onClick={onClick}
+    className={`w-full text-left p-6 rounded-[32px] border shadow-sm flex flex-col justify-between transition-all hover:shadow-md hover:scale-[1.02] active:scale-95 group
     ${isDarkMode ? 'bg-[#1A1625] border-white/5' : 'bg-white border-purple-50'}`}>
     <div className="flex justify-between items-start mb-4">
-      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${color}`}>
+      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg transition-transform group-hover:scale-110 ${color}`}>
         <Icon size={20} />
       </div>
-      {trend && (
-        <span className={`text-[9px] font-black uppercase px-2 py-1 rounded-full ${trend.startsWith('+') ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
-          {trend}
-        </span>
-      )}
+      <div className="flex flex-col items-end gap-1">
+        {trend && (
+          <span className={`text-[9px] font-black uppercase px-2 py-1 rounded-full ${trend.startsWith('+') ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+            {trend}
+          </span>
+        )}
+        <div className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+          <Plus size={12} className="text-purple-600" />
+        </div>
+      </div>
     </div>
     <div>
       <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{title}</h4>
@@ -308,7 +315,7 @@ const MetricCard: React.FC<SubComponentProps & { title: string, value: string, s
         <span className="text-[10px] font-bold text-purple-600 uppercase">{subValue}</span>
       </div>
     </div>
-  </div>
+  </button>
 );
 
 const RecordCard: React.FC<SubComponentProps & { d: Submission, onDownload: (name: string) => void }> = ({ d, isDarkMode, textClass, onDownload }) => (
@@ -498,8 +505,49 @@ const CBMS: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedYear, setSelectedYear] = useState('2021');
+  const [selectedMetric, setSelectedMetric] = useState<any>(null);
 
   const years = ['2021', '2024', '2027', '2030'];
+
+  const metricDetails: Record<string, any> = {
+    'Total Population': {
+      description: 'The total number of residents recorded in the 2021 CBMS Pilot Census. This includes all household members present at the time of the survey.',
+      data: [
+        { label: 'Urban Population', value: '245,600', percentage: '84.2%' },
+        { label: 'Rural Population', value: '46,000', percentage: '15.8%' },
+        { label: 'Average Household Size', value: '4.2', percentage: '' }
+      ],
+      insight: 'Baguio remains a highly urbanized city with a significant concentration of residents in the central business district and surrounding areas.'
+    },
+    'Working Age': {
+      description: 'Population aged 15 to 64 years old, representing the potential labor force of the city.',
+      data: [
+        { label: 'Youth (15-30)', value: '82,400', percentage: '43.8%' },
+        { label: 'Adults (31-64)', value: '105,800', percentage: '56.2%' }
+      ],
+      insight: 'The city has a young and dynamic workforce, which is a key driver for the local economy and service sectors.'
+    },
+    'Labor Force': {
+      description: 'Individuals who are either employed or actively looking for work during the reference period.',
+      data: [
+        { label: 'Employed', value: '102,377', percentage: '36.3%' },
+        { label: 'Unemployed', value: '179,565', percentage: '63.7%' }
+      ],
+      insight: 'The high number of "Did Not Work" individuals includes students, retirees, and those not actively seeking employment during the reference week.'
+    }
+  };
+
+  const handleMetricClick = (title: string, value: string, icon: any, color: string) => {
+    const details = metricDetails[title] || {
+      description: `Detailed statistical breakdown for ${title}. This data is sourced from the 2021 CBMS Pilot Census.`,
+      data: [
+        { label: 'Current Value', value: value, percentage: '100%' },
+        { label: 'Projected (2024)', value: 'Calculating...', percentage: 'N/A' }
+      ],
+      insight: 'Continuous monitoring of this metric is essential for gender-responsive planning and resource allocation.'
+    };
+    setSelectedMetric({ title, value, icon, color, ...details });
+  };
   
   useEffect(() => {
     const loadData = () => {
@@ -733,10 +781,10 @@ const CBMS: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
             {activeTab === 'section-a' && (
               <div className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="Total Population" value="291.6K" subValue="Census" icon={Users} color="bg-purple-600" />
-                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="Working Age" value="188.2K" subValue="15-64" icon={Activity} color="bg-blue-500" />
-                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="Senior Citizens" value="19.7K" subValue="65+" icon={UserCheck} color="bg-green-500" />
-                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="Sex Ratio" value="102" subValue="M per 100 F" icon={Users} color="bg-orange-500" />
+                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="Total Population" value="291.6K" subValue="Census" icon={Users} color="bg-purple-600" onClick={() => handleMetricClick("Total Population", "291.6K", Users, "bg-purple-600")} />
+                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="Working Age" value="188.2K" subValue="15-64" icon={Activity} color="bg-blue-500" onClick={() => handleMetricClick("Working Age", "188.2K", Activity, "bg-blue-500")} />
+                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="Senior Citizens" value="19.7K" subValue="65+" icon={UserCheck} color="bg-green-500" onClick={() => handleMetricClick("Senior Citizens", "19.7K", UserCheck, "bg-green-500")} />
+                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="Sex Ratio" value="102" subValue="M per 100 F" icon={Users} color="bg-orange-500" onClick={() => handleMetricClick("Sex Ratio", "102", Users, "bg-orange-500")} />
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   <AnalysisBarChart isDarkMode={isDarkMode} textClass={textClass} id="demo-pop" title="Population Distribution" subtitle="By Age Group and Sex" icon={Users} data={STATS_DATA.sectionA.population} maxVal={100000} isExpanded={expandedSections['demo-pop']} onToggle={toggleSection} />
@@ -794,10 +842,10 @@ const CBMS: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
             {activeTab === 'section-e' && (
               <div className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="Labor Force" value="102.4K" subValue="Active" icon={Users} color="bg-purple-600" trend="+4.2%" />
-                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="Unemployment" value="179.6K" subValue="Total" icon={ShieldAlert} color="bg-red-500" trend="-1.5%" />
-                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="WFH Adoption" value="6.3K" subValue="Workers" icon={Monitor} color="bg-blue-500" trend="+12%" />
-                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="Permanent" value="88.2%" subValue="Rate" icon={UserCheck} color="bg-green-500" />
+                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="Labor Force" value="102.4K" subValue="Active" icon={Users} color="bg-purple-600" trend="+4.2%" onClick={() => handleMetricClick("Labor Force", "102.4K", Users, "bg-purple-600")} />
+                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="Unemployment" value="179.6K" subValue="Total" icon={ShieldAlert} color="bg-red-500" trend="-1.5%" onClick={() => handleMetricClick("Unemployment", "179.6K", ShieldAlert, "bg-red-500")} />
+                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="WFH Adoption" value="6.3K" subValue="Workers" icon={Monitor} color="bg-blue-500" trend="+12%" onClick={() => handleMetricClick("WFH Adoption", "6.3K", Monitor, "bg-blue-500")} />
+                  <MetricCard isDarkMode={isDarkMode} textClass={textClass} title="Permanent" value="88.2%" subValue="Rate" icon={UserCheck} color="bg-green-500" onClick={() => handleMetricClick("Permanent", "88.2%", UserCheck, "bg-green-500")} />
                 </div>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -1154,6 +1202,79 @@ const CBMS: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
             )}
           </div>
       </div>
+
+      {/* Metric Detail Modal */}
+      {selectedMetric && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setSelectedMetric(null)}></div>
+          <div className={`relative w-full max-w-2xl rounded-[48px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border
+            ${isDarkMode ? 'bg-[#1A1625] border-white/10' : 'bg-white border-purple-100'}`}>
+            
+            <div className={`p-8 md:p-12 ${selectedMetric.color} text-white relative`}>
+              <button 
+                onClick={() => setSelectedMetric(null)}
+                className="absolute top-8 right-8 w-10 h-10 rounded-full bg-black/20 flex items-center justify-center hover:bg-black/40 transition-colors"
+              >
+                <X size={20} strokeWidth={3} />
+              </button>
+              
+              <div className="flex items-center gap-6 mb-6">
+                <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
+                  <selectedMetric.icon size={32} />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-80">Detailed Analysis</p>
+                  <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter">{selectedMetric.title}</h2>
+                </div>
+              </div>
+              
+              <div className="flex items-baseline gap-3">
+                <span className="text-5xl md:text-6xl font-black tracking-tighter">{selectedMetric.value}</span>
+                <span className="text-sm font-black uppercase tracking-widest opacity-80">Total Value</span>
+              </div>
+            </div>
+
+            <div className="p-8 md:p-12 space-y-8">
+              <div>
+                <h4 className="text-[10px] font-black text-purple-600 uppercase tracking-widest mb-3">Description</h4>
+                <p className={`text-sm md:text-base font-medium leading-relaxed ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  {selectedMetric.description}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {selectedMetric.data.map((item: any, i: number) => (
+                  <div key={i} className={`p-6 rounded-3xl border ${isDarkMode ? 'bg-white/5 border-white/5' : 'bg-purple-50/50 border-purple-100'}`}>
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">{item.label}</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className={`text-xl font-black ${textClass}`}>{item.value}</span>
+                      {item.percentage && <span className="text-[10px] font-bold text-purple-600">{item.percentage}</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className={`p-6 rounded-3xl border-l-4 border-purple-600 ${isDarkMode ? 'bg-purple-600/10' : 'bg-purple-50'}`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles size={14} className="text-purple-600" />
+                  <h4 className="text-[10px] font-black text-purple-600 uppercase tracking-widest">AI Insight</h4>
+                </div>
+                <p className={`text-xs md:text-sm font-bold italic leading-relaxed ${isDarkMode ? 'text-purple-200' : 'text-purple-900'}`}>
+                  "{selectedMetric.insight}"
+                </p>
+              </div>
+
+              <button 
+                onClick={() => setSelectedMetric(null)}
+                className={`w-full py-5 rounded-[24px] font-black text-xs uppercase tracking-widest transition-all
+                  ${isDarkMode ? 'bg-white text-black hover:bg-purple-600 hover:text-white' : 'bg-black text-white hover:bg-purple-600'}`}
+              >
+                Close Analysis
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </PageLayout>
   );
 };

@@ -1,45 +1,33 @@
 
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { HashRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, ChevronUp } from 'lucide-react';
 import { User, Notification } from './types';
+import Landing from './pages/Landing';
+import Dashboard from './pages/Dashboard';
+import GADData from './pages/GADData';
+import GADSectorDetail from './pages/GADSectorDetail';
+import IndicatorAnalysis from './pages/IndicatorAnalysis';
+import CBMS from './pages/CBMS';
+import DataSubmission from './pages/DataSubmission';
+import DataApproval from './pages/DataApproval';
+import DataRetrieval from './pages/DataRetrieval';
+import UserManagement from './pages/UserManagement';
+import AuditTrail from './pages/AuditTrail';
+import About from './pages/About';
+import Policy from './pages/Policy';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Profile from './pages/Profile';
+import Members from './pages/Members';
+import Programs from './pages/Programs';
+import EnablingMechanisms from './pages/EnablingMechanisms';
+import DataViewer from './pages/DataViewer';
+import ContactUs from './pages/ContactUs';
+import Help from './pages/Help';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Breadcrumbs from './components/Breadcrumbs';
 import { recordAuditLog } from './utils/auditLogger';
-
-// Lazy load pages for code splitting
-const Landing = lazy(() => import('./pages/Landing'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const GADData = lazy(() => import('./pages/GADData'));
-const GADSectorDetail = lazy(() => import('./pages/GADSectorDetail'));
-const IndicatorAnalysis = lazy(() => import('./pages/IndicatorAnalysis'));
-const CBMS = lazy(() => import('./pages/CBMS'));
-const DataSubmission = lazy(() => import('./pages/DataSubmission'));
-const DataApproval = lazy(() => import('./pages/DataApproval'));
-const DataRetrieval = lazy(() => import('./pages/DataRetrieval'));
-const UserManagement = lazy(() => import('./pages/UserManagement'));
-const AuditTrail = lazy(() => import('./pages/AuditTrail'));
-const About = lazy(() => import('./pages/About'));
-const Policy = lazy(() => import('./pages/Policy'));
-const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
-const Profile = lazy(() => import('./pages/Profile'));
-const Members = lazy(() => import('./pages/Members'));
-const Programs = lazy(() => import('./pages/Programs'));
-const EnablingMechanisms = lazy(() => import('./pages/EnablingMechanisms'));
-const DataViewer = lazy(() => import('./pages/DataViewer'));
-const ContactUs = lazy(() => import('./pages/ContactUs'));
-const Help = lazy(() => import('./pages/Help'));
-
-// Loading component for Suspense
-const PageLoader = () => (
-  <div className="flex-1 flex items-center justify-center p-12">
-    <div className="flex flex-col items-center gap-4">
-      <Loader2 className="w-10 h-10 text-purple-600 animate-spin" />
-      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Loading Component...</span>
-    </div>
-  </div>
-);
 
 const AppContent: React.FC<{
   user: User | null;
@@ -59,6 +47,7 @@ const AppContent: React.FC<{
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const mainContentRef = useRef<HTMLElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   useEffect(() => {
@@ -77,7 +66,9 @@ const AppContent: React.FC<{
     
     document.title = title;
     setIsMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }, [location.pathname]);
 
   const isAuthPage = location.pathname === '/login';
@@ -109,27 +100,16 @@ const AppContent: React.FC<{
     const pathnames = path.split('/').filter((x) => x);
     
     if (pathnames.length > 1) {
-      // Custom parent mapping for routes that don't have a direct parent index page
-      const parentMapping: Record<string, string> = {
-        'analysis': '/gad-data',
-        'view': '/data-retrieval',
-      };
-
-      const parentKey = pathnames[0];
-      if (parentMapping[parentKey]) {
-        navigate(parentMapping[parentKey]);
-      } else {
-        // Default: Go to parent path
-        const parentPath = `/${pathnames.slice(0, pathnames.length - 1).join('/')}`;
-        navigate(parentPath);
-      }
+      // Go to parent path
+      const parentPath = `/${pathnames.slice(0, pathnames.length - 1).join('/')}`;
+      navigate(parentPath);
     } else if (path !== '/' && path !== '/home') {
       // Go to home
       navigate('/');
     }
   };
 
-  const isViewerPage = location.pathname.startsWith('/view/');
+  const isViewerPage = location.pathname.includes('/view/');
   
   return (
     <div className={`${isDarkMode ? 'dark bg-[#0F0C15]' : 'bg-[#f0f2f5]'} h-screen w-full flex transition-colors duration-500 ease-in-out overflow-hidden md:gap-2`}>
@@ -166,7 +146,9 @@ const AppContent: React.FC<{
         
         {isNavFixed && renderHeader()}
 
-        <div className={`flex-1 relative flex flex-col overflow-auto custom-scrollbar`}>
+        <div 
+          ref={mainContentRef as any}
+          className={`flex-1 relative flex flex-col overflow-auto custom-scrollbar`}>
           <div className="flex-1 flex flex-col min-h-full">
              {!isNavFixed && renderHeader()}
              
@@ -177,50 +159,64 @@ const AppContent: React.FC<{
                    <Breadcrumbs isDarkMode={isDarkMode} />
                  </div>
                )}
-               <Suspense fallback={<PageLoader />}>
-                 <Routes>
-                   <Route path="/" element={<Dashboard user={user} isDarkMode={isDarkMode} />} />
-                   <Route path="/home" element={<Navigate to="/" replace />} />
-                   <Route path="/login" element={<Landing onLogin={onLogin} isDarkMode={isDarkMode} />} />
-                   <Route path="/gad-data" element={<GADData isDarkMode={isDarkMode} />} />
-                   <Route path="/enabling-mechanisms" element={<EnablingMechanisms isDarkMode={isDarkMode} />} />
-                   <Route path="/gad-data/:sectorId" element={<GADSectorDetail isDarkMode={isDarkMode} />} />
-                   <Route path="/analysis/:indicatorId" element={<IndicatorAnalysis isDarkMode={isDarkMode} />} />
-                   <Route path="/cbms" element={<CBMS isDarkMode={isDarkMode} />} />
-                   <Route path="/data-submission" element={<DataSubmission user={user} isDarkMode={isDarkMode} />} />
-                   <Route path="/data-approval" element={<DataApproval user={user} isDarkMode={isDarkMode} />} />
-                   <Route path="/data-retrieval" element={isAnalyzer ? <DataRetrieval isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
-                   <Route path="/user-management" element={isAdmin ? <UserManagement isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
-                   <Route path="/audit-trail" element={isAdmin ? <AuditTrail isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
-                   <Route path="/about" element={<About isDarkMode={isDarkMode} />} />
-                   <Route path="/policy" element={<Policy isDarkMode={isDarkMode} />} />
-                   <Route path="/privacy-policy" element={<PrivacyPolicy isDarkMode={isDarkMode} />} />
-                   <Route path="/profile" element={user ? <Profile user={user} onUpdateUser={onUpdateUser} isDarkMode={isDarkMode} /> : <Navigate to="/login" />} />
-                   <Route path="/members" element={<Members isDarkMode={isDarkMode} />} />
-                   <Route path="/programs" element={<Programs isDarkMode={isDarkMode} />} />
-                   <Route path="/view/:id" element={<DataViewer user={user} isDarkMode={isDarkMode} />} />
-                   <Route path="/contact" element={<ContactUs isDarkMode={isDarkMode} />} />
-                   <Route path="/help" element={<Help isDarkMode={isDarkMode} />} />
-                   <Route path="*" element={<Navigate to="/" replace />} />
-                 </Routes>
-               </Suspense>
+               <Routes>
+                 <Route path="/" element={<Dashboard user={user} isDarkMode={isDarkMode} />} />
+                 <Route path="/home" element={<Navigate to="/" replace />} />
+                 <Route path="/login" element={<Landing onLogin={onLogin} isDarkMode={isDarkMode} />} />
+                 <Route path="/gad-data" element={<GADData isDarkMode={isDarkMode} />} />
+                 <Route path="/enabling-mechanisms" element={<EnablingMechanisms isDarkMode={isDarkMode} />} />
+                 <Route path="/gad-data/:sectorId" element={<GADSectorDetail isDarkMode={isDarkMode} />} />
+                 <Route path="/gad-data/:sectorId/:indicatorId" element={<IndicatorAnalysis isDarkMode={isDarkMode} />} />
+                 <Route path="/cbms" element={<CBMS isDarkMode={isDarkMode} />} />
+                 <Route path="/data-submission" element={<DataSubmission user={user} isDarkMode={isDarkMode} />} />
+                  <Route path="/data-submission/view/:id" element={<DataViewer isDarkMode={isDarkMode} />} />
+                 <Route path="/data-approval" element={<DataApproval user={user} isDarkMode={isDarkMode} />} />
+                  <Route path="/data-approval/view/:id" element={<DataViewer isDarkMode={isDarkMode} />} />
+                 <Route path="/data-retrieval" element={isAnalyzer ? <DataRetrieval isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
+                 <Route path="/user-management" element={isAdmin ? <UserManagement isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
+                 <Route path="/audit-trail" element={isAdmin ? <AuditTrail isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
+                 <Route path="/about" element={<About isDarkMode={isDarkMode} />} />
+                 <Route path="/policy" element={<Policy isDarkMode={isDarkMode} />} />
+                 <Route path="/privacy-policy" element={<PrivacyPolicy isDarkMode={isDarkMode} />} />
+                 <Route path="/profile" element={user ? <Profile user={user} onUpdateUser={onUpdateUser} isDarkMode={isDarkMode} /> : <Navigate to="/login" />} />
+                 <Route path="/members" element={<Members isDarkMode={isDarkMode} />} />
+                 <Route path="/programs" element={<Programs isDarkMode={isDarkMode} />} />
+                 <Route path="/data-retrieval/view/:id" element={<DataViewer isDarkMode={isDarkMode} />} />
+                 <Route path="/contact" element={<ContactUs isDarkMode={isDarkMode} />} />
+                 <Route path="/help" element={<Help isDarkMode={isDarkMode} />} />
+                  <Route path="/help/:categoryId" element={<Help isDarkMode={isDarkMode} />} />
+                 <Route path="*" element={<Navigate to="/" replace />} />
+               </Routes>
              </main>
           </div>
         </div>
 
-        {/* Global Floating Back Button */}
+        {/* Global Floating Controls */}
         {!isAuthPage && !isAtDashboardWelcome && !isViewerPage && (
-          <button 
-            onClick={handleHierarchicalBack}
-            aria-label="Navigate Back"
-            className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 flex items-center justify-center gap-3 w-14 h-14 md:w-auto md:px-6 md:py-4 rounded-full shadow-[0_15px_40px_rgba(0,0,0,0.3)] hover:scale-105 active:scale-95 transition-all z-50 border
-              ${isDarkMode 
-                ? 'bg-white text-black border-white/20' 
-                : 'bg-gray-900 text-white border-white/10'}`}
-          >
-            <ArrowLeft size={20} className="transition-transform group-hover:-translate-x-1" strokeWidth={3} />
-            <span className="hidden md:inline font-black text-[10px] uppercase tracking-[0.2em]">Back</span>
-          </button>
+          <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 flex flex-col gap-3 z-50">
+            <button 
+              onClick={() => mainContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
+              aria-label="Scroll to Top"
+              className={`flex items-center justify-center w-14 h-14 rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all border
+                ${isDarkMode 
+                  ? 'bg-white text-black border-white/20' 
+                  : 'bg-gray-900 text-white border-white/10'}`}
+            >
+              <ChevronUp size={24} strokeWidth={3} />
+            </button>
+
+            <button 
+              onClick={handleHierarchicalBack}
+              aria-label="Navigate Back"
+              className={`flex items-center justify-center gap-3 w-14 h-14 md:w-auto md:px-6 md:py-4 rounded-full shadow-[0_15px_40px_rgba(0,0,0,0.3)] hover:scale-105 active:scale-95 transition-all border
+                ${isDarkMode 
+                  ? 'bg-white text-black border-white/20' 
+                  : 'bg-gray-900 text-white border-white/10'}`}
+            >
+              <ArrowLeft size={20} className="transition-transform group-hover:-translate-x-1" strokeWidth={3} />
+              <span className="hidden md:inline font-black text-[10px] uppercase tracking-[0.2em]">Back</span>
+            </button>
+          </div>
         )}
       </div>
     </div>

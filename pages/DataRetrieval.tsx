@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { CloudDownload, Eye, Search, Filter, Database, FileSpreadsheet, Building2, User as UserIcon, Clock } from 'lucide-react';
-import { Submission, User } from '../types';
+import { Submission } from '../types';
 import { Link } from 'react-router-dom';
 import PageLayout from '../components/PageLayout';
-import { recordAuditLog } from '../utils/auditLogger';
 
-const DataRetrieval: React.FC<{ user: User | null; isDarkMode?: boolean }> = ({ user, isDarkMode = false }) => {
+const DataRetrieval: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
   const [approvedData, setApprovedData] = useState<Submission[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterOffice, setFilterOffice] = useState('All');
@@ -37,10 +36,6 @@ const DataRetrieval: React.FC<{ user: User | null; isDarkMode?: boolean }> = ({ 
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
-    // Audit Log
-    recordAuditLog(user, 'DATA_DOWNLOAD', `User downloaded dataset: ${formName}`, 'Data Retrieval');
-    
     alert(`Downloading ${formName}... Dataset successfully retrieved from GRIDS vault.`);
   };
 
@@ -128,7 +123,7 @@ const DataRetrieval: React.FC<{ user: User | null; isDarkMode?: boolean }> = ({ 
 
             <div className="mt-auto flex gap-3">
                <Link 
-                to={`/view/${d.id}`} 
+                to={`/data-retrieval/view/${d.id}`} 
                 className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${isDarkMode ? 'bg-white/5 text-white hover:bg-white hover:text-black' : 'bg-white border border-gray-100 text-gray-900 hover:bg-black hover:text-white'}`}
               >
                 <Eye size={16} /> Preview

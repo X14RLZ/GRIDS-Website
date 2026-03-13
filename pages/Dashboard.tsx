@@ -5,7 +5,7 @@ import {
   Search, Download, FileText, ChevronRight, ArrowRight, X, 
   Database, Layout, Users, Activity, Sparkles, BookOpen, 
   FileSearch, History, Globe, ShieldCheck, PieChart, TrendingUp,
-  Clock, Calendar as CalendarIcon, Gavel, ShieldAlert, Award, Info
+  Clock, Calendar as CalendarIcon, Gavel, ShieldAlert, Award, Info, HelpCircle
 } from 'lucide-react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { CPDSOLogo, Logo } from '../components/Logo';
@@ -70,8 +70,8 @@ const Dashboard: React.FC<DashboardProps> = ({ user, isDarkMode = false }) => {
     { id: 'mech-siged', title: 'SIGED GAD Awards', type: 'Award', path: '/gad-data/institutional', description: 'Sustaining Initiatives on Gender Equality and Development recognition.' },
     { id: 'mech-agenda', title: 'Baguio GAD Agenda 2025-2030', type: 'Mechanism', path: '/gad-data/institutional', description: 'Six-year strategic roadmap for gender development in Baguio City.' },
     { id: 'mech-code', title: '2020 Amended GAD Code', type: 'Policy', path: '/gad-data/institutional', description: 'The local legislative framework governing gender rights in Baguio.' },
-    { id: 'i1', title: 'Basic and Functional Literacy Rate', type: 'Indicator', path: '/analysis/literacy-rate', description: 'Statistics on literacy by sex and demographic association.' },
-    { id: 'i2', title: 'School Completion Rate', type: 'Indicator', path: '/analysis/completion-rate', description: 'Elementary and secondary education completion metrics.' },
+    { id: 'i1', title: 'Basic and Functional Literacy Rate', type: 'Indicator', path: '/gad-data/education-and-training/literacy-rate', description: 'Statistics on literacy by sex and demographic association.' },
+    { id: 'i2', title: 'School Completion Rate', type: 'Indicator', path: '/gad-data/education-and-training/completion-rate', description: 'Elementary and secondary education completion metrics.' },
     { id: 'prog-cswdo', title: 'CSWDO Services', type: 'Page', path: '/programs', description: 'Social welfare, child protection, and family development services.' }
   ];
 
@@ -294,6 +294,25 @@ const Dashboard: React.FC<DashboardProps> = ({ user, isDarkMode = false }) => {
                   <p className={`text-sm font-medium leading-relaxed text-gray-500`}>Connect with dedicated Baguio City GFPS focal members and departmental leads.</p>
                   <div className="inline-flex items-center gap-2 text-[10px] font-black text-green-600 uppercase tracking-widest mt-4 group/link">
                     View Focal Points <ChevronRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              </div>
+
+              {/* FAQs */}
+              <div 
+                onClick={() => navigate('/help')}
+                className={`p-8 md:p-10 rounded-[40px] md:rounded-[48px] border-2 flex flex-col items-start gap-6 group shadow-sm transition-all hover:shadow-2xl cursor-pointer
+                  ${isDarkMode ? 'bg-[#1A1625] border-white/5 shadow-purple-950/10' : 'bg-[#fffbf5] border-purple-50'}`}
+              >
+                <div className={`w-14 h-14 md:w-16 md:h-16 rounded-[20px] md:rounded-[24px] flex items-center justify-center shadow-md transition-all group-hover:scale-110
+                  ${isDarkMode ? 'bg-[#2A2438] text-purple-400' : 'bg-white text-purple-600'}`}>
+                  <HelpCircle className="w-8 h-8 md:w-9 md:h-9" strokeWidth={2.5} />
+                </div>
+                <div className="space-y-3">
+                  <h4 className={`text-xl md:text-2xl font-black uppercase tracking-tighter leading-tight ${textClass}`}>FAQs</h4>
+                  <p className={`text-sm font-medium leading-relaxed text-gray-500`}>Find answers to common questions about GRIDS usage, data, and policies.</p>
+                  <div className="inline-flex items-center gap-2 text-[10px] font-black text-purple-600 uppercase tracking-widest mt-4 group/link">
+                    Get Help <ChevronRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
                   </div>
                 </div>
               </div>

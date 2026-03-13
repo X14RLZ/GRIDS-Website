@@ -248,15 +248,15 @@ const GADSectorDetail: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = fals
                     </div>
                   </div>
                 </div>
-                <div className="lg:pt-2">
-                  <button 
-                    onClick={() => navigate(`/analysis/${indicator.slug}`)}
-                    className={`w-full lg:w-auto px-10 py-4 rounded-full font-black text-xs uppercase tracking-widest transition-all shadow-md active:scale-95 flex items-center justify-center gap-2
-                      ${isDarkMode ? 'bg-white text-black border-2 border-white hover:bg-purple-600 hover:text-white hover:border-purple-600' : 'bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'}`}
-                  >
-                    Access Analysis <ChevronRight size={14} />
-                  </button>
-                </div>
+                  <div className="lg:pt-2">
+                    <button 
+                      onClick={() => navigate(`/gad-data/${sectorId}/${indicator.slug}`)}
+                      className={`w-full lg:w-auto px-10 py-4 rounded-full font-black text-xs uppercase tracking-widest transition-all shadow-md active:scale-95 flex items-center justify-center gap-2
+                        ${isDarkMode ? 'bg-white text-black border-2 border-white hover:bg-purple-600 hover:text-white hover:border-purple-600' : 'bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'}`}
+                    >
+                      Access Analysis <ChevronRight size={14} />
+                    </button>
+                  </div>
               </div>
             </div>
           ))}
