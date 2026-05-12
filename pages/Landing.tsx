@@ -88,7 +88,6 @@ const Landing: React.FC<{ onLogin: (user: User) => void, isDarkMode?: boolean }>
     const map: Record<string, string> = {
       'Administrator': 'role_admin',
       'Data Provider': 'role_provider',
-      'Data Reviewer': 'role_reviewer',
       'Data Analyst': 'role_analyst',
       'Public User': 'role_public',
       'Guest': 'role_guest'
@@ -269,9 +268,14 @@ const Landing: React.FC<{ onLogin: (user: User) => void, isDarkMode?: boolean }>
                     <button type="button" onClick={() => setIsRegistering(true)} className="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-purple-600 transition-all">
                       New to GRIDS? <span className="underline decoration-2 underline-offset-4">Create Account</span>
                     </button>
-                    <div className="flex items-center gap-4 opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer">
+                    <a 
+                      href="https://main.baguio.gov.ph/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-4 opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer"
+                    >
                       <BaguioLogo />
-                    </div>
+                    </a>
                   </div>
                 </form>
               </div>
@@ -284,27 +288,16 @@ const Landing: React.FC<{ onLogin: (user: User) => void, isDarkMode?: boolean }>
                       <p className="text-gray-400 text-sm font-medium tracking-tight">Setup your account access.</p>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-4 mb-8 w-full">
+                    <div className="flex flex-col sm:flex-row gap-4 mb-8 w-full justify-center">
                       <button 
                         onClick={() => setRegData({...regData, role: 'Data Provider'})}
-                        className={`flex-1 group h-40 rounded-[32px] border-[4px] flex flex-col items-center justify-center gap-3 transition-all shadow-lg p-4
+                        className={`w-full max-w-sm group h-40 rounded-[32px] border-[4px] flex flex-col items-center justify-center gap-3 transition-all shadow-lg p-4
                           ${regData.role === 'Data Provider' ? 'bg-white border-black scale-105 shadow-xl' : 'bg-white/5 border-transparent opacity-60 hover:opacity-100 hover:bg-white'}`}
                       >
                         <div className={`p-4 rounded-[20px] transition-colors ${regData.role === 'Data Provider' ? 'bg-black text-white' : 'bg-gray-100 text-gray-400 group-hover:bg-purple-50 group-hover:text-purple-600'}`}>
                           <FileText size={32} strokeWidth={2.5} />
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">Provider</span>
-                      </button>
-                      
-                      <button 
-                        onClick={() => setRegData({...regData, role: 'Data Reviewer'})}
-                        className={`flex-1 group h-40 rounded-[32px] border-[4px] flex flex-col items-center justify-center gap-3 transition-all shadow-lg p-4
-                          ${regData.role === 'Data Reviewer' ? 'bg-white border-black scale-105 shadow-xl' : 'bg-white/5 border-transparent opacity-60 hover:opacity-100 hover:bg-white'}`}
-                      >
-                        <div className={`p-4 rounded-[20px] transition-colors ${regData.role === 'Data Reviewer' ? 'bg-black text-white' : 'bg-gray-100 text-gray-400 group-hover:bg-purple-50 group-hover:text-purple-600'}`}>
-                          <FileSearch size={32} strokeWidth={2.5} />
-                        </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">Reviewer</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-900 text-center">Data Provider</span>
                       </button>
                     </div>
 
@@ -426,9 +419,14 @@ const Landing: React.FC<{ onLogin: (user: User) => void, isDarkMode?: boolean }>
                   <button type="button" onClick={() => { setIsRegistering(false); setRegStep(1); }} className="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-purple-600 transition-all">
                     Already have an account? <span className="underline decoration-2 underline-offset-4 decoration-purple-200">Login</span>
                   </button>
-                  <div className="flex items-center gap-4 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all cursor-pointer">
+                  <a 
+                    href="https://main.baguio.gov.ph/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-4 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all cursor-pointer"
+                  >
                     <BaguioLogo />
-                  </div>
+                  </a>
                 </div>
               </div>
             )}

@@ -552,12 +552,12 @@ const CBMS: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
   useEffect(() => {
     const loadData = () => {
       const stored = JSON.parse(localStorage.getItem('grids_submissions') || '[]');
-      const approved = stored.filter((s: any) => s.response === 'Approved');
+      const approved = stored.filter((s: any) => s.response === 'Submitted');
       
       const reportFiles: Submission[] = [
-        { id: 'rep-e', formName: '2021 CBMS Data Report - Section E (Economic).pdf', submittedBy: 'CPDSO Baguio', office: 'CPDSO', response: 'Approved', reviewedBy: 'Admin', date: 'Oct 2024', created: 'Archive', fileSize: '12.4 MB' },
-        { id: 'rep-l', formName: '2021 CBMS Data Report - Section L (Agriculture).pdf', submittedBy: 'CPDSO Baguio', office: 'CPDSO', response: 'Approved', reviewedBy: 'Admin', date: 'Oct 2024', created: 'Archive', fileSize: '8.1 MB' },
-        { id: 'rep-p', formName: '2021 CBMS Data Report - Section P (Gov Programs).pdf', submittedBy: 'CPDSO Baguio', office: 'CPDSO', response: 'Approved', reviewedBy: 'Admin', date: 'Oct 2024', created: 'Archive', fileSize: '15.2 MB' }
+        { id: 'rep-e', formName: '2021 CBMS Data Report - Section E (Economic).pdf', submittedBy: 'CPDSO Baguio', office: 'CPDSO', response: 'Submitted', date: 'Oct 2024', created: 'Archive', fileSize: '12.4 MB' },
+        { id: 'rep-l', formName: '2021 CBMS Data Report - Section L (Agriculture).pdf', submittedBy: 'CPDSO Baguio', office: 'CPDSO', response: 'Submitted', date: 'Oct 2024', created: 'Archive', fileSize: '8.1 MB' },
+        { id: 'rep-p', formName: '2021 CBMS Data Report - Section P (Gov Programs).pdf', submittedBy: 'CPDSO Baguio', office: 'CPDSO', response: 'Submitted', date: 'Oct 2024', created: 'Archive', fileSize: '15.2 MB' }
       ];
       
       setData([...reportFiles, ...approved]);
@@ -620,7 +620,7 @@ const CBMS: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
   return (
     <PageLayout
       isDarkMode={isDarkMode}
-      title="CBMS Data Hub"
+      title="CBMS Manual"
       subtitle="Community-Based Monitoring System"
       headerActions={
         <div className="relative group w-full sm:w-80">

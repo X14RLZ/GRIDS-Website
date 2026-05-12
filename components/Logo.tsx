@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
  * visual identity.
  */
 export const Logo: React.FC<{ size?: 'sm' | 'md' | 'lg', isDarkMode?: boolean }> = ({ size = 'md', isDarkMode = false }) => {
-  const logoSrc = "https://trello.com/1/cards/698d1c8d17be3891f45d9727/attachments/698d1da4c2b23845063374b0/download/GRIDS_LOGO_(No_BG).png";
+  const logoSrc = "https://trello.com/1/cards/69f0074f8949e9893c3080b4/attachments/69f007bd168c83eedec49101/download/GRIDS_LOGO_(No_BG).png";
   
   const height = size === 'sm' ? 'h-12' : size === 'lg' ? 'h-32' : 'h-20';
   const isSmall = size === 'sm';
@@ -43,8 +43,8 @@ export const BaguioLogo: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 'md
     <div className="flex items-center group cursor-pointer">
       <div className="relative">
         <img 
-          src="https://new.baguio.gov.ph/assets/baguio-logo.676e0ef7.png" 
-          alt="Baguio Seal" 
+          src="https://main.baguio.gov.ph/favicons/baguioseal.svg" 
+          alt="Baguio City" 
           className={`${height} object-contain relative z-10 drop-shadow-sm`} 
           referrerPolicy="no-referrer"
         />

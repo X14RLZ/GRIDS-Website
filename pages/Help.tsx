@@ -92,7 +92,7 @@ const Help: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
         <QABlock num={3} q="Do I need an account to use GRIDS?" a={
           <ul className="list-disc space-y-2">
             <li>No account needed to view public statistics and reports.</li>
-            <li>Accounts are required for data providers, reviewers, analysts, and admins.</li>
+            <li>Accounts are required for data providers, analysts, and admins.</li>
           </ul>
         } />
         <QABlock num={4} q="How do I log in?" a="Go to the GRIDS website, click Login, and enter your username and password." />
@@ -117,20 +117,7 @@ const Help: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
             <li>Click Submit</li>
           </ol>
         } />
-        <QABlock num={10} q="How do I know the status of my submission?" a="Go to My Submissions to see if it is Pending, Under Review, Approved, or Denied." />
-
-        <SectionDivider />
-
-        <SectionHeader title="Review & Approval (for Reviewers)" />
-        <QABlock num={11} q="How do I review submitted data?" a={
-          <ol className="list-decimal pl-5 space-y-1">
-            <li>Log in</li>
-            <li>Go to Review Submissions</li>
-            <li>Open an entry</li>
-            <li>Approve or deny, and add comments if needed</li>
-          </ol>
-        } />
-        <QABlock num={12} q="Will the provider see my remarks?" a="Yes. GRIDS notifies the provider and shows your comments." />
+        <QABlock num={10} q="How do I know the status of my submission?" a="Go to Data Submission history to see your submitted files." />
 
         <SectionDivider />
 
@@ -165,14 +152,9 @@ const Help: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
             <li>Click Submit</li>
           </ul>
         } />
-        <QABlock num={3} q="What if my data is rejected?" a="Check the remarks from the reviewer, correct the data, and resubmit through the same module." />
+        <QABlock num={3} q="What if my data submission is incorrect?" a="You can delete the submission and upload a corrected file." />
         <QABlock num={4} q="How often should data be submitted?" a="At a minimum, yearly, or as required in the guidelines for your office or indicator." />
 
-        <SectionDivider />
-
-        <SectionHeader title="B. For Data Reviewers (GFPS Focals / Department Heads)" />
-        <QABlock num={5} q="What is my role as a Data Reviewer?" a="You validate and approve or deny submitted data from offices under your scope, ensuring accuracy, completeness, and alignment with GAD standards." />
-        
         <SectionDivider />
 
         <SectionHeader title="Searching & Viewing Data" />
@@ -184,13 +166,7 @@ const Help: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
         <SectionHeader title="Data Submission (for Offices / GFPS)" />
         <QABlock num={8} q="Who can submit data to GRIDS?" a="Authorized Data Providers from city departments, offices, and GFPS units." />
         <QABlock num={9} q="How do I submit data?" a="Log in, go to Data Submission, upload file via template, add details, and click Submit." />
-        <QABlock num={10} q="How do I know the status of my submission?" a="Go to My Submissions to see if it is Pending, Under Review, Approved, or Denied." />
-
-        <SectionDivider />
-
-        <SectionHeader title="Review & Approval (for Reviewers)" />
-        <QABlock num={11} q="How do I review submitted data?" a="Log in, go to Review Submissions, open an entry, and approve or deny with remarks." />
-        <QABlock num={12} q="Will the provider see my remarks?" a="Yes. GRIDS notifies the provider and shows your comments." />
+        <QABlock num={10} q="How do I know the status of my submission?" a="Go to Data Submission history to view your uploaded records." />
 
         <SectionDivider />
 
@@ -216,9 +192,9 @@ const Help: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
       <div className="space-y-12">
         <QABlock num={1} q="What is the Gender-Responsive Integrated Database System (GRIDS)?" a="The Gender-Responsive Integrated Database System (GRIDS) is a centralized GAD database of the City Government of Baguio. It consolidates gender-related data from various offices to support gender-responsive planning, policy-making, monitoring, and reporting, in line with the Magna Carta of Women and the Data Privacy Act of 2012." />
         <SectionDivider />
-        <QABlock num={2} q="Who are the primary users of GRIDS?" a="Primary users include policymakers, members of the Gender Focal Point System (GFPS), department and office personnel acting as data providers or reviewers, the CPDSO and CBMS teams as data analysts, IT administrators, and the general public (for viewing non-sensitive data)." />
+        <QABlock num={2} q="Who are the primary users of GRIDS?" a="Primary users include policymakers, members of the Gender Focal Point System (GFPS), department and office personnel acting as data providers, the CPDSO and CBMS teams as data analysts, IT administrators, and the general public (for viewing non-sensitive data)." />
         <SectionDivider />
-        <QABlock num={3} q="Is a user account required to access GRIDS?" a="Public users may access aggregated and anonymized information without an account. User accounts are required for internal roles, specifically: Admin, Data Provider, Data Reviewer, and Data Analyst, in order to submit, review, analyze, or manage data." />
+        <QABlock num={3} q="Is a user account required to access GRIDS?" a="Public users may access aggregated and anonymized information without an account. User accounts are required for internal roles, specifically: Admin, Data Provider, and Data Analyst, in order to submit, analyze, or manage data." />
         <SectionDivider />
         <QABlock num={4} q="How do users log in to GRIDS?" a={
           <ol className="list-decimal pl-5 space-y-1">
@@ -241,13 +217,11 @@ const Help: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => {
             <li>Navigate to the Data Submission section;</li>
             <li>Upload data using approved templates and file formats;</li>
             <li>Provide the required metadata (e.g., title, period covered, office); and</li>
-            <li>Click Submit to send the data for review.</li>
+            <li>Click Submit to commit the data.</li>
           </ol>
         } />
         <SectionDivider />
-        <QABlock num={9} q="How is submitted data reviewed and validated?" a="Data Reviewers (GFPS focal persons and Department Heads) access the Review Submissions module, examine the submitted data, and either approve or deny the submission. They may also provide comments or justifications, especially when returning data for correction." />
-        <SectionDivider />
-        <QABlock num={10} q="How can a Data Provider monitor the status of their submissions?" a="Data Providers can view the status of their submissions (e.g., Pending, Under Review, Approved, Denied) in the My Submissions section of GRIDS. The system may also send automated notifications for status changes." />
+        <QABlock num={10} q="How can a Data Provider monitor the status of their submissions?" a="Data Providers can view their submissions in the history section of the Data Submission module." />
         <SectionDivider />
         <QABlock num={11} q="How is data privacy ensured within GRIDS?" a="GRIDS enforces role-based access control, anonymization of sensitive data, secure authentication, and detailed audit trails. Only aggregated, non-identifiable information is exposed to the public, consistent with the Data Privacy Act of 2012, its IRR, and relevant city policies." />
         <SectionDivider />

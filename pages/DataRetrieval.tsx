@@ -11,7 +11,7 @@ const DataRetrieval: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false 
 
   const loadData = () => {
     const stored: Submission[] = JSON.parse(localStorage.getItem('grids_submissions') || '[]');
-    setApprovedData(stored.filter((s: Submission) => s.response === 'Approved'));
+    setApprovedData(stored.filter((s: Submission) => s.response === 'Submitted'));
   };
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const DataRetrieval: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false 
             </div>
             <input 
               type="text" 
-              placeholder="Search approved datasets..."
+              placeholder="Search datasets in vault..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={`w-full pl-14 pr-6 py-4 rounded-[24px] border shadow-sm focus:outline-none focus:ring-4 focus:ring-purple-600/5 transition-all text-xs font-bold
@@ -88,8 +88,8 @@ const DataRetrieval: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false 
                 <FileSpreadsheet size={28} />
               </div>
               <div className="flex flex-col items-end">
-                <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Approved File</span>
-                <span className="text-[10px] font-black text-green-500 uppercase tracking-widest bg-green-50 px-3 py-1 rounded-full">Validated</span>
+                <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Data Record</span>
+                <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-full">Submitted</span>
               </div>
             </div>
 
@@ -115,7 +115,7 @@ const DataRetrieval: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false 
                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-gray-400">
                      <Clock size={14} />
-                     <span className="text-[9px] font-black uppercase tracking-widest">Approved on</span>
+                     <span className="text-[9px] font-black uppercase tracking-widest">Submitted on</span>
                   </div>
                   <span className={`text-[10px] font-black uppercase ${textClass}`}>{d.date}</span>
                </div>

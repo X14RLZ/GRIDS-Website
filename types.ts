@@ -6,7 +6,7 @@
  */
 
 // Role Management (mapped to Role class in UML)
-export type UserRole = 'Administrator' | 'Data Provider' | 'Data Reviewer' | 'Data Analyst' | 'Public User' | 'Guest';
+export type UserRole = 'Administrator' | 'Data Provider' | 'Data Analyst' | 'Public User' | 'Guest';
 
 export interface Role {
   roleId: string;
@@ -27,7 +27,7 @@ export interface User {
   lastLogin?: string;
   isActive?: boolean;
   role: UserRole;
-  // Specific attributes for DataProvider/Reviewer/Analyst roles
+  // Specific attributes for DataProvider/Analyst roles
   departmentId?: string;
   officeId?: string;
   office: string;
@@ -58,13 +58,10 @@ export interface Submission {
   formName: string;
   submittedBy: string;
   office: string;
-  response: 'Pending' | 'Approved' | 'Denied';
-  reviewedBy: string;
+  response: 'Submitted' | 'Archived';
   date: string;
   created: string;
   fileSize: string;
-  isStoredLocally?: boolean;
-  reviewerRemarks?: string;
   // UML specific fields
   submissionDate?: string;
   comment?: string;

@@ -45,8 +45,6 @@ CREATE TABLE data_submissions (
     submission_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- UML: submissionDate
     status VARCHAR(20) DEFAULT 'Pending', -- UML: status
     submitted_by_user_id VARCHAR(50) REFERENCES users(user_id), -- UML: submittedByUserId
-    approved_by_user_id VARCHAR(50) REFERENCES users(user_id), -- UML: approvedByUserId
-    denied_by_user_id VARCHAR(50) REFERENCES users(user_id), -- UML: deniedByUserId
     comment TEXT, -- UML: comment
     optional_comment TEXT, -- UML: optionalComment
     office_id VARCHAR(50) REFERENCES offices(office_id)
@@ -64,17 +62,6 @@ CREATE TABLE data_sets (
     is_anonymized BOOLEAN DEFAULT FALSE, -- UML: isAnonymized
     collection_frequency VARCHAR(100), -- UML: collectionFrequency
     storage_location TEXT -- UML: storageLocation
-);
-
--- 4. Review Workflow
-CREATE TABLE review_processes (
-    review_id VARCHAR(50) PRIMARY KEY,
-    submission_id VARCHAR(50) REFERENCES data_submissions(submission_id) ON DELETE CASCADE,
-    reviewer_user_id VARCHAR(50) REFERENCES users(user_id), -- UML: reviewerUserId
-    review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- UML: reviewDate
-    status VARCHAR(50),
-    remarks TEXT,
-    justification TEXT -- UML: justification
 );
 
 -- 5. GAD and Metadata

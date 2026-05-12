@@ -34,7 +34,7 @@ const GADData: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false }) => 
   return (
     <PageLayout
       isDarkMode={isDarkMode}
-      title="GAD Data and Analysis"
+      title="GAD Indicator Analysis"
       subtitle={searchQuery ? `Found ${filteredSectors.length} sectors for "${searchQuery}"` : "Sectoral Indicator Catalog"}
       description="Evidence-based gender data categorized into key development sectors."
       headerActions={

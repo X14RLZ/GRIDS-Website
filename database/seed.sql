@@ -5,7 +5,6 @@
 INSERT INTO roles (role_id, role_name, description) VALUES 
 ('role_admin', 'Administrator', 'Full system access and user management'),
 ('role_provider', 'Data Provider', 'Upload and submit data sets'),
-('role_reviewer', 'Data Reviewer', 'Validate and approve/deny submissions'),
 ('role_analyst', 'Data Analyst', 'Analyze approved data sets'),
 ('role_public', 'Public User', 'Access and download public information');
 

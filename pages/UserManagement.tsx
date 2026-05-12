@@ -49,7 +49,6 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
     const map: Record<string, string> = {
       'Administrator': 'role_admin',
       'Data Provider': 'role_provider',
-      'Data Reviewer': 'role_reviewer',
       'Data Analyst': 'role_analyst',
       'Public User': 'role_public',
       'Guest': 'role_guest'
@@ -349,7 +348,6 @@ const UserManagement: React.FC<{ isDarkMode?: boolean }> = ({ isDarkMode = false
                       >
                         <option value="Administrator">Administrator</option>
                         <option value="Data Provider">Data Provider</option>
-                        <option value="Data Reviewer">Data Reviewer</option>
                         <option value="Data Analyst">Data Analyst</option>
                         <option value="Public User">Public User</option>
                         <option value="Guest">Guest</option>

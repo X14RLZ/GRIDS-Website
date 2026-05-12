@@ -60,8 +60,8 @@ const Dashboard: React.FC<DashboardProps> = ({ user, isDarkMode = false }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const searchableItems: SearchResult[] = [
-    { id: 'p1', title: 'GAD Data and Analysis', type: 'Page', path: '/gad-data', description: 'Access 51 core Gender and Development indicators for Baguio City.' },
-    { id: 'p2', title: 'CBMS Table', type: 'Page', path: '/cbms', description: 'Official 2021 Community-Based Monitoring System data reports and records.', keywords: ['survey', 'census', 'economic'] },
+    { id: 'p1', title: 'GAD Indicator Analysis', type: 'Page', path: '/gad-data', description: 'Access 51 core Gender and Development indicators for Baguio City.' },
+    { id: 'p2', title: 'CBMS Manual', type: 'Page', path: '/cbms', description: 'Official 2021 Community-Based Monitoring System data reports and records.', keywords: ['survey', 'census', 'economic'] },
     { id: 'p3', title: 'About GRIDS Project', type: 'Page', path: '/about', description: 'Information on the Gender-Responsive Integrated Database System initiative.' },
     { id: 'pol-cedaw', title: 'CEDAW Convention', type: 'Policy', path: '/policy', description: 'International convention on the elimination of discrimination against women.' },
     { id: 'pol-mcw', title: 'Magna Carta of Women', type: 'Policy', path: '/policy', description: 'RA 9710 - Comprehensive women\'s human rights law in the Philippines.' },

@@ -10,7 +10,6 @@ import GADSectorDetail from './pages/GADSectorDetail';
 import IndicatorAnalysis from './pages/IndicatorAnalysis';
 import CBMS from './pages/CBMS';
 import DataSubmission from './pages/DataSubmission';
-import DataApproval from './pages/DataApproval';
 import DataRetrieval from './pages/DataRetrieval';
 import UserManagement from './pages/UserManagement';
 import AuditTrail from './pages/AuditTrail';
@@ -58,10 +57,10 @@ const AppContent: React.FC<{
       title = 'Dashboard | GRIDS Baguio City';
     }
     else if (path.includes('/gad-data')) {
-      title = 'GAD Indicators | GRIDS Baguio City';
+      title = 'GAD Indicator Analysis | GRIDS Baguio City';
     }
     else if (path.includes('/cbms')) {
-      title = 'CBMS Statistics | GRIDS Baguio City';
+      title = 'CBMS Manual | GRIDS Baguio City';
     }
     
     document.title = title;
@@ -170,8 +169,6 @@ const AppContent: React.FC<{
                  <Route path="/cbms" element={<CBMS isDarkMode={isDarkMode} />} />
                  <Route path="/data-submission" element={<DataSubmission user={user} isDarkMode={isDarkMode} />} />
                   <Route path="/data-submission/view/:id" element={<DataViewer isDarkMode={isDarkMode} />} />
-                 <Route path="/data-approval" element={<DataApproval user={user} isDarkMode={isDarkMode} />} />
-                  <Route path="/data-approval/view/:id" element={<DataViewer isDarkMode={isDarkMode} />} />
                  <Route path="/data-retrieval" element={isAnalyzer ? <DataRetrieval isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
                  <Route path="/user-management" element={isAdmin ? <UserManagement isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
                  <Route path="/audit-trail" element={isAdmin ? <AuditTrail isDarkMode={isDarkMode} /> : <Navigate to="/" />} />
@@ -291,7 +288,7 @@ const App: React.FC = () => {
         email: 'ricardo.dalisay@baguio.gov.ph',
         firstName: 'Ricardo',
         lastName: 'Dalisay',
-        role: 'Data Reviewer',
+        role: 'Data Provider',
         office: 'Baguio City Police Office (BCPO)',
         phone: '442-5678',
         contactInfo: '442-5678',
@@ -336,7 +333,7 @@ const App: React.FC = () => {
         email: 'mateo.do@baguio.gov.ph',
         firstName: 'Mateo',
         lastName: 'Do',
-        role: 'Data Reviewer',
+        role: 'Data Provider',
         office: 'City Human Resource Management Office (CHRMO)',
         phone: '442-7890',
         contactInfo: '442-7890',
@@ -381,7 +378,7 @@ const App: React.FC = () => {
         email: 'emilio.aguinaldo@baguio.gov.ph',
         firstName: 'Emilio',
         lastName: 'Aguinaldo',
-        role: 'Data Reviewer',
+        role: 'Data Provider',
         office: 'City Mayor\'s Office (CMO)',
         phone: '442-3333',
         contactInfo: '442-3333',
@@ -426,7 +423,7 @@ const App: React.FC = () => {
         email: 'marcelo.delpilar@baguio.gov.ph',
         firstName: 'Marcelo',
         lastName: 'Del Pilar',
-        role: 'Data Reviewer',
+        role: 'Data Provider',
         office: 'City Budget Office (CBO)',
         phone: '442-6666',
         contactInfo: '442-6666',

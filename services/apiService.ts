@@ -50,7 +50,7 @@ export const FileStorageAPI = {
 export const NotificationAPI = {
   // Requirement 5: Push/Email API integration (FCM/SendGrid)
   async broadcastNotification(notif: any): Promise<void> {
-    console.log(`[POST] ${BASE_URL}/notifications/broadcast - Sending Push to Data Reviewers`);
+    console.log(`[POST] ${BASE_URL}/notifications/broadcast - Sending Push to Data Analysts and Admins`);
     console.log(`[POST] ${BASE_URL}/mail/send - Dispatching Email Alert via SendGrid`);
   }
 };

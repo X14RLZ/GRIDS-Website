@@ -87,13 +87,13 @@ const Header: React.FC<HeaderProps> = ({
           </button>
 
           <a 
-            href="https://new.baguio.gov.ph/home" 
+            href="https://main.baguio.gov.ph/" 
             target="_blank" 
             rel="noopener noreferrer"
             className="flex items-center gap-2 md:gap-3 no-underline group"
           >
             <BaguioLogo />
-            <span className={`text-base md:text-xl font-bold tracking-tight ${textClass} hidden xs:block`}>eGov: Baguio</span>
+            <span className={`text-base md:text-xl font-bold tracking-tight ${textClass} hidden xs:block`}>Baguio City</span>
           </a>
         </div>
       </div>

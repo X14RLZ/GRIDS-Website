@@ -96,12 +96,10 @@ const DataSubmission: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({
           formName: file.name,
           submittedBy: userName,
           office: user?.office || 'Unknown',
-          response: 'Pending',
-          reviewedBy: '-',
+          response: 'Submitted',
           date: timestamp,
           created: 'Just now',
-          fileSize: (file.size / (1024 * 1024)).toFixed(1) + ' MB',
-          isStoredLocally: true 
+          fileSize: (file.size / (1024 * 1024)).toFixed(1) + ' MB'
         };
         newSubmissions.push(sub);
 
@@ -112,11 +110,11 @@ const DataSubmission: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({
         const newNotif: Notification = {
           id: `subnotif-${Date.now()}`,
           title: 'New Data Submission',
-          message: `${userName} from ${user?.office} has submitted a new file for review: ${file.name}.`,
+          message: `${userName} from ${user?.office} has submitted a new file: ${file.name}.`,
           date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           isRead: false,
           department: user?.office || 'System',
-          targetUrl: '/data-approval'
+          targetUrl: '/data-retrieval'
         };
         localStorage.setItem('grids_notifications', JSON.stringify([newNotif, ...notifications]));
       }
@@ -202,7 +200,7 @@ const DataSubmission: React.FC<{ user: User | null, isDarkMode?: boolean }> = ({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-1">
                           <h4 className={`text-lg font-black truncate ${textClass}`}>{s.formName}</h4>
-                          <span className={`px-3 py-0.5 text-[8px] font-black rounded-full uppercase tracking-widest ${s.response === 'Approved' ? 'bg-green-100 text-green-700' : s.response === 'Denied' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                          <span className={`px-3 py-0.5 text-[8px] font-black rounded-full uppercase tracking-widest ${s.response === 'Submitted' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
                             {s.response}
                           </span>
                         </div>

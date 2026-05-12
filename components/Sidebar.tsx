@@ -22,7 +22,6 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ role, onLogout, isCollapsed = false, onToggle, isDarkMode = false }) => {
   const isAdmin = role === 'Administrator';
   const isProvider = role === 'Data Provider' || isAdmin;
-  const isReviewer = role === 'Data Reviewer' || isAdmin;
   const isAnalyzer = role === 'Data Analyst' || isAdmin;
   const isLoggedIn = role !== 'Guest';
 
@@ -97,10 +96,9 @@ const Sidebar: React.FC<SidebarProps> = ({ role, onLogout, isCollapsed = false, 
           </h3>
           <div className="h-0.5 w-1/2 bg-purple-500/40 dark:bg-purple-400/40 mx-auto mb-4"></div>
           <div className="space-y-0">
-            <NavItem to="/gad-data" icon={Hand}>GAD Data and Analysis</NavItem>
-            <NavItem to="/cbms" icon={Monitor}>CBMS Table</NavItem>
+            <NavItem to="/gad-data" icon={Hand}>GAD Indicator Analysis</NavItem>
+            <NavItem to="/cbms" icon={Monitor}>CBMS Manual</NavItem>
             {isProvider && <NavItem to="/data-submission" icon={BarChart3}>Data Submission</NavItem>}
-            {isReviewer && <NavItem to="/data-approval" icon={ClipboardCheck}>Data Approval</NavItem>}
             {isAnalyzer && <NavItem to="/data-retrieval" icon={CloudDownload}>Data Retrieval</NavItem>}
             {isAdmin && <NavItem to="/user-management" icon={UserCog}>User Management</NavItem>}
             {isAdmin && <NavItem to="/audit-trail" icon={History}>Audit Trail</NavItem>}

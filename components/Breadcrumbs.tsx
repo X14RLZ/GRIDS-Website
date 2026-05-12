@@ -16,8 +16,8 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ isDarkMode = false }) => {
   const getDisplayName = (name: string) => {
     // Custom mapping for better display names
     const mapping: Record<string, string> = {
-      'gad-data': 'GAD Data and Analysis',
-      'cbms': 'CBMS Table',
+      'gad-data': 'GAD Indicator Analysis',
+      'cbms': 'CBMS Manual',
       'data-submission': 'Data Submission',
       'data-approval': 'Data Approval',
       'data-retrieval': 'Data Retrieval',
